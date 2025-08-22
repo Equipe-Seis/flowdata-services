@@ -1,0 +1,23 @@
+post http://localhost:3333/auth/signup
+Content-Type: application/json
+
+{
+    "email": "email@email.com",
+    "password": "123456",
+    "passwordConfirmation": "123456"
+}
+
+###
+
+post http://localhost:3333/auth/signin
+Content-Type: application/json
+
+{
+    "email": "email@email.com",
+    "password": "123456"
+}
+
+###
+
+get http://localhost:3333/auth/sigin
+Authorization: 123
