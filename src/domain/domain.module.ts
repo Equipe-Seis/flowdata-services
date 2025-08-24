@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import { JwtStrategy } from './shared/strategy';
 
-@Module({})
+@Module({
+  providers: [JwtStrategy],
+  exports: [JwtStrategy],
+})
 export class DomainModule {}

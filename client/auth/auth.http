@@ -2,7 +2,7 @@ post http://localhost:3333/auth/signup
 Content-Type: application/json
 
 {
-    "email": "email@email.com",
+    "email": "y@whoami.com",
     "password": "123456",
     "passwordConfirmation": "123456"
 }
@@ -13,11 +13,11 @@ post http://localhost:3333/auth/signin
 Content-Type: application/json
 
 {
-    "email": "email@email.com",
+    "email": "idunno@whoami.com",
     "password": "123456"
 }
 
 ###
 
-get http://localhost:3333/auth/sigin
-Authorization: 123
+get http://localhost:3333/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoiZW1haWxAZW1haWwuY29tIiwiaWF0IjoxNzU1OTk4ODUxLCJleHAiOjE3NTU5OTk3NTF9.aHkYzBCUWHf5RE1Cm-kInqiuSqTJ08o9kK2twrvqMjg
