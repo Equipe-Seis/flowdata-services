@@ -22,4 +22,6 @@ export class PersonService {
     async getPersonById(id: number) {
         return this.personRepository.findById(id);
     }
+
+
 }

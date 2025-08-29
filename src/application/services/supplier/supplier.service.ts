@@ -12,8 +12,8 @@ export class SupplierService {
         const personDto = dto.person;
 
         // Aqui você pode setar os valores padrão ou vir do DTO, ajuste conforme seu domínio
-        const personType = PersonType.INDIVIDUAL;
-        const status = Status.ACTIVE;
+        const personType = PersonType.individual;
+        const status = Status.active;
 
         const supplierEntity = new Supplier(
             0, // id inicial (vai ser gerado no banco)

@@ -12,34 +12,5 @@ export class CreateUserDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    name: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    personType: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    documentNumber: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    birthDate: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    status: string;
-
-    @ApiProperty()
-    @IsEmail()
-    email: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     password: string;
 }

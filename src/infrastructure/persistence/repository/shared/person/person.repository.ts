@@ -1,3 +1,4 @@
+//src\infrastructure\persistence\repository\shared\person\person.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { IPersonRepository } from '@application/persistence/repository/interfaces/shared/iperson.repository';
@@ -43,4 +44,42 @@ export class PersonRepository implements IPersonRepository {
             found.email,
         );
     }
+
+    async findByDocumentNumber(documentNumber: string): Promise<Person | null> {
+        const found = await this.prisma.person.findUnique({
+            where: { documentNumber },
+        });
+
+        if (!found) return null;
+
+        return new Person(
+            found.id,
+            found.name,
+            found.personType,
+            found.documentNumber,
+            found.birthDate,
+            found.status,
+            found.email,
+        );
+    }
+
+    async findByEmail(email: string): Promise<Person | null> {
+        const found = await this.prisma.person.findUnique({
+            where: { email },
+        });
+
+        if (!found) return null;
+
+        return new Person(
+            found.id,
+            found.name,
+            found.personType,
+            found.documentNumber,
+            found.birthDate,
+            found.status,
+            found.email,
+        );
+    }
+
+
 }

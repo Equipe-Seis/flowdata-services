@@ -8,7 +8,7 @@ export class PersonMapper {
             personType: entity.personType!,
             documentNumber: entity.documentNumber!,
             birthDate: entity.birthDate ?? null,
-            status: entity.status ?? 'ACTIVE',
+            status: entity.status ?? 'active',
             email: entity.email ?? null,
         };
     }

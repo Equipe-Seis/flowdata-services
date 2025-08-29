@@ -1,6 +1,6 @@
 //comandos 
-//npx prisma generate
 //npx prisma migrate dev --name add-person-class
+//npx prisma generate
 generator client {
   provider = "prisma-client-js"
   //output   = "../generated/prisma"
@@ -20,7 +20,7 @@ model Person {
   
   documentNumber  String     @unique @db.VarChar(20)
   birthDate       DateTime?
-  status          Status     @default(ACTIVE)
+  status          Status     @default(active)
 
   email           String?    @unique
 
@@ -158,24 +158,26 @@ model Resource {
 
 
 enum Status {
-  ACTIVE
-  INACTIVE
+  active
+  inactive
 }
 
 enum PersonType {
-  INDIVIDUAL
-  LEGALENTITY
+  individual
+  legalentity
 }
 
 enum ContactType {
-  PHONE
-  MOBILE
-  EMAIL
-  WHATSAPP
+  phone
+  mobile
+  email
+  whatsapp
 }
 
 enum LinkType {
-  CUSTOMER
-  SUPPLIER
-  PERSON
+  customer
+  supplier
+  person
 }
+
+

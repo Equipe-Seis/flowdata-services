@@ -10,7 +10,7 @@ import { Person } from '@domain/shared/person/person.entity';
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(user: User): Promise<User> {
+  /*async create(user: User): Promise<User> {
     try {
       const created = await this.prisma.user.create({
         data: {
@@ -18,6 +18,50 @@ export class UserRepository implements IUserRepository {
           person: {
             connect: {
               id: user.person.id,
+            },
+          },
+        },
+        include: {
+          person: true,
+        },
+      });
+
+      const person = new Person(
+        created.person.id,
+        created.person.name,
+        created.person.personType,
+        created.person.documentNumber,
+        created.person.birthDate,
+        created.person.status,
+        created.person.email,
+      );
+
+      return new User(created.id, person, created.hash);
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ForbiddenException('Este usuário já existe.');
+      }
+
+      throw error;
+    }
+  }*/
+
+  async create(user: User): Promise<User> {
+    try {
+      const created = await this.prisma.user.create({
+        data: {
+          hash: user.hash,
+          person: {
+            create: {
+              name: user.person.name,
+              personType: user.person.personType,
+              documentNumber: user.person.documentNumber,
+              birthDate: user.person.birthDate,
+              status: user.person.status,
+              email: user.person.email,
             },
           },
         },

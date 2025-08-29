@@ -3,7 +3,7 @@
 
 
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from '@application/dto/user/create-user.dto';
 import { User } from '@domain/user/user.entity';
 import { Person } from '@domain/shared/person/person.entity';
@@ -21,14 +21,27 @@ export class UserService {
     async createUser(dto: CreateUserDto): Promise<User> {
         const personDto = dto.person;
 
-        // Cria a pessoa primeiro
+        const existingByDocument = await this.personRepository.findByDocumentNumber(personDto.documentNumber);
+        if (existingByDocument) {
+            throw new ConflictException('Documento já está em uso.');
+        }
+
+        if (!personDto.email) {
+            throw new BadRequestException('E-mail é obrigatório');
+        }
+
+        const existingByEmail = await this.personRepository.findByEmail(personDto.email);
+        if (existingByEmail) {
+            throw new ConflictException('E-mail já está em uso.');
+        }
+
         const person = await this.personRepository.create({
             name: personDto.name,
             documentNumber: personDto.documentNumber,
             birthDate: personDto.birthDate ? new Date(personDto.birthDate) : null,
-            personType: PersonType.INDIVIDUAL,
-            status: Status.ACTIVE,
-            email: dto.email,
+            personType: PersonType.individual,
+            status: Status.active,
+            email: personDto.email,
         });
 
         // Criptografa a senha

@@ -5,14 +5,21 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({whitelist: true}))
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Flowdata API')
     .setDescription('Documentação da API da aplicação')
     .setVersion('1.0')
     // .addBearerAuth() JWT
-  .build();
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

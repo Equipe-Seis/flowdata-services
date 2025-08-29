@@ -23,10 +23,10 @@ export class AuthService {
     const person = new Person(
       0,
       dto.person.name,
-      PersonType.INDIVIDUAL,
+      PersonType.individual,
       dto.person.documentNumber,
       dto.person.birthDate ? new Date(dto.person.birthDate) : null,
-      Status.ACTIVE,
+      Status.active,
       dto.person.email,
     );
 
