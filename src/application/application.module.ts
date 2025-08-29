@@ -1,3 +1,5 @@
+//src\application\application.module.ts
+
 import { Module } from '@nestjs/common';
 import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
@@ -14,4 +16,4 @@ import { DomainModule } from 'src/domain/domain.module';
   providers: [UserService, AuthService],
   exports: [UserService, AuthService],
 })
-export class ApplicationModule {}
+export class ApplicationModule { }

@@ -1,12 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+//comandos 
+//npx prisma generate
+//npx prisma migrate dev --name add-person-class
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,41 +11,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
+model Person {
+  id              Int        @id @default(autoincrement())
+  name            String     @db.VarChar(100)
+  personType      PersonType
+  
+  documentNumber  String     @unique @db.VarChar(20)
+  birthDate       DateTime?
+  status          Status     @default(ACTIVE)
+
+  email           String?    @unique
+
+  Customer       Customer?
+  Supplier       Supplier?
+  User           User?
+
+  adresses Address[]
+  contacts Contact[]
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  email String @unique
   hash  String
 
-  firstName String?
-  lastName  String?
+  personId   Int       @unique
+  person     Person    @relation(fields: [personId], references: [id])
+
+  userProfiles UserProfile[]
 }
 
-enum PersonType {
-  Individual
-  LegalEntity
+model Customer {
+  id          Int     @id @default(autoincrement())
+  creditLimit Float
+
+  personId   Int       @unique
+  person     Person    @relation(fields: [personId], references: [id])
+
+  
 }
+
 
 model Supplier {
   id          Int        @id @default(autoincrement())
-  personType  PersonType
-  name        String
-  cpf         String?    @unique
-  birthDate   DateTime?
-  phone       String?
-  cnpj        String?    @unique
+
   tradeName   String?
   openingDate DateTime?
-  status      String?
+
   type        String?
   size        String?
   legalNature String?
-  email       String?    @unique
+  
   createdAt   DateTime   @default(now())
 
-  adresses Address[]
+  personId   Int       @unique
+  person     Person    @relation(fields: [personId], references: [id])
 }
 
 model Address {
@@ -58,10 +79,73 @@ model Address {
   city       String
   state      String
   postalCode String
-  supplierId Int
-  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  
+  linkType    LinkType
+
+  personId   Int
+  person     Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([personId])
 }
 
+model Contact {
+  id         Int          @id @default(autoincrement())
+  
+  primary    Boolean      @default(false)
+  type       ContactType
+  value      String       @db.VarChar(150)
+  note       String?      @db.VarChar(255)
+
+  linkType    LinkType
+
+  personId   Int
+  person     Person       @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([personId])
+}
+
+model Profile {
+  id          Int              @id @default(autoincrement())
+  name        String           @db.VarChar(50)
+  description String           @db.VarChar(255)
+
+  users       UserProfile[]    
+  permissions ProfilePermission[]
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @db.VarChar(100)
+  description String           @db.VarChar(255)
+
+  profiles    ProfilePermission[]
+}
+
+model UserProfile {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  profileId Int
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([profileId])
+}
+
+model ProfilePermission {
+  id          Int         @id @default(autoincrement())
+  profileId   Int
+  permissionId Int
+
+  profile     Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  permission  Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([permissionId])
+}
+
+//
 model Resource {
   id          Int      @id @default(autoincrement())
   name        String
@@ -70,4 +154,28 @@ model Resource {
   quantity    Int
   price       Float
   createdAt   DateTime @default(now())
+}
+
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum PersonType {
+  INDIVIDUAL
+  LEGALENTITY
+}
+
+enum ContactType {
+  PHONE
+  MOBILE
+  EMAIL
+  WHATSAPP
+}
+
+enum LinkType {
+  CUSTOMER
+  SUPPLIER
+  PERSON
 }
