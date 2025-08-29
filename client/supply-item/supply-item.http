@@ -1,0 +1,17 @@
+post http://localhost:3333/supply
+Content-Type: application/json
+
+{
+    "name": "Lima",
+    "code": "321",
+    "description": "Lima pra fazer suco",
+    "price": 0.89
+}
+
+###
+
+get http://localhost:3333/supply
+
+
+###
+get http://localhost:3333/supply/90

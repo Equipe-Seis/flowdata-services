@@ -9,10 +9,10 @@ import {
 
 import * as argon from 'argon2';
 
-import { SignInDto, SignUpDto } from '../../dto';
 import { ConfigService } from '@nestjs/config';
-import { IUserRepository } from 'src/application/persistence/repository/interfaces/iuser.repository';
+import { IUserRepository } from 'src/application/auth/repository/iuser.repository';
 import { Result } from 'src/domain/shared/result/result.pattern';
+import { SignInDto, SignUpDto } from '../dto';
 //#endregion
 
 @Injectable()
