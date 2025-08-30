@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+//src\presentation\controllers\shared\person\person.controller.ts
+import {
+    Controller,
+    Post,
+    Body,
+    Get,
+    Param,
+    BadRequestException,
+    NotFoundException,
+} from '@nestjs/common';
 import { PersonService } from '@application/services/shared/person/person.service';
 import { CreatePersonDto } from '@application/dto/shared/person/create-person.dto';
 
@@ -8,16 +17,21 @@ export class PersonController {
 
     @Post()
     async create(@Body() dto: CreatePersonDto) {
-        return this.personService.createPerson(dto);
-    }
-
-    @Get()
-    async findAll() {
-        return this.personService.getAllPersons();
+        const result = await this.personService.createPerson(dto);
+        if (result.isFailure) {
+            // Trate erro, talvez lançando uma exceção HTTP personalizada
+            throw new BadRequestException(result.error);
+        }
+        return result.value;
     }
 
     @Get(':id')
     async findById(@Param('id') id: string) {
-        return this.personService.getPersonById(+id);
+        const result = await this.personService.getPersonById(+id);
+        if (result.isFailure) {
+            // Trate erro, talvez lançando uma exceção HTTP personalizada
+            throw new NotFoundException(result.error);
+        }
+        return result.value;
     }
 }

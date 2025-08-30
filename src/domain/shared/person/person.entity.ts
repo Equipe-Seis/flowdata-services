@@ -1,3 +1,4 @@
+//src\domain\shared\person\person.entity.ts
 import { Status, PersonType } from '@prisma/client';
 
 export class Person {

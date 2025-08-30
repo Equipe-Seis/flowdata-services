@@ -1,3 +1,5 @@
+
+//src\application\dto\shared\person\create-person.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, IsDateString, IsEmail } from 'class-validator';
 import { Status, PersonType } from '@prisma/client';

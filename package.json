@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json --testPathPatterns=users.e2e-spec.ts",
+    "test:unit": "jest \"**/*.spec.ts\" --coverage=false",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -73,7 +75,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -82,6 +84,14 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@domain/(.*)$": "<rootDir>/src/domain/$1",
+      "^@application/(.*)$": "<rootDir>/src/application/$1",
+      "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
+      "^@presentation/(.*)$": "<rootDir>/src/presentation/$1",
+      "^@shared/(.*)$": "<rootDir>/src/domain/shared/$1",
+      "^@repository/(.*)$": "<rootDir>/src/infrastructure/repository/$1"
+    }
   }
 }

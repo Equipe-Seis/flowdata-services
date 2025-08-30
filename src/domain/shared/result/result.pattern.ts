@@ -20,7 +20,7 @@ export type AppErrorTypeEnum = keyof typeof AppErrorType;
 export class AppError extends Error {
   public readonly type: AppErrorTypeEnum;
 
-  private constructor(
+  public constructor(
     message: string,
     type: AppErrorTypeEnum = AppErrorType.InternalServer,
   ) {
@@ -55,14 +55,15 @@ export class Result<T> {
     public readonly isSuccess: boolean,
     public readonly value?: T,
     public readonly error?: AppError,
-  ) {}
+  ) { }
 
   public static Ok<U>(value: U): Result<U> {
     return new Result<U>(true, value);
   }
 
-  public static Fail<U>(error: AppError): Result<U> {
-    return new Result<U>(false, undefined, error);
+  public static Fail<U>(error: AppError | string): Result<U> {
+    const appError = typeof error === 'string' ? new AppError(error) : error;
+    return new Result<U>(false, undefined, appError);
   }
 
   private static toAppError(

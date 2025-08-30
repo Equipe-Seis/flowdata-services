@@ -1,3 +1,4 @@
+//.vscode\settings.json
 {
   "editor.formatOnSave": true,
   "[prisma]": {
@@ -5,5 +6,7 @@
   },
   "files.associations": {
     "*.prisma": "prisma"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib", // Isso garante que o VSCode use a versão local do TypeScript
+  "typescript.preferences.importModuleSpecifier": "non-relative" // Usar alias do TypeScript para imports
 }
