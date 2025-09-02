@@ -1,0 +1,108 @@
+﻿Listagem de caminhos de pasta para o volume Arquivos
+O n·mero de sÚrie do volume Ú 78F6-0F42
+src
+|   app.module.ts
+|   main.ts
+|   
++---application
+|   |   application.module.ts
+|   |   
+|   +---dto
+|   |   |   index.ts
+|   |   |   signin.dto.ts
+|   |   |   signup.dto.ts
+|   |   |   
+|   |   +---shared
+|   |   |   \---person
+|   |   |           create-person.dto.ts
+|   |   |           
+|   |   +---supplier
+|   |   |       create-supplier.dto.ts
+|   |   |       
+|   |   \---user
+|   |           create-user.dto.ts
+|   |           
+|   +---persistence
+|   |   \---repository
+|   |       \---interfaces
+|   |           |   isupplier.repository.ts
+|   |           |   iuser.repository.ts
+|   |           |   
+|   |           \---shared
+|   |                   iperson.repository.ts
+|   |                   
+|   \---services
+|       +---auth
+|       |       auth.service.ts
+|       |       
+|       +---shared
+|       |   \---person
+|       |           person.service.ts
+|       |           
+|       +---supplier
+|       |       supplier.service.ts
+|       |       
+|       \---user
+|               user.service.ts
+|               
++---domain
+|   |   domain.module.ts
+|   |   
+|   +---shared
+|   |   +---decorator
+|   |   |       index.ts
+|   |   |       
+|   |   +---guard
+|   |   |       index.ts
+|   |   |       jwt.guard.ts
+|   |   |       
+|   |   +---person
+|   |   |       person.entity.ts
+|   |   |       
+|   |   +---result
+|   |   |       result.pattern.ts
+|   |   |       
+|   |   \---strategy
+|   |           index.ts
+|   |           jwt.strategy.ts
+|   |           
+|   +---supplier
+|   |       supplier.entity.ts
+|   |       
+|   \---user
+|           user.entity.ts
+|           
++---infrastructure
+|   |   infrastructure.module.ts
+|   |   
+|   \---persistence
+|       +---prisma
+|       |       prisma.service.ts
+|       |       
+|       \---repository
+|           |   supplier.repository.ts
+|           |   user.repository.ts
+|           |   
+|           \---shared
+|               \---person
+|                       person.mapper.ts
+|                       person.repository.ts
+|                       
+\---presentation
+    |   presentation.module.ts
+    |   
+    \---controllers
+        +---auth
+        |       auth.controller.ts
+        |       
+        +---shared
+        |   \---person
+        |           person.controller.ts
+        |           
+        +---supplier
+        |       supplier.controller.ts
+        |       supplier.module.ts
+        |       
+        \---user
+                users.controller.ts
+                
