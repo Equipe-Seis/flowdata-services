@@ -50,7 +50,7 @@ export class AppError extends Error {
 	}
 }
 
-// TODO: refactor to use response types for improving 2xx responses 
+// TODO: refactor to use response types for improving 2xx responses
 export const ResponseType = {
 	Success: 'Success',
 	Created: 'Created',
@@ -69,7 +69,7 @@ export class Result<T> {
 		public readonly isSuccess: boolean,
 		public readonly responseType: ResponseTypeEnum,
 		public readonly value?: T,
-		public readonly error?: AppError,
+		public readonly error?: AppError | string,
 	) {}
 
 	public static Ok<U>(
@@ -80,7 +80,7 @@ export class Result<T> {
 	}
 
 	public static Fail<U>(
-		error: AppError,
+		error: AppError | string,
 		responseType: ResponseTypeEnum = ResponseType.InternalServer,
 	): Result<U> {
 		return new Result<U>(false, responseType, undefined, error);
@@ -124,7 +124,7 @@ export class Result<T> {
 		return this.value;
 	}
 
-	public getError(): AppError {
+	public getError(): AppError | string {
 		if (this.isSuccess || this.error === undefined) {
 			throw new Error('Cannot get the error of a successful result.');
 		}
@@ -136,7 +136,13 @@ export class Result<T> {
 			return this.value;
 		}
 
-		return this.mapErrorToException(this.getError());
+		const error = this.getError();
+
+		if (typeof error == 'string') {
+			return new InternalServerErrorException(error);
+		}
+
+		return this.mapErrorToException(error);
 	}
 
 	private mapErrorToException(error: AppError): HttpException {

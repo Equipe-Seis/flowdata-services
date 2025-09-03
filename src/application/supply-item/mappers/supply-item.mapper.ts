@@ -1,7 +1,7 @@
-import { SupplyItemModel } from 'src/domain/supply-item/models/supply-item.model';
-import { CreateSupplyDto } from '../dto';
-import { SupplyItemDto } from '../dto/supply-item.dto';
-import { SupplyItem } from 'generated/prisma';
+import { CreateSupplyDto } from '@application/supply-item/dto';
+import { SupplyItemDto } from '@application/supply-item/dto/supply-item.dto';
+import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
+import { SupplyItem } from '@prisma/client';
 
 export class SupplyItemMapper {
 	static toModel(dto: CreateSupplyDto): SupplyItemModel {

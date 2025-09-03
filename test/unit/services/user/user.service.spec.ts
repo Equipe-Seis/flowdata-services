@@ -1,15 +1,19 @@
 //test\unit\services\user\user.service.spec.ts
 //npm run test:unit
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '@application/services/user/user.service';
+import { UserService } from '@application/user/user.service';
 import { IUserRepository } from '@application/persistence/repository/interfaces/iuser.repository';
 import { IPersonRepository } from '@application/persistence/repository/interfaces/shared/iperson.repository';
-import { CreateUserDto } from '@application/dto/user/create-user.dto';
-import { UpdateUserDto } from '@application/dto/user/update-user.dto';
-import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { CreateUserDto } from '@application/user/dto/create-user.dto';
+import { UpdateUserDto } from '@application/user/dto/update-user.dto';
+import {
+	ConflictException,
+	NotFoundException,
+	BadRequestException,
+} from '@nestjs/common';
 import { PersonType, Status } from '@prisma/client';
-import { User } from '@domain/user/user.entity';
-import { Person } from '@domain/shared/person/person.entity';
+import { User } from '@domain/user/user.model';
+import { Person } from '@domain/person/person.model';
 import * as bcrypt from 'bcrypt';
 import { Result } from '@domain/shared/result/result.pattern'; // Certifique-se de importar o Result
 
