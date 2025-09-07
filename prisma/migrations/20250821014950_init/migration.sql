@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "public"."PersonType" AS ENUM ('Individual', 'LegalEntity');
+CREATE TYPE "public"."PersonType" AS ENUM ('INDIVIDUAL', 'LEGALENTITY');
 
 -- CreateTable
 CREATE TABLE "public"."User" (

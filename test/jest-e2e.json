@@ -1,9 +1,22 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
-  "testEnvironment": "node",
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": "../",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "moduleNameMapper": {
+    "^@domain/(.*)$": "<rootDir>/src/domain/$1",
+    "^@application/(.*)$": "<rootDir>/src/application/$1",
+    "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
+    "^@presentation/(.*)$": "<rootDir>/src/presentation/$1",
+    "^@shared/(.*)$": "<rootDir>/src/domain/shared/$1",
+    "^@repository/(.*)$": "<rootDir>/src/infrastructure/repository/$1",
+    "^@prisma/seeds/(.*)$": "<rootDir>/prisma/seeds/$1"
+  },
+  "testEnvironment": "node"
 }

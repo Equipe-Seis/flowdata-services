@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ApplicationModule } from 'src/application/application.module';
-import { UsersController } from './controllers/user/users.controller';
-import { AuthController } from './controllers/auth/auth.controller';
+import { ApplicationModule } from '@application/application.module';
+import { SupplyItemController } from '@presentation/supply-item/rest/supply-item.controller';
+import { AuthController } from '@presentation/auth/rest/auth.controller';
+import { UsersController } from '@presentation/user/rest/users.controller';
 
 @Module({
-  imports: [ApplicationModule],
-  controllers: [UsersController, AuthController],
+	imports: [ApplicationModule],
+	controllers: [AuthController, SupplyItemController, UsersController],
 })
 export class PresentationModule {}

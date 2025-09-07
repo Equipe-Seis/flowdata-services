@@ -1,155 +1,131 @@
 import {
-  BadRequestException,
-  ForbiddenException,
-  HttpException,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
+	BadRequestException,
+	ForbiddenException,
+	HttpException,
+	InternalServerErrorException,
+	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common';
 
-export const AppErrorType = {
-  NotFound: 'NotFound',
-  BadRequest: 'BadRequest',
-  InternalServer: 'InternalServer',
-  Forbidden: 'Forbidden',
-  Unauthorized: 'Unauthorized',
+import { AppError, AppErrorType } from '@domain/shared/result/app-error';
+
+export const ResponseType = {
+	Success: 'Success',
+	Created: 'Created',
+	NoContent: 'NoContent',
+	NotFound: 'NotFound',
+	BadRequest: 'BadRequest',
+	InternalServer: 'InternalServer',
+	Forbidden: 'Forbidden',
+	Unauthorized: 'Unauthorized',
 } as const;
 
-export type AppErrorTypeEnum = keyof typeof AppErrorType;
-
-export class AppError extends Error {
-  public readonly type: AppErrorTypeEnum;
-
-  private constructor(
-    message: string,
-    type: AppErrorTypeEnum = AppErrorType.InternalServer,
-  ) {
-    super(message);
-    this.type = type;
-    Object.setPrototypeOf(this, AppError.prototype);
-  }
-
-  public static InternalServer(message: string): AppError {
-    return new AppError(message);
-  }
-
-  public static NotFound(message: string): AppError {
-    return new AppError(message, AppErrorType.NotFound);
-  }
-
-  public static BadRequest(message: string): AppError {
-    return new AppError(message, AppErrorType.BadRequest);
-  }
-
-  public static Forbidden(message: string): AppError {
-    return new AppError(message, AppErrorType.Forbidden);
-  }
-
-  public static Unauthorized(message: string): AppError {
-    return new AppError(message, AppErrorType.Unauthorized);
-  }
-}
+export type ResponseTypeEnum = keyof typeof ResponseType;
 
 export class Result<T> {
-  private constructor(
-    public readonly isSuccess: boolean,
-    public readonly value?: T,
-    public readonly error?: AppError,
-  ) {}
+	private constructor(
+		public readonly isSuccess: boolean,
+		private readonly responseType: ResponseTypeEnum,
+		public readonly value?: T,
+		public readonly error?: AppError | string,
+	) {}
 
-  public static Ok<U>(value: U): Result<U> {
-    return new Result<U>(true, value);
-  }
+	public static Ok<U>(
+		value?: U,
+		responseType: ResponseTypeEnum = ResponseType.Success,
+	): Result<U> {
+		return new Result<U>(true, responseType, value);
+	}
 
-  public static Fail<U>(error: AppError): Result<U> {
-    return new Result<U>(false, undefined, error);
-  }
+	public static Created<U>(value: U): Result<U> {
+		return Result.Ok<U>(value, ResponseType.Created);
+	}
 
-  private static toAppError(
-    error: AppError | string,
-    fallback: (msg: string) => AppError,
-  ): AppError {
-    return error instanceof AppError
-      ? error
-      : fallback(error);
-  }
+	public static NoContent<U>(): Result<U> {
+		return Result.Ok<U>(undefined, ResponseType.NoContent);
+	}
 
-  public static InternalServer<U>(
-    error: AppError | string,
-  ): Result<U> {
-    return this.Fail<U>(this.toAppError(error, AppError.InternalServer));
-  }
+	public static Fail<U>(
+		error: AppError | string,
+		responseType: ResponseTypeEnum = ResponseType.InternalServer,
+	): Result<U> {
+		return new Result<U>(false, responseType, undefined, error);
+	}
 
-  public static NotFound<U>(error: AppError | string): Result<U> {
-    return this.Fail<U>(this.toAppError(error, AppError.NotFound));
-  }
+	private static toAppError(
+		error: AppError | string,
+		fallback: (msg: string) => AppError,
+	): AppError {
+		return error instanceof AppError ? error : fallback(error);
+	}
 
-  public static BadRequest<U>(
-    error: AppError | string,
-  ): Result<U> {
-    return this.Fail<U>(this.toAppError(error, AppError.BadRequest));
-  }
+	public static InternalServer<U>(error: AppError | string): Result<U> {
+		return this.Fail<U>(this.toAppError(error, AppError.InternalServer));
+	}
 
-  public static Forbidden<U>(
-    error: AppError | string,
-  ): Result<U> {
-    return this.Fail<U>(this.toAppError(error, AppError.Forbidden));
-  }
+	public static NotFound<U>(
+		error: AppError | string = 'Content Not Found',
+	): Result<U> {
+		return this.Fail<U>(this.toAppError(error, AppError.NotFound));
+	}
 
-  public static Unauthorized<U>(
-    error: AppError | string,
-  ): Result<U> {
-    return this.Fail<U>(this.toAppError(error, AppError.Unauthorized));
-  }
+	public static BadRequest<U>(error: AppError | string): Result<U> {
+		return this.Fail<U>(this.toAppError(error, AppError.BadRequest));
+	}
 
-  public get isFailure(): boolean {
-    return !this.isSuccess;
-  }
+	public static Forbidden<U>(error: AppError | string): Result<U> {
+		return this.Fail<U>(this.toAppError(error, AppError.Forbidden));
+	}
 
-  public getValue(): T {
-    if (!this.isSuccess || this.value === undefined) {
-      throw new Error(
-        'Cannot get the value of a failed result.',
-      );
-    }
-    return this.value;
-  }
+	public static Unauthorized<U>(error: AppError | string): Result<U> {
+		return this.Fail<U>(this.toAppError(error, AppError.Unauthorized));
+	}
 
-  public getError(): AppError {
-    if (this.isSuccess || this.error === undefined) {
-      throw new Error(
-        'Cannot get the error of a successful result.',
-      );
-    }
-    return this.error;
-  }
+	public get isFailure(): boolean {
+		return !this.isSuccess;
+	}
 
-  public mapToPresentationResult():
-    | T
-    | HttpException
-    | undefined {
-    if (this.isSuccess) {
-      return this.value;
-    }
+	public getValue(): T {
+		if (!this.isSuccess || this.value === undefined) {
+			throw new Error('Cannot get the value of a failed result.');
+		}
+		return this.value;
+	}
 
-    return this.mapErrorToException(this.getError());
-  }
+	public getError(): AppError | string {
+		if (this.isSuccess || this.error === undefined) {
+			throw new Error('Cannot get the error of a successful result.');
+		}
+		return this.error;
+	}
 
-  private mapErrorToException(
-    error: AppError,
-  ): HttpException {
-    switch (error.type) {
-      case AppErrorType.BadRequest:
-        return new BadRequestException(error.message);
-      case AppErrorType.Unauthorized:
-        return new UnauthorizedException(error.message);
-      case AppErrorType.Forbidden:
-        return new ForbiddenException(error.message);
-      case AppErrorType.NotFound:
-        return new NotFoundException(error.message);
-      case AppErrorType.InternalServer:
-      default:
-        return new InternalServerErrorException(error.message);
-    }
-  }
+	public mapToPresentationResult(): T | HttpException | undefined {
+		if (this.isSuccess) {
+			return this.value;
+		}
+
+		const error = this.getError();
+
+		if (typeof error == 'string') {
+			return new InternalServerErrorException(error);
+		}
+
+		return this.mapErrorToException(error);
+	}
+
+	private mapErrorToException(error: AppError): HttpException {
+		switch (error.type) {
+			case AppErrorType.BadRequest:
+				return new BadRequestException(error.message);
+			case AppErrorType.Unauthorized:
+				return new UnauthorizedException(error.message);
+			case AppErrorType.Forbidden:
+				return new ForbiddenException(error.message);
+			case AppErrorType.NotFound:
+				return new NotFoundException(error.message);
+			case AppErrorType.InternalServer:
+			default:
+				return new InternalServerErrorException(error.message);
+		}
+	}
 }

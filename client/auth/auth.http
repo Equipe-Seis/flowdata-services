@@ -1,19 +1,8 @@
-post http://localhost:3333/auth/signup
-Content-Type: application/json
-
-{
-    "email": "y@whoami.com",
-    "password": "123456",
-    "passwordConfirmation": "123456"
-}
-
-###
-
 post http://localhost:3333/auth/signin
 Content-Type: application/json
 
 {
-    "email": "idunno@whoami.com",
+    "email": "teste_da_silva@hmail.com",
     "password": "123456"
 }
 
