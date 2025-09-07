@@ -3,7 +3,7 @@ import { CreatePersonDto } from '@application/person/dto/create-person.dto';
 import { Result } from '@domain/shared/result/result.pattern'; 
 import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
 import { Person } from '@prisma/client';
-import { PersonModel } from '@domain/person/person.model';
+import { PersonModel } from '@domain/person/models/person.model';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
 
 @Injectable()
@@ -23,6 +23,16 @@ export class PersonService {
 	}
 
 	async getPersonById(id: number): Promise<Result<Person | null>> {
-		return await this.personRepository.findById(id);
+		const result = await this.personRepository.findById(id);
+
+		if (result.isFailure) {
+			return result;
+		}
+
+		if (!result.value) {
+			return Result.NotFound<Person | null>('');
+		}
+
+		return result;
 	}
 }

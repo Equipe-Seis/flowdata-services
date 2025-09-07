@@ -1,8 +1,6 @@
-//tsconfig.json
 {
   "compilerOptions": {
-    "module": "commonjs", // Para Jest funcionar melhor com ts-jest
-    "moduleResolution": "node", // Mais comum e compatível com Node.js
+    "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,

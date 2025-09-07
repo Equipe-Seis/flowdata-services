@@ -7,50 +7,8 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 
-export const AppErrorType = {
-	NotFound: 'NotFound',
-	BadRequest: 'BadRequest',
-	InternalServer: 'InternalServer',
-	Forbidden: 'Forbidden',
-	Unauthorized: 'Unauthorized',
-} as const;
+import { AppError, AppErrorType } from '@domain/shared/result/app-error';
 
-export type AppErrorTypeEnum = keyof typeof AppErrorType;
-
-export class AppError extends Error {
-	public readonly type: AppErrorTypeEnum;
-
-	private constructor(
-		message: string,
-		type: AppErrorTypeEnum = AppErrorType.InternalServer,
-	) {
-		super(message);
-		this.type = type;
-		Object.setPrototypeOf(this, AppError.prototype);
-	}
-
-	public static InternalServer(message: string): AppError {
-		return new AppError(message);
-	}
-
-	public static NotFound(message: string): AppError {
-		return new AppError(message, AppErrorType.NotFound);
-	}
-
-	public static BadRequest(message: string): AppError {
-		return new AppError(message, AppErrorType.BadRequest);
-	}
-
-	public static Forbidden(message: string): AppError {
-		return new AppError(message, AppErrorType.Forbidden);
-	}
-
-	public static Unauthorized(message: string): AppError {
-		return new AppError(message, AppErrorType.Unauthorized);
-	}
-}
-
-// TODO: refactor to use response types for improving 2xx responses
 export const ResponseType = {
 	Success: 'Success',
 	Created: 'Created',
@@ -67,16 +25,24 @@ export type ResponseTypeEnum = keyof typeof ResponseType;
 export class Result<T> {
 	private constructor(
 		public readonly isSuccess: boolean,
-		public readonly responseType: ResponseTypeEnum,
+		private readonly responseType: ResponseTypeEnum,
 		public readonly value?: T,
 		public readonly error?: AppError | string,
 	) {}
 
 	public static Ok<U>(
-		value: U,
+		value?: U,
 		responseType: ResponseTypeEnum = ResponseType.Success,
 	): Result<U> {
 		return new Result<U>(true, responseType, value);
+	}
+
+	public static Created<U>(value: U): Result<U> {
+		return Result.Ok<U>(value, ResponseType.Created);
+	}
+
+	public static NoContent<U>(): Result<U> {
+		return Result.Ok<U>(undefined, ResponseType.NoContent);
 	}
 
 	public static Fail<U>(
@@ -97,7 +63,9 @@ export class Result<T> {
 		return this.Fail<U>(this.toAppError(error, AppError.InternalServer));
 	}
 
-	public static NotFound<U>(error: AppError | string): Result<U> {
+	public static NotFound<U>(
+		error: AppError | string = 'Content Not Found',
+	): Result<U> {
 		return this.Fail<U>(this.toAppError(error, AppError.NotFound));
 	}
 

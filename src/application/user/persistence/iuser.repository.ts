@@ -1,6 +1,6 @@
 import { Result } from '@domain/shared/result/result.pattern'; // Certifique-se de importar o Result
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
-import { UserModel } from '@domain/user/user.model';
+import { UserModel } from '@domain/user/models/user.model';
 import { Person, User } from '@prisma/client';
 
 export interface IUserRepository {
@@ -10,7 +10,7 @@ export interface IUserRepository {
 	 * @param hash hash de senha do usuario
 	 * @returns Result<User> - Resultado da operação, com sucesso ou falha
 	 */
-	create(user: UserModel): Promise<Result<User>>;
+	create(user: UserModel, personId: number): Promise<Result<User>>;
 
 	/**
 	 * Busca usuário pelo ID

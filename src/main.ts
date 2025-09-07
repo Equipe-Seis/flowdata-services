@@ -14,27 +14,25 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Dentro da função bootstrap, antes de criar o documento Swagger:
   const config = new DocumentBuilder()
-    .setTitle('Minha API')
-    .setDescription('API exemplo com JWT')
-    .setVersion('1.0')
-    .addBearerAuth( // <-- aqui configura o auth JWT
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'Authorization',
-        description: 'Digite o token JWT aqui',
-        in: 'header',
-      },
-      'JWT-auth', // nome do security scheme, pode ser qualquer string
-    )
-    .build();
+		.setTitle('Minha API')
+		.setDescription('API exemplo com JWT')
+		.setVersion('1.0')
+		.addBearerAuth(
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				name: 'Authorization',
+				description: 'Digite o token JWT aqui',
+				in: 'header',
+			},
+			'JWT-auth',
+		)
+		.build();
 
-  const document = SwaggerModule.createDocument(app, config);
+	const document = SwaggerModule.createDocument(app, config);
 
-  // Passa o documento pro SwaggerModule
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3333);

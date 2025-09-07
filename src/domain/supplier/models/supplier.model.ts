@@ -1,7 +1,7 @@
-import { PersonModel } from '@domain/person/person.model';
+import { PersonModel } from '@domain/person/models/person.model';
 import { PersonType, Status } from '@prisma/client';
 
-export class Supplier extends PersonModel {
+export class SupplierModel extends PersonModel {
 	constructor(
 		name: string,
 		personType: PersonType,

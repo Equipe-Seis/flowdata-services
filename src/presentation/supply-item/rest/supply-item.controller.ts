@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	ParseIntPipe,
+	Post,
+} from '@nestjs/common';
 import { CreateSupplyDto } from 'src/application/supply-item/dto';
 import { SupplyItemService } from 'src/application/supply-item/services/supply-item.service';
 
@@ -23,7 +30,4 @@ export class SupplyItemController {
 		const result = await this.supplyItemService.createSupplyItem(dto);
 		return result.mapToPresentationResult();
 	}
-
-	@Put()
-	put() {}
 }

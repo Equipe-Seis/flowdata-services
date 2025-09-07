@@ -1,5 +1,5 @@
 import { CreatePersonDto } from "@application/person/dto/create-person.dto";
-import { PersonModel } from "@domain/person/person.model";
+import { PersonModel } from '@domain/person/models/person.model';
 import { Person } from "@prisma/client";
 
 export class PersonMapper {

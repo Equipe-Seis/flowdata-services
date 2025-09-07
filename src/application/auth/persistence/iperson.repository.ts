@@ -1,4 +1,4 @@
-import { PersonModel } from '@domain/person/person.model';
+import { PersonModel } from '@domain/person/models/person.model';
 import { Result } from '@domain/shared/result/result.pattern';
 import { Person } from '@prisma/client';
 

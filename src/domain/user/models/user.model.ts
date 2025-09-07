@@ -1,4 +1,4 @@
-import { PersonModel } from '@domain/person/person.model';
+import { PersonModel } from '@domain/person/models/person.model';
 
 export class UserModel {
 	constructor(

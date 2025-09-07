@@ -1,0 +1,13 @@
+post http://localhost:3333/users
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "person" : {
+        "name": "Teste da silva",
+        "personType": "individual",
+        "documentNumber": "9876543100",
+        "birthDate": "1988-01-01",
+        "email": "teste_da_silva@hmail.com"
+    }
+}

@@ -1,5 +1,5 @@
-import { Person, Prisma, User } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
 export type UserWithPerson = Prisma.UserGetPayload<{
-  include: { person: true };
-}>
+	include: { person: true };
+}>;

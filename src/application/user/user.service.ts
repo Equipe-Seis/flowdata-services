@@ -5,18 +5,16 @@ import {
 
 import * as argon from 'argon2';
 
-import { Person, PersonType, Status, User } from '@prisma/client';
+import { PersonType, Status, User } from '@prisma/client';
 
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
 import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
 import { Result } from '@domain/shared/result/result.pattern';
-import { PersonMapper } from '@application/person/mappers/person.mapper';
-import { UserModel } from '@domain/user/user.model';
+import { UserModel } from '@domain/user/models/user.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 
-// TODO: full refactor
 @Injectable()
 export class UserService {
 	constructor(
@@ -69,11 +67,12 @@ export class UserService {
 		}
 
 		const passwordHash = await argon.hash(dto.password, { hashLength: 10 });
-		const person = PersonMapper.fromPrisma(personResult.getValue())
+
+		const person = personResult.getValue()!;
 
 		const user = new UserModel(person, passwordHash);
 
-		const result = await this.userRepository.create(user);
+		const result = await this.userRepository.create(user, person.id);
 
 		if (result.isFailure) {
 			return Result.Fail(result.getError());
@@ -124,7 +123,10 @@ export class UserService {
 		return result;
 	}
 
-	async updateUser(id: number, dto: UpdateUserDto): Promise<Result<User | null>> {
+	async updateUser(
+		id: number,
+		dto: UpdateUserDto,
+	): Promise<Result<User | null>> {
 		const result = await this.findById(id);
 
 		if (result.isFailure) {
@@ -154,9 +156,11 @@ export class UserService {
 			return result;
 		}
 
-		const user = result.getValue()!;
+		if (!result.value) {
+			return Result.NotFound();
+		}
 
-		await this.userRepository.delete(user.id);
+		await this.userRepository.delete(result.value.id);
 
 		return Result.Ok(`Usuario ${id} deletado com successo.`);
 	}

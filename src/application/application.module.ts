@@ -4,10 +4,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { DomainModule } from '@domain/domain.module';
 import { SupplyItemService } from '@application/supply-item/services/supply-item.service';
 import { AuthService } from '@application/auth/services/auth.service';
+import { UserService } from '@application/user/user.service';
 
 @Module({
 	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
-	providers: [AuthService, SupplyItemService],
-	exports: [AuthService, SupplyItemService],
+	providers: [AuthService, SupplyItemService, UserService],
+	exports: [AuthService, SupplyItemService, UserService],
 })
 export class ApplicationModule {}

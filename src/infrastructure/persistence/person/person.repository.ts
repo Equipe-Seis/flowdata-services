@@ -3,7 +3,7 @@ import { IPersonRepository } from '@application/auth/persistence/iperson.reposit
 import { Result } from '@domain/shared/result/result.pattern';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { Person } from '@prisma/client';
-import { PersonModel } from '@domain/person/person.model';
+import { PersonModel } from '@domain/person/models/person.model';
 
 @Injectable()
 export class PersonRepository

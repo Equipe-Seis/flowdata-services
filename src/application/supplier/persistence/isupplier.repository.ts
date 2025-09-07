@@ -1,7 +1,7 @@
-import { Supplier } from '@domain/supplier/supplier.entity';
+import { SupplierModel } from '@domain/supplier/models/supplier.model';
 
 export interface ISupplierRepository {
-	create(supplier: Partial<Supplier>): Promise<Supplier>;
-	findAll(): Promise<Supplier[]>;
-	findById(id: number): Promise<Supplier | null>;
+	create(supplier: Partial<SupplierModel>): Promise<SupplierModel>;
+	findAll(): Promise<SupplierModel[]>;
+	findById(id: number): Promise<SupplierModel | null>;
 }

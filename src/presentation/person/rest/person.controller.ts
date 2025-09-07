@@ -1,12 +1,4 @@
-import {
-	Controller,
-	Post,
-	Body,
-	Get,
-	Param,
-	BadRequestException,
-	NotFoundException,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { PersonService } from '@application/person/services/person.service';
 import { CreatePersonDto } from '@application/person/dto/create-person.dto';
 
@@ -17,20 +9,12 @@ export class PersonController {
 	@Post()
 	async create(@Body() dto: CreatePersonDto) {
 		const result = await this.personService.createPerson(dto);
-		if (result.isFailure) {
-			// Trate erro, talvez lançando uma exceção HTTP personalizada
-			throw new BadRequestException(result.error);
-		}
-		return result.value;
+		return result.mapToPresentationResult();
 	}
 
 	@Get(':id')
 	async findById(@Param('id') id: string) {
 		const result = await this.personService.getPersonById(+id);
-		if (result.isFailure) {
-			// Trate erro, talvez lançando uma exceção HTTP personalizada
-			throw new NotFoundException(result.error);
-		}
-		return result.value;
+		return result.mapToPresentationResult();
 	}
 }
