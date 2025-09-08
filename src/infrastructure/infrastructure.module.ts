@@ -25,6 +25,6 @@ import { UserRepository } from '@infrastructure/persistence/user/user.repository
 			useClass: SupplyItemRepository,
 		},
 	],
-	exports: [IUserRepository, IPersonRepository, ISupplyItemRepository],
+	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository],
 })
-export class InfrastructureModule {}
+export class InfrastructureModule { }

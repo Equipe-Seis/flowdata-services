@@ -1,108 +1,156 @@
-﻿Listagem de caminhos de pasta para o volume Arquivos
+﻿
+
+Listagem de caminhos de pasta para o volume Arquivos
 O n·mero de sÚrie do volume Ú 78F6-0F42
-src
-|   app.module.ts
-|   main.ts
-|   
-+---application
-|   |   application.module.ts
-|   |   
-|   +---dto
-|   |   |   index.ts
-|   |   |   signin.dto.ts
-|   |   |   signup.dto.ts
-|   |   |   
-|   |   +---shared
-|   |   |   \---person
-|   |   |           create-person.dto.ts
-|   |   |           
-|   |   +---supplier
-|   |   |       create-supplier.dto.ts
-|   |   |       
-|   |   \---user
-|   |           create-user.dto.ts
-|   |           
-|   +---persistence
-|   |   \---repository
-|   |       \---interfaces
-|   |           |   isupplier.repository.ts
-|   |           |   iuser.repository.ts
-|   |           |   
-|   |           \---shared
-|   |                   iperson.repository.ts
-|   |                   
-|   \---services
-|       +---auth
-|       |       auth.service.ts
-|       |       
-|       +---shared
-|       |   \---person
-|       |           person.service.ts
-|       |           
-|       +---supplier
-|       |       supplier.service.ts
-|       |       
-|       \---user
-|               user.service.ts
-|               
-+---domain
-|   |   domain.module.ts
-|   |   
-|   +---shared
-|   |   +---decorator
-|   |   |       index.ts
-|   |   |       
-|   |   +---guard
-|   |   |       index.ts
-|   |   |       jwt.guard.ts
-|   |   |       
-|   |   +---person
-|   |   |       person.entity.ts
-|   |   |       
-|   |   +---result
-|   |   |       result.pattern.ts
-|   |   |       
-|   |   \---strategy
-|   |           index.ts
-|   |           jwt.strategy.ts
-|   |           
-|   +---supplier
-|   |       supplier.entity.ts
-|   |       
-|   \---user
-|           user.entity.ts
-|           
-+---infrastructure
-|   |   infrastructure.module.ts
-|   |   
-|   \---persistence
-|       +---prisma
-|       |       prisma.service.ts
-|       |       
-|       \---repository
-|           |   supplier.repository.ts
-|           |   user.repository.ts
-|           |   
-|           \---shared
-|               \---person
-|                       person.mapper.ts
-|                       person.repository.ts
-|                       
-\---presentation
-    |   presentation.module.ts
-    |   
-    \---controllers
-        +---auth
-        |       auth.controller.ts
-        |       
-        +---shared
-        |   \---person
-        |           person.controller.ts
-        |           
-        +---supplier
-        |       supplier.controller.ts
-        |       supplier.module.ts
-        |       
-        \---user
+SRC
+│   app.module.ts
+│   main.ts
+│   
+├───application
+│   │   application.module.ts
+│   │   
+│   ├───auth
+│   │   ├───dto
+│   │   │       index.ts
+│   │   │       signin.dto.ts
+│   │   │       signup.dto.ts
+│   │   │       
+│   │   ├───persistence
+│   │   │       iperson.repository.ts
+│   │   │       
+│   │   └───services
+│   │           auth.service.ts
+│   │
+│   ├───person
+│   │   ├───dto
+│   │   │       create-person.dto.ts
+│   │   │
+│   │   ├───mappers
+│   │   │       person.mapper.ts
+│   │   │
+│   │   └───services
+│   │           person.service.ts
+│   │
+│   ├───supplier
+│   │   ├───dto
+│   │   │       create-supplier.dto.ts
+│   │   │
+│   │   ├───persistence
+│   │   │       isupplier.repository.ts
+│   │   │
+│   │   └───services
+│   │           supplier.service.ts
+│   │
+│   ├───supply-item
+│   │   ├───dto
+│   │   │       create-supply.dto.ts
+│   │   │       index.ts
+│   │   │       supply-item.dto.ts
+│   │   │
+│   │   ├───mappers
+│   │   │       supply-item.mapper.ts
+│   │   │
+│   │   ├───persistence
+│   │   │       isupply-item.repository.ts
+│   │   │
+│   │   └───services
+│   │           supply-item.service.ts
+│   │
+│   └───user
+│       │   user.service.ts
+│       │
+│       ├───dto
+│       │       create-user.dto.ts
+│       │       response-user.dto.ts
+│       │       signin.dto.ts
+│       │       update-user.dto.ts
+│       │
+│       ├───mappers
+│       │       user.mapper.ts
+│       │
+│       └───persistence
+│               iuser.repository.ts
+│
+├───domain
+│   │   domain.module.ts
+│   │
+│   ├───person
+│   │   └───models
+│   │           person.model.ts
+│   │
+│   ├───shared
+│   │   ├───decorator
+│   │   │       index.ts
+│   │   │
+│   │   ├───guard
+│   │   │       index.ts
+│   │   │       jwt.guard.ts
+│   │   │
+│   │   ├───result
+│   │   │       app-error.ts
+│   │   │       result.pattern.ts
+│   │   │
+│   │   └───strategy
+│   │           index.ts
+│   │           jwt.strategy.ts
+│   │
+│   ├───supplier
+│   │   └───models
+│   │           supplier.model.ts
+│   │
+│   ├───supply-item
+│   │   └───models
+│   │           supply-item.model.ts
+│   │
+│   └───user
+│       ├───models
+│       │       user.model.ts
+│       │
+│       └───types
+│               userPerson.type.ts
+│
+├───infrastructure
+│   │   infrastructure.module.ts
+│   │
+│   └───persistence
+│       ├───person
+│       │       person.repository.ts
+│       │
+│       ├───prisma
+│       │       prisma.service.ts
+│       │
+│       ├───repository
+│       │       prisma.repository.ts
+│       │
+│       ├───supplier
+│       │       supplier.repository.ts
+│       │
+│       ├───supply-item
+│       │   └───repository
+│       │           supply-item.repository.ts
+│       │
+│       └───user
+│               user.repository.ts
+│
+└───presentation
+    │   presentation.module.ts
+    │
+    ├───auth
+    │   └───rest
+    │           auth.controller.ts
+    │
+    ├───person
+    │   └───rest
+    │           person.controller.ts
+    │
+    ├───supplier
+    │   └───rest
+    │           supplier.controller.ts
+    │
+    ├───supply-item
+    │   └───rest
+    │           supply-item.controller.ts
+    │
+    └───user
+        └───rest
                 users.controller.ts
-                
