@@ -49,4 +49,6 @@ export class RedisService {
         await this.del(PERMISSIONS_PREFIX + userId);
         await this.del(PROFILES_PREFIX + userId);
     }
+
+
 }

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RedisModule } from './redis.module';  // seu módulo do redis já configurado
+import { RedisModule } from './redis.module';
 import { RedisService } from './redis.service';
 import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserCache } from './user.cache';

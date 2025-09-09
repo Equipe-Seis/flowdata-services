@@ -1,3 +1,4 @@
+//src\application\auth\services\auth.service.ts
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
@@ -39,7 +40,7 @@ export class AuthService {
 			return Result.Forbidden('Incorrect credentials');
 		}
 
-		//await this.userAccessService.updateUserPermissionsCache(user.id);
+		await this.userAccessService.updateUserPermissionsCache(user.id);
 
 		const token = await this.generateToken(user.id, user.person.email!);
 

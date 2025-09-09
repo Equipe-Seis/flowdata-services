@@ -1,4 +1,4 @@
-
+//src\app.module.ts
 import { Module } from '@nestjs/common';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
 import { PrismaService } from './infrastructure/persistence/prisma/prisma.service';

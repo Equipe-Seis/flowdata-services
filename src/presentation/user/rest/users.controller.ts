@@ -76,6 +76,9 @@ export class UsersController {
 		description: 'User found and returned successfully',
 	})
 	@ApiResponse({ status: 404, description: 'User not found' })
+
+
+	@UseGuards(JwtGuard)
 	@Get(':id')
 	@HasPermission('read_user')
 	async getUserById(@Param('id') id: string) {
@@ -86,6 +89,8 @@ export class UsersController {
 	@ApiResponse({ status: 200, description: 'User updated successfully' })
 	@ApiResponse({ status: 404, description: 'User not found' })
 	@Put(':id')
+	@UseGuards(JwtGuard, ProfileGuard)
+	@HasProfile('admin')
 	async updateUser(
 		@Param('id', ParseIntPipe) id: number,
 		@Body() dto: UpdateUserDto,

@@ -14,12 +14,14 @@ import { IPersonRepository } from '@application/auth/persistence/iperson.reposit
 import { Result } from '@domain/shared/result/result.pattern';
 import { UserModel } from '@domain/user/models/user.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
+import { RedisService } from '@infrastructure/cache/redis.service';
 
 @Injectable()
 export class UserService {
 	constructor(
 		@Inject(IUserRepository) private userRepository: IUserRepository,
 		@Inject(IPersonRepository) private personRepository: IPersonRepository,
+		private readonly redisService: RedisService
 	) { }
 
 	async createUser(dto: CreateUserDto): Promise<Result<User>> {
@@ -83,6 +85,13 @@ export class UserService {
 
 	async getMe(userId: number): Promise<Result<User | null>> {
 		const result = await this.userRepository.findById(userId);
+
+		const permissions = await this.redisService.getPermissions(userId);
+		const profiles = await this.redisService.getProfiles(userId);
+
+		console.log(`Redis cache para o usuário ${userId}`);
+		console.log('Permissões:', permissions);
+		console.log('Perfis:', profiles);
 
 		if (result.isFailure) {
 			return result;
