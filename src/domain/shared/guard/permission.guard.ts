@@ -1,5 +1,5 @@
 
-
+//src\domain\shared\guard\permission.guard.ts
 import {
     CanActivate,
     ExecutionContext,
@@ -8,12 +8,16 @@ import {
 import { Reflector } from '@nestjs/core';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { PERMISSIONS_KEY } from '../decorator/permission.decorator';
+import { UserAccessService } from '@application/user/user-access.service';  // serviço que atualiza cache
+import { RedisService } from '@infrastructure/cache/redis.service';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
         private prisma: PrismaService,
+        private redis: RedisService,
+        private userAccessService: UserAccessService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,7 +26,6 @@ export class PermissionGuard implements CanActivate {
             [context.getHandler(), context.getClass()],
         );
 
-        // Se nenhuma permissão for necessária, libera
         if (!requiredPermissions || requiredPermissions.length === 0) {
             return true;
         }
@@ -32,31 +35,19 @@ export class PermissionGuard implements CanActivate {
 
         if (!user?.sub) return false;
 
-        // Busca permissões do usuário via perfis
-        const userWithProfiles = await this.prisma.user.findUnique({
-            where: { id: user.sub },
-            include: {
-                userProfiles: {
-                    include: {
-                        profile: {
-                            include: {
-                                permissions: {
-                                    include: {
-                                        permission: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
+        // 1. Tenta pegar permissões do Redis
+        let userPermissions = await this.redis.getPermissions(user.sub);
 
-        const userPermissions = userWithProfiles?.userProfiles.flatMap(up =>
-            up.profile.permissions.map(pp => pp.permission.name),
-        ) ?? [];
+        if (!userPermissions) {
+            // 2. Não achou no cache? Busca no banco, atualiza cache e usa resultado
+            await this.userAccessService.updateUserPermissionsCache(user.sub);
+            userPermissions = await this.redis.getPermissions(user.sub);
+        }
 
-        // Verifica se o usuário possui TODAS as permissões exigidas
+        // Se ainda não achou nada, falha (sem permissões)
+        if (!userPermissions) return false;
+
+        // Verifica se usuário tem todas permissões requeridas
         return requiredPermissions.every(p => userPermissions.includes(p));
     }
 }

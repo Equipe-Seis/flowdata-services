@@ -12,7 +12,6 @@ export class ResponseUserDto {
     personType?: PersonType;
 
     @Expose()
-
     documentNumber?: string;
 
     @Expose()

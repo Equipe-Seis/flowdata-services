@@ -20,7 +20,7 @@ export class UserService {
 	constructor(
 		@Inject(IUserRepository) private userRepository: IUserRepository,
 		@Inject(IPersonRepository) private personRepository: IPersonRepository,
-	) {}
+	) { }
 
 	async createUser(dto: CreateUserDto): Promise<Result<User>> {
 		const personDto = dto.person;
@@ -164,4 +164,9 @@ export class UserService {
 
 		return Result.Ok(`Usuario ${id} deletado com successo.`);
 	}
+
+	//anotação para usar depois  
+	//await this.redisService.cachePermissions(userId, updatedPermissions);
+	//await this.redisService.cacheProfiles(userId, updatedProfiles);
+	//await this.userAccessService.updateUserPermissionsCache(userId);
 }

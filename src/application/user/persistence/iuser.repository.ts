@@ -1,4 +1,5 @@
-import { Result } from '@domain/shared/result/result.pattern'; // Certifique-se de importar o Result
+//src\application\user\persistence\iuser.repository.ts
+import { Result } from '@domain/shared/result/result.pattern';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { UserModel } from '@domain/user/models/user.model';
 import { Person, User } from '@prisma/client';

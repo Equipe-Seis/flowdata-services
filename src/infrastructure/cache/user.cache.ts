@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import { RedisService } from './redis.service';
+import { IUserCache } from '@application/user/cache/iuser.cache';
+
+@Injectable()
+export class UserCache implements IUserCache {
+    private readonly PERMISSIONS_PREFIX = 'user_permissions:';
+    private readonly PROFILES_PREFIX = 'user_profiles:';
+    private readonly DEFAULT_TTL = 60 * 60; // 1 hora em segundos
+
+    constructor(private readonly redis: RedisService) { }
+
+    async setPermissions(userId: number, permissions: string[], ttlSeconds = this.DEFAULT_TTL): Promise<void> {
+        const key = `${this.PERMISSIONS_PREFIX}${userId}`;
+        await this.redis.set(key, permissions, ttlSeconds);
+    }
+
+    async getPermissions(userId: number): Promise<string[] | null> {
+        const key = `${this.PERMISSIONS_PREFIX}${userId}`;
+        return await this.redis.get<string[]>(key);
+    }
+
+    async setProfiles(userId: number, profiles: string[], ttlSeconds = this.DEFAULT_TTL): Promise<void> {
+        const key = `${this.PROFILES_PREFIX}${userId}`;
+        await this.redis.set(key, profiles, ttlSeconds);
+    }
+
+    async getProfiles(userId: number): Promise<string[] | null> {
+        const key = `${this.PROFILES_PREFIX}${userId}`;
+        return await this.redis.get<string[]>(key);
+    }
+
+    async clear(userId: number): Promise<void> {
+        await this.redis.del(`${this.PERMISSIONS_PREFIX}${userId}`);
+        await this.redis.del(`${this.PROFILES_PREFIX}${userId}`);
+    }
+}

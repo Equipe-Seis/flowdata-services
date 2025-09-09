@@ -1,3 +1,4 @@
+//src\presentation\auth\rest\auth.controller.ts
 import {
   Body,
   Controller,
@@ -18,6 +19,8 @@ export class AuthController {
   @Post('signin')
   async signin(@Body() dto: SignInDto) {
     const result = await this.authService.signin(dto);
-    return result.mapToPresentationResult();
+    console.log('result', result);
+    //return result.mapToPresentationResult();
+    return true;
   }
 }

@@ -1,18 +1,21 @@
 
+//src\domain\shared\guard\profile.guard.ts
 import {
     CanActivate,
     ExecutionContext,
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { PROFILES_KEY } from '../decorator/profile.decorator';
+import { RedisService } from '@infrastructure/cache/redis.service';
+import { UserAccessService } from '@application/user/user-access.service';
 
 @Injectable()
 export class ProfileGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
-        private prisma: PrismaService,
+        private redis: RedisService,
+        private userAccessService: UserAccessService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -20,7 +23,6 @@ export class ProfileGuard implements CanActivate {
             PROFILES_KEY,
             [context.getHandler(), context.getClass()],
         );
-
 
         if (!requiredProfiles || requiredProfiles.length === 0) {
             return true;
@@ -31,13 +33,19 @@ export class ProfileGuard implements CanActivate {
 
         if (!user?.sub) return false;
 
-        const userProfiles = await this.prisma.userProfile.findMany({
-            where: { id: user.sub },
-            include: { profile: true },
-        });
+        // Tenta pegar perfis do cache
+        let userProfiles = await this.redis.getProfiles(user.sub);
 
-        const userProfileNames = userProfiles.map(up => up.profile.name);
+        if (!userProfiles) {
+            // Se não tiver, atualiza cache via UserAccessService
+            await this.userAccessService.updateUserPermissionsCache(user.sub);
+            userProfiles = await this.redis.getProfiles(user.sub);
+        }
 
-        return requiredProfiles.some(profile => userProfileNames.includes(profile));
+        if (!userProfiles) return false;
+
+        // Verifica se usuário tem pelo menos um dos perfis requeridos
+        return requiredProfiles.some(profile => userProfiles.includes(profile));
     }
 }
+

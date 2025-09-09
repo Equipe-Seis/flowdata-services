@@ -1,5 +1,6 @@
+//src\infrastructure\infrastructure.module.ts
 import { Module } from '@nestjs/common';
-import { PrismaService } from './persistence/prisma/prisma.service';
+import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 
 import { PersonRepository } from '@infrastructure/persistence/person/person.repository';
 
@@ -8,10 +9,17 @@ import { SupplyItemRepository } from '@infrastructure/persistence/supply-item/re
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
 import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
 import { UserRepository } from '@infrastructure/persistence/user/user.repository';
+import { RedisModule } from '@infrastructure/cache/redis.module';
+import { RedisService } from '@infrastructure/cache/redis.service';
+import { UserCache } from '@infrastructure/cache/user.cache';
+import { IUserCache } from '@application/user/cache/iuser.cache';
+
 
 @Module({
+	imports: [RedisModule],
 	providers: [
 		PrismaService,
+		RedisService,
 		{
 			provide: IUserRepository,
 			useClass: UserRepository,
@@ -24,7 +32,11 @@ import { UserRepository } from '@infrastructure/persistence/user/user.repository
 			provide: ISupplyItemRepository,
 			useClass: SupplyItemRepository,
 		},
+		{
+			provide: IUserCache,
+			useClass: UserCache,
+		},
 	],
-	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository],
+	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache],
 })
 export class InfrastructureModule { }

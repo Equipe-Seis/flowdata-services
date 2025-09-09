@@ -37,6 +37,7 @@ export class AppError extends Error {
 	}
 
 	public static Unauthorized(message: string): AppError {
+		console.log('Unauthorized');
 		return new AppError(message, AppErrorType.Unauthorized);
 	}
 }

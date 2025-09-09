@@ -22,6 +22,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -32,6 +33,7 @@
     "@prisma/client": "^6.14.0",
     "argon2": "^0.44.0",
     "bcrypt": "^6.0.0",
+    "ioredis": "^5.7.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -59,6 +61,7 @@
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
     "prisma": "^6.15.0",
+    "redis-server": "^1.2.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",

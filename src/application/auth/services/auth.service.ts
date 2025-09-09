@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { Result } from '@domain/shared/result/result.pattern';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
 import { SignInDto } from '@application/auth/dto';
+import { UserAccessService } from '@application/user/user-access.service';
 
 @Injectable()
 export class AuthService {
@@ -14,10 +15,13 @@ export class AuthService {
 		private readonly userRepository: IUserRepository,
 		private readonly jwt: JwtService,
 		private readonly config: ConfigService,
-	) {}
+		private readonly userAccessService: UserAccessService
+	) { }
 
 	async signin(dto: SignInDto): Promise<Result<{ access_token: string }>> {
 		const userResult = await this.userRepository.findByEmail(dto.email);
+
+		console.log("userResult", userResult);
 
 		if (userResult.isFailure) {
 			return Result.Fail(userResult.getError());
@@ -35,6 +39,8 @@ export class AuthService {
 			return Result.Forbidden('Incorrect credentials');
 		}
 
+		//await this.userAccessService.updateUserPermissionsCache(user.id);
+
 		const token = await this.generateToken(user.id, user.person.email!);
 
 		return Result.Ok({ access_token: token });
@@ -47,6 +53,7 @@ export class AuthService {
 		try {
 			return await argon.verify(hash, password);
 		} catch (error) {
+			console.log("error", error)
 			return false;
 		}
 	}
