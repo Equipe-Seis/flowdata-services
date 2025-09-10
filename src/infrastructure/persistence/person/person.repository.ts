@@ -8,8 +8,7 @@ import { PersonModel } from '@domain/person/models/person.model';
 @Injectable()
 export class PersonRepository
 	extends PrismaRepository
-	implements IPersonRepository
-{
+	implements IPersonRepository {
 	async create(data: PersonModel): Promise<Result<Person>> {
 		const existingPerson = await this.prismaService.person.findFirst({
 			where: {
@@ -19,7 +18,7 @@ export class PersonRepository
 
 		if (existingPerson) {
 			return Result.Forbidden(
-				'Pessoa com esse número de documento ou email já existe.',
+				'Person associated with user not found.',
 			);
 		}
 
