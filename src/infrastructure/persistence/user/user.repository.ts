@@ -80,17 +80,16 @@ export class UserRepository
 		const prisma = this.prismaService;
 
 		try {
-			const existingPerson = await this.prismaService.person.findUnique({
-				where: { id },
-			});
+			// Get person id related to user.id (assuming user.person.id exists)
+			const personId = user.person.id;
 
-			if (!existingPerson) {
-				return Result.Fail('Pessoa associada ao usuário não encontrada.');
+			if (!personId) {
+				return Result.Fail('Person ID not found for the user.');
 			}
 
 			const updatedUser = await prisma.$transaction(async (tx) => {
 				const updatedPerson = await tx.person.update({
-					where: { id: id },
+					where: { id: personId },
 					data: {
 						name: user.person.name,
 						personType: user.person.personType,
@@ -104,16 +103,35 @@ export class UserRepository
 				const updatedUser = await tx.user.update({
 					where: { id: id },
 					data: {
-						personId: updatedPerson.id,
 						hash: user.hash,
+						personId: updatedPerson.id,
 					},
 				});
+
+				// Update profiles: delete old and insert new
+				if (user.profiles && user.profiles.length > 0) {
+					// Delete all current profiles
+					await tx.userProfile.deleteMany({
+						where: { userId: id },
+					});
+
+					// Insert new profiles
+					const userProfilesData = user.profiles.map((profileId) => ({
+						userId: id,
+						profileId,
+					}));
+
+					await tx.userProfile.createMany({
+						data: userProfilesData,
+					});
+				}
 
 				return updatedUser;
 			});
 
 			return Result.Ok(updatedUser);
 		} catch (error) {
+			console.error('Error updating user:', error);
 			return Result.Fail('Error updating user.');
 		}
 	}

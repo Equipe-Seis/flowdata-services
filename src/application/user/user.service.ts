@@ -146,8 +146,11 @@ export class UserService {
 		return result;
 	}
 
-	async updateUser(id: number, dto: UpdateUserDto): Promise<Result<User | null>> {
-		const result = await this.findById(id);
+	async updateUser(
+		id: number,
+		dto: UpdateUserDto,
+	): Promise<Result<User | null>> {
+		const result = await this.userRepository.findById(id);
 
 		if (result.isFailure) {
 			return result;
@@ -156,28 +159,32 @@ export class UserService {
 		const userPrisma = result.getValue()!;
 		const user = UserMapper.fromPrisma(userPrisma);
 
-		// 🛡️ Validação de duplicidade do documentNumber
+		// Validate documentNumber uniqueness
 		if (dto.documentNumber && dto.documentNumber !== user.person.documentNumber) {
-			const existing = await this.personRepository.findByDocumentNumber(dto.documentNumber);
+			const existingPersonResult = await this.personRepository.findByDocumentNumber(dto.documentNumber);
 
-			if (existing.isFailure) {
-				return Result.Fail(existing.getError());
+			if (existingPersonResult.isFailure) {
+				return Result.Fail(existingPersonResult.getError());
 			}
 
-			if (existing.getValue() && existing.getValue()?.id !== user.person.id) {
+			const existingPerson = existingPersonResult.getValue();
+
+			if (existingPerson && existingPerson.id !== user.person.id) {
 				return Result.Fail('Document number is already in use.');
 			}
 		}
 
-		// 🛡️ Validação de duplicidade do email
+		// Validate email uniqueness
 		if (dto.email && dto.email !== user.person.email) {
-			const existing = await this.personRepository.findByEmail(dto.email);
+			const existingEmailResult = await this.personRepository.findByEmail(dto.email);
 
-			if (existing.isFailure) {
-				return Result.Fail(existing.getError());
+			if (existingEmailResult.isFailure) {
+				return Result.Fail(existingEmailResult.getError());
 			}
 
-			if (existing.getValue() && existing.getValue()?.id !== user.person.id) {
+			const existingEmail = existingEmailResult.getValue();
+
+			if (existingEmail && existingEmail.id !== user.person.id) {
 				return Result.Fail('Email is already in use.');
 			}
 		}
