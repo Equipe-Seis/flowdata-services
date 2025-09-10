@@ -17,11 +17,14 @@ import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { RedisService } from '@infrastructure/cache/redis.service';
 import { UserMapper } from '@application/user/mappers/user.mapper';
 import { UserAccessService } from '@application/user/user-access.service';
+import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
+
 @Injectable()
 export class UserService {
 	constructor(
 		@Inject(IUserRepository) private userRepository: IUserRepository,
 		@Inject(IPersonRepository) private personRepository: IPersonRepository,
+		@Inject(IProfileRepository) private profileRepository: IProfileRepository,
 		private readonly redisService: RedisService,
 		private readonly userAccessService: UserAccessService
 	) { }
@@ -55,6 +58,14 @@ export class UserService {
 
 		if (existingByEmail.getValue() != null) {
 			return Result.Forbidden('Email is already in use.');
+		}
+
+		if (dto.profiles && dto.profiles.length > 0) {
+			const validProfilesCount = await this.profileRepository.countByIds(dto.profiles);
+
+			if (validProfilesCount !== dto.profiles.length) {
+				return Result.BadRequest('One or more profiles are invalid.');
+			}
 		}
 
 		const personResult = await this.personRepository.create({
@@ -159,33 +170,39 @@ export class UserService {
 		const userPrisma = result.getValue()!;
 		const user = UserMapper.fromPrisma(userPrisma);
 
-		// Validate documentNumber uniqueness
 		if (dto.documentNumber && dto.documentNumber !== user.person.documentNumber) {
 			const existingPersonResult = await this.personRepository.findByDocumentNumber(dto.documentNumber);
 
 			if (existingPersonResult.isFailure) {
-				return Result.Fail(existingPersonResult.getError());
+				return Result.BadRequest(existingPersonResult.getError());
 			}
 
 			const existingPerson = existingPersonResult.getValue();
 
 			if (existingPerson && existingPerson.id !== user.person.id) {
-				return Result.Fail('Document number is already in use.');
+				return Result.BadRequest('Document number is already in use.');
 			}
 		}
 
-		// Validate email uniqueness
 		if (dto.email && dto.email !== user.person.email) {
 			const existingEmailResult = await this.personRepository.findByEmail(dto.email);
 
 			if (existingEmailResult.isFailure) {
-				return Result.Fail(existingEmailResult.getError());
+				return Result.BadRequest(existingEmailResult.getError());
 			}
 
 			const existingEmail = existingEmailResult.getValue();
 
 			if (existingEmail && existingEmail.id !== user.person.id) {
-				return Result.Fail('Email is already in use.');
+				return Result.BadRequest('Email is already in use.');
+			}
+		}
+
+		if (dto.profiles && dto.profiles.length > 0) {
+			const validProfilesCount = await this.profileRepository.countByIds(dto.profiles);
+
+			if (validProfilesCount !== dto.profiles.length) {
+				return Result.BadRequest('One or more profiles are invalid.');
 			}
 		}
 

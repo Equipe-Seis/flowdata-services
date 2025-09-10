@@ -30,4 +30,12 @@ export class ProfileRepository implements IProfileRepository {
 
         return profile.permissions.map((p) => p.permission.name);
     }
+
+    async countByIds(profileIds: number[]): Promise<number> {
+        return await this.prisma.profile.count({
+            where: {
+                id: { in: profileIds }
+            }
+        });
+    }
 }

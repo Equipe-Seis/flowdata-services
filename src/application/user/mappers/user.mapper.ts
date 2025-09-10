@@ -14,6 +14,8 @@ export class UserMapper {
 			user.person.id
 		);
 
-		return new UserModel(person, user.hash, [], user.id);
+		const profileIds = user.userProfiles?.map(up => up.profileId) || [];
+
+		return new UserModel(person, user.hash, profileIds, user.id);
 	}
 }

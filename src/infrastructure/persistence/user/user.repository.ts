@@ -45,7 +45,10 @@ export class UserRepository
 		return this.execute<UserWithPerson | null>(() =>
 			this.prismaService.user.findUnique({
 				where: { id },
-				include: { person: true },
+				include: {
+					person: true,
+					userProfiles: true,
+				},
 			}),
 		);
 	}
@@ -58,7 +61,7 @@ export class UserRepository
 						email,
 					},
 				},
-				include: { person: true },
+				include: { person: true, userProfiles: true },
 			}),
 		);
 	}
@@ -71,7 +74,7 @@ export class UserRepository
 						email,
 					},
 				},
-				include: { person: true },
+				include: { person: true, userProfiles: true, },
 			}),
 		);
 	}
@@ -80,7 +83,6 @@ export class UserRepository
 		const prisma = this.prismaService;
 
 		try {
-			// Get person id related to user.id (assuming user.person.id exists)
 			const personId = user.person.id;
 
 			if (!personId) {
