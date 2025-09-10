@@ -38,6 +38,10 @@ export class UserRepository
 	}
 
 	async findById(id: number): Promise<Result<UserWithPerson | null>> {
+		if (!id) {
+			return Result.BadRequest('Invalid user ID.');
+		}
+
 		return this.execute<UserWithPerson | null>(() =>
 			this.prismaService.user.findUnique({
 				where: { id },
@@ -47,6 +51,19 @@ export class UserRepository
 	}
 
 	async findByEmail(email: string): Promise<Result<UserWithPerson | null>> {
+		return this.execute<UserWithPerson | null>(() =>
+			this.prismaService.user.findFirst({
+				where: {
+					person: {
+						email,
+					},
+				},
+				include: { person: true },
+			}),
+		);
+	}
+
+	async findByDocumentNumber(email: string): Promise<Result<UserWithPerson | null>> {
 		return this.execute<UserWithPerson | null>(() =>
 			this.prismaService.user.findFirst({
 				where: {

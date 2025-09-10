@@ -27,6 +27,15 @@ export interface IUserRepository {
 	 */
 	findByEmail(email: string): Promise<Result<UserWithPerson | null>>;
 
+
+	/**
+	 * Busca usuário pelo numero do documento
+	 * @param documentNumber numero do documento do usuário
+	 * @returns Result<User> - Resultado da operação, com usuário ou erro
+	 */
+	findByDocumentNumber(documentNumber: string): Promise<Result<UserWithPerson | null>>;
+
+
 	/**
 	 * Atualiza dados do usuário
 	 * @param user entidade User com dados atualizados

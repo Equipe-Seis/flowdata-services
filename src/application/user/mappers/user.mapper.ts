@@ -11,6 +11,7 @@ export class UserMapper {
 			user.person.birthDate ?? null,
 			user.person.status,
 			user.person.email ?? null,
+			user.person.id
 		);
 
 		return new UserModel(person, user.hash, [], user.id);

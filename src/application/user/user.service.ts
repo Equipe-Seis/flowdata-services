@@ -16,12 +16,14 @@ import { UserModel } from '@domain/user/models/user.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { RedisService } from '@infrastructure/cache/redis.service';
 import { UserMapper } from '@application/user/mappers/user.mapper';
+import { UserAccessService } from '@application/user/user-access.service';
 @Injectable()
 export class UserService {
 	constructor(
 		@Inject(IUserRepository) private userRepository: IUserRepository,
 		@Inject(IPersonRepository) private personRepository: IPersonRepository,
-		private readonly redisService: RedisService
+		private readonly redisService: RedisService,
+		private readonly userAccessService: UserAccessService
 	) { }
 
 	async createUser(dto: CreateUserDto): Promise<Result<User>> {
@@ -84,6 +86,11 @@ export class UserService {
 	}
 
 	async getMe(userId: number): Promise<Result<User | null>> {
+
+		if (!userId || typeof userId !== 'number') {
+			return Result.BadRequest('Invalid user ID.');
+		}
+
 		const result = await this.userRepository.findById(userId);
 
 		const permissions = await this.redisService.getPermissions(userId);
@@ -129,13 +136,17 @@ export class UserService {
 			return Result.NotFound('User not found.');
 		}
 
+		const permissions = await this.redisService.getPermissions(id);
+		const profiles = await this.redisService.getProfiles(id);
+
+		console.log(`Redis cache para o usuário ${id}`);
+		console.log('Permissões:', permissions);
+		console.log('Perfis:', profiles);
+
 		return result;
 	}
 
-	async updateUser(
-		id: number,
-		dto: UpdateUserDto,
-	): Promise<Result<User | null>> {
+	async updateUser(id: number, dto: UpdateUserDto): Promise<Result<User | null>> {
 		const result = await this.findById(id);
 
 		if (result.isFailure) {
@@ -143,8 +154,33 @@ export class UserService {
 		}
 
 		const userPrisma = result.getValue()!;
-
 		const user = UserMapper.fromPrisma(userPrisma);
+
+		// 🛡️ Validação de duplicidade do documentNumber
+		if (dto.documentNumber && dto.documentNumber !== user.person.documentNumber) {
+			const existing = await this.personRepository.findByDocumentNumber(dto.documentNumber);
+
+			if (existing.isFailure) {
+				return Result.Fail(existing.getError());
+			}
+
+			if (existing.getValue() && existing.getValue()?.id !== user.person.id) {
+				return Result.Fail('Document number is already in use.');
+			}
+		}
+
+		// 🛡️ Validação de duplicidade do email
+		if (dto.email && dto.email !== user.person.email) {
+			const existing = await this.personRepository.findByEmail(dto.email);
+
+			if (existing.isFailure) {
+				return Result.Fail(existing.getError());
+			}
+
+			if (existing.getValue() && existing.getValue()?.id !== user.person.id) {
+				return Result.Fail('Email is already in use.');
+			}
+		}
 
 		if (dto.hash) {
 			user.hash = await argon.hash(dto.hash, { hashLength: 10 });
@@ -157,10 +193,27 @@ export class UserService {
 		if (dto.status) user.person.status = dto.status;
 		if (dto.email) user.person.email = dto.email;
 
+		let shouldUpdatePermissionsCache = false;
 
-		if (dto.profiles) user.profiles = dto.profiles;
+		if (dto.profiles) {
+			const newProfiles = [...dto.profiles].sort();
+			const currentProfiles = [...user.profiles].sort();
 
-		return await this.userRepository.update(dto.id, user);
+			const profilesChanged = JSON.stringify(newProfiles) !== JSON.stringify(currentProfiles);
+
+			if (profilesChanged) {
+				user.profiles = dto.profiles;
+				shouldUpdatePermissionsCache = true;
+			}
+		}
+
+		const updateResult = await this.userRepository.update(id, user);
+
+		if (updateResult.isSuccess && shouldUpdatePermissionsCache) {
+			await this.userAccessService.updateUserPermissionsCache(id);
+		}
+
+		return updateResult;
 	}
 
 	async deleteUser(id: number): Promise<Result<unknown>> {
@@ -176,7 +229,7 @@ export class UserService {
 
 		await this.userRepository.delete(result.value.id);
 
-		return Result.Ok(`Usuario ${id} deletado com successo.`);
+		return Result.Ok(`User ${id} deleted successfully.`);
 	}
 
 	//anotação para usar depois  

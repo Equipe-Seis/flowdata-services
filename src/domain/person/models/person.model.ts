@@ -8,5 +8,6 @@ export class PersonModel {
         public birthDate: Date | null,
         public status: Status = Status.active,
         public email?: string | null,
+        public id?: number,
     ) { }
 }

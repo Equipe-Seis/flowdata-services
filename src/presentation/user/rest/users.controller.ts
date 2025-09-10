@@ -27,6 +27,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { HasPermission } from '@domain/shared/decorator/permission.decorator';
 import { HasProfile } from '@domain/shared/decorator/profile.decorator';
+import { Public } from '@domain/shared/decorator/public.decorator';
+
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
@@ -53,11 +55,13 @@ export class UsersController {
 		status: 401,
 		description: 'Unauthorized – invalid or missing token',
 	})
-	@UseGuards(JwtGuard)
+
+	@UseGuards(JwtGuard, ProfileGuard)
 	@Get('me')
-	@HasPermission('read_user')
+	@HasProfile('admin', 'supply_supervisor')
 	async getMe(@Req() req: Request) {
 		const userId = req.user?.['sub'];
+		console.log("@getMe", userId);
 		const user = await this.userService.getMe(userId);
 		const plainUser = { ...user };
 		//console.log('user recebido do service:', user);

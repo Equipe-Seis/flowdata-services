@@ -6,7 +6,9 @@ import {
     IsEnum,
     IsEmail,
     Length,
-    IsArray
+    IsArray,
+    ArrayNotEmpty,
+    IsNumber
 } from 'class-validator';
 import { Status, PersonType } from '@prisma/client';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
@@ -16,7 +18,6 @@ export class UpdateUserDto {
     @IsString()
     @MinLength(6)
     hash?: string;
-
 
     @IsString()
     @Length(1, 100)
@@ -39,11 +40,8 @@ export class UpdateUserDto {
     @IsEmail()
     email?: string;
 
-    @ApiPropertyOptional({ type: [Number] })
-    @IsArray()
-    @IsOptional()
-    profiles?: number[];
-
-    @ApiProperty({ type: () => [Number] })
-    id: number;
+    @IsArray({ message: 'Profiles must be an array of numeric IDs.' })
+    @ArrayNotEmpty({ message: 'At least one profile must be provided.' })
+    @IsNumber({}, { each: true, message: 'Each profile must be a number.' })
+    profiles: number[];
 }
