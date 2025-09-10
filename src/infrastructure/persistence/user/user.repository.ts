@@ -1,3 +1,4 @@
+//src\infrastructure\persistence\user\user.repository.ts
 import { Injectable } from '@nestjs/common';
 import { UserModel } from '@domain/user/models/user.model';
 import { Result } from '@domain/shared/result/result.pattern';
@@ -9,8 +10,7 @@ import { UserWithPerson } from '@domain/user/types/userPerson.type';
 @Injectable()
 export class UserRepository
 	extends PrismaRepository
-	implements IUserRepository
-{
+	implements IUserRepository {
 	async create(user: UserModel, personId: number): Promise<Result<User>> {
 		try {
 			const createdUser = await this.prismaService.user.create({
@@ -19,6 +19,17 @@ export class UserRepository
 					hash: user.hash,
 				},
 			});
+
+			if (user.profiles && user.profiles.length > 0) {
+				const userProfilesData = user.profiles.map((profileId) => ({
+					userId: createdUser.id,
+					profileId,
+				}));
+
+				await this.prismaService.userProfile.createMany({
+					data: userProfilesData,
+				});
+			}
 
 			return Result.Ok(createdUser);
 		} catch (error) {

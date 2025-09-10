@@ -15,7 +15,7 @@ import { Result } from '@domain/shared/result/result.pattern';
 import { UserModel } from '@domain/user/models/user.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { RedisService } from '@infrastructure/cache/redis.service';
-
+import { UserMapper } from '@application/user/mappers/user.mapper';
 @Injectable()
 export class UserService {
 	constructor(
@@ -72,7 +72,7 @@ export class UserService {
 
 		const person = personResult.getValue()!;
 
-		const user = new UserModel(person, passwordHash);
+		const user = new UserModel(person, passwordHash, dto.profiles || []);
 
 		const result = await this.userRepository.create(user, person.id);
 
@@ -142,7 +142,9 @@ export class UserService {
 			return result;
 		}
 
-		const user = result.getValue()!;
+		const userPrisma = result.getValue()!;
+
+		const user = UserMapper.fromPrisma(userPrisma);
 
 		if (dto.hash) {
 			user.hash = await argon.hash(dto.hash, { hashLength: 10 });
@@ -155,7 +157,10 @@ export class UserService {
 		if (dto.status) user.person.status = dto.status;
 		if (dto.email) user.person.email = dto.email;
 
-		return await this.userRepository.update(user.id, user);
+
+		if (dto.profiles) user.profiles = dto.profiles;
+
+		return await this.userRepository.update(dto.id, user);
 	}
 
 	async deleteUser(id: number): Promise<Result<unknown>> {

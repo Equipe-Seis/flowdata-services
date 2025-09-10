@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreatePersonDto } from '@application/person/dto/create-person.dto';
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, ValidateNested, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 export class CreateUserDto {
 
@@ -13,4 +13,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     password: string;
+
+    @IsArray()
+    @ApiProperty({ type: () => [Number] })
+    profiles: number[];
+
+
 }

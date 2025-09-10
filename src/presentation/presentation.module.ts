@@ -4,9 +4,9 @@ import { InfrastructureModule } from '@infrastructure/infrastructure.module';
 import { SupplyItemController } from '@presentation/supply-item/rest/supply-item.controller';
 import { AuthController } from '@presentation/auth/rest/auth.controller';
 import { UsersController } from '@presentation/user/rest/users.controller';
-
+import { ProfileController } from '@presentation/profile/rest/profile.controller';
 @Module({
 	imports: [ApplicationModule, InfrastructureModule],
-	controllers: [AuthController, SupplyItemController, UsersController],
+	controllers: [AuthController, SupplyItemController, UsersController, ProfileController],
 })
 export class PresentationModule { }

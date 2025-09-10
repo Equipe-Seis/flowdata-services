@@ -1,4 +1,3 @@
-//src\infrastructure\infrastructure.module.ts
 import { Module } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 
@@ -13,6 +12,8 @@ import { RedisModule } from '@infrastructure/cache/redis.module';
 import { RedisService } from '@infrastructure/cache/redis.service';
 import { UserCache } from '@infrastructure/cache/user.cache';
 import { IUserCache } from '@application/user/cache/iuser.cache';
+import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
+import { ProfileRepository } from '@infrastructure/persistence/profile/profile.repository';
 
 
 @Module({
@@ -36,7 +37,11 @@ import { IUserCache } from '@application/user/cache/iuser.cache';
 			provide: IUserCache,
 			useClass: UserCache,
 		},
+		{
+			provide: IProfileRepository,
+			useClass: ProfileRepository,
+		}
 	],
-	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache],
+	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache, IProfileRepository],
 })
 export class InfrastructureModule { }

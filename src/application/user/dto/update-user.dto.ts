@@ -6,9 +6,10 @@ import {
     IsEnum,
     IsEmail,
     Length,
+    IsArray
 } from 'class-validator';
 import { Status, PersonType } from '@prisma/client';
-
+import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 export class UpdateUserDto {
 
     @IsOptional()
@@ -37,4 +38,12 @@ export class UpdateUserDto {
     //@IsOptional()
     @IsEmail()
     email?: string;
+
+    @ApiPropertyOptional({ type: [Number] })
+    @IsArray()
+    @IsOptional()
+    profiles?: number[];
+
+    @ApiProperty({ type: () => [Number] })
+    id: number;
 }
