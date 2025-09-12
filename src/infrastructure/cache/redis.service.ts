@@ -1,9 +1,10 @@
+
 import { Injectable } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 
-const PERMISSIONS_PREFIX = 'user:permissions:';
-const PROFILES_PREFIX = 'user:profiles:';
+const PERMISSIONS_PREFIX = 'user_permissions:';
+const PROFILES_PREFIX = 'user_profiles:';
 const CACHE_TTL_SECONDS = 3600;
 
 @Injectable()

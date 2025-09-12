@@ -21,9 +21,9 @@ export class UserRepository
 			});
 
 			if (user.profiles && user.profiles.length > 0) {
-				const userProfilesData = user.profiles.map((profileId) => ({
+				const userProfilesData = user.profiles.map(profile => ({
 					userId: createdUser.id,
-					profileId,
+					profileId: profile.id,
 				}));
 
 				await this.prismaService.userProfile.createMany({
@@ -152,24 +152,20 @@ export class UserRepository
 					},
 				});
 
-				// Update profiles: delete old and insert new
 				if (user.profiles && user.profiles.length > 0) {
-					// Delete all current profiles
 					await tx.userProfile.deleteMany({
 						where: { userId: id },
 					});
 
-					// Insert new profiles
-					const userProfilesData = user.profiles.map((profileId) => ({
+					const userProfilesData = user.profiles.map((profile) => ({
 						userId: id,
-						profileId,
+						profileId: profile.id,
 					}));
 
 					await tx.userProfile.createMany({
 						data: userProfilesData,
 					});
 				}
-
 				return updatedUser;
 			});
 

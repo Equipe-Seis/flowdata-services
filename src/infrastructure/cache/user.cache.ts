@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { RedisService } from './redis.service';
 import { IUserCache } from '@application/user/cache/iuser.cache';
@@ -8,7 +9,7 @@ export class UserCache implements IUserCache {
     private readonly PROFILES_PREFIX = 'user_profiles:';
     private readonly DEFAULT_TTL = 60 * 60;
 
-    constructor(private readonly redis: RedisService) { }
+    constructor(private redis: RedisService) { }
 
     async setPermissions(userId: number, permissions: string[], ttlSeconds = this.DEFAULT_TTL): Promise<void> {
         const key = `${this.PERMISSIONS_PREFIX}${userId}`;

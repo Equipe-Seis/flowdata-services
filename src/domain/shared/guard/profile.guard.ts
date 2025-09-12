@@ -3,19 +3,20 @@
 import {
     CanActivate,
     ExecutionContext,
+    Inject,
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PROFILES_KEY } from '../decorator/profile.decorator';
-import { RedisService } from '@infrastructure/cache/redis.service';
+import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserAccessService } from '@application/user/user-access.service';
 
 @Injectable()
 export class ProfileGuard implements CanActivate {
     constructor(
-        private reflector: Reflector,
-        private redis: RedisService,
-        private userAccessService: UserAccessService,
+        private readonly reflector: Reflector,
+        @Inject(IUserCache) private readonly userCache: IUserCache,
+        private readonly userAccessService: UserAccessService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,22 +32,23 @@ export class ProfileGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> user.sub:', user.sub);
+
         if (!user?.sub) return false;
 
-        // Tenta pegar perfis do cache
-        let userProfiles = await this.redis.getProfiles(user.sub);
-        console.log("1. Tenta pegar permissões do Redis", userProfiles);
+        let userProfiles = await this.userCache.getProfiles(user.sub);
+
+        console.log('>>> Perfis do cache:', userProfiles, typeof userProfiles);
 
         if (!userProfiles) {
-            // Se não tiver, atualiza cache via UserAccessService
             await this.userAccessService.updateUserPermissionsCache(user.sub);
-            userProfiles = await this.redis.getProfiles(user.sub);
+            userProfiles = await this.userCache.getProfiles(user.sub);
+
+            console.log('>>> Perfis do cache:', userProfiles, typeof userProfiles);
         }
 
         if (!userProfiles) return false;
 
-        // Verifica se usuário tem pelo menos um dos perfis requeridos
         return requiredProfiles.some(profile => userProfiles.includes(profile));
     }
 }
-

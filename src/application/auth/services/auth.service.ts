@@ -1,4 +1,3 @@
-
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
@@ -22,7 +21,6 @@ export class AuthService {
 	async signin(dto: SignInDto): Promise<Result<{ access_token: string }>> {
 		const userResult = await this.userRepository.findByEmail(dto.email);
 
-		console.log("userResult", userResult);
 
 		if (userResult.isFailure) {
 			return Result.Fail(userResult.getError());
@@ -39,6 +37,8 @@ export class AuthService {
 		if (!isPasswordValid) {
 			return Result.Forbidden('Incorrect credentials');
 		}
+
+
 
 		await this.userAccessService.updateUserPermissionsCache(user.id);
 

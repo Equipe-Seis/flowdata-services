@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
-import { Profile } from '@domain/profile/models/profile.model';
+import { ProfileModel } from '@domain/profile/models/profile.model';
 
 @Injectable()
 export class ProfileRepository implements IProfileRepository {
     constructor(private readonly prisma: PrismaService) { }
 
-    async findAll(): Promise<Profile[]> {
+    async findAll(): Promise<ProfileModel[]> {
         const profiles = await this.prisma.profile.findMany();
         return profiles.map(
-            (p) => new Profile(p.id, p.name, p.description)
+            (p) => new ProfileModel(p.id, p.name, p.description)
         );
     }
 

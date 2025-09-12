@@ -13,6 +13,7 @@ import { IUserRepository } from '@application/user/persistence/iuser.repository'
 import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { UserModel } from '@domain/user/models/user.model';
+import { ProfileModel } from '@domain/profile/models/profile.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { RedisService } from '@infrastructure/cache/redis.service';
 import { UserMapper } from '@application/user/mappers/user.mapper';
@@ -84,8 +85,8 @@ export class UserService {
 		const passwordHash = await argon.hash(dto.password, { hashLength: 10 });
 
 		const person = personResult.getValue()!;
-
-		const user = new UserModel(person, passwordHash, dto.profiles || []);
+		const profileModels = (dto.profiles || []).map(id => ({ id } as ProfileModel));
+		const user = new UserModel(person, passwordHash, profileModels);
 
 		const result = await this.userRepository.create(user, person.id);
 
@@ -168,7 +169,7 @@ export class UserService {
 		}
 
 		const userPrisma = result.getValue()!;
-		const user = UserMapper.fromPrisma(userPrisma);
+		const user = UserMapper.toDomain(userPrisma);
 
 		if (dto.documentNumber && dto.documentNumber !== user.person.documentNumber) {
 			const existingPersonResult = await this.personRepository.findByDocumentNumber(dto.documentNumber);
@@ -218,15 +219,14 @@ export class UserService {
 		if (dto.email) user.person.email = dto.email;
 
 		let shouldUpdatePermissionsCache = false;
-
 		if (dto.profiles) {
 			const newProfiles = [...dto.profiles].sort();
-			const currentProfiles = [...user.profiles].sort();
+			const currentProfiles = [...user.profiles.map(p => p.id)].sort(); // compara por ID apenas
 
 			const profilesChanged = JSON.stringify(newProfiles) !== JSON.stringify(currentProfiles);
 
 			if (profilesChanged) {
-				user.profiles = dto.profiles;
+				user.profiles = dto.profiles.map(id => new ProfileModel(id, '', '', []));
 				shouldUpdatePermissionsCache = true;
 			}
 		}

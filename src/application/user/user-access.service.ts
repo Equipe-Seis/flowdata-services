@@ -1,7 +1,7 @@
-//src\application\user\user-access.service.ts
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
 import { IUserCache } from '@application/user/cache/iuser.cache';
+import { UserMapper } from '@application/user/mappers/user.mapper';
 
 @Injectable()
 export class UserAccessService {
@@ -12,22 +12,15 @@ export class UserAccessService {
 
     async updateUserPermissionsCache(userId: number): Promise<void> {
         const userWithProfiles = await this.userRepository.findUserWithProfiles(userId);
-        console.log("----------------------IDDDDDDDD", userId);
-        console.log("----------------------userWithProfiles", userWithProfiles);
         await this.userCache.clearUserCache(userId);
+
 
         if (!userWithProfiles) return;
 
-        const permissions =
-            userWithProfiles.userProfiles.flatMap(up =>
-                up.profile.permissions.map(p => p.permission.name),
-            ) ?? [];
+        const user = UserMapper.toDomain(userWithProfiles);
 
-        const profiles =
-            userWithProfiles.userProfiles.map(up => up.profile.name) ?? [];
-
-        console.log("----------------------permissions", permissions);
-        console.log("----------------------profiles", profiles);
+        const permissions = user.getPermissions();
+        const profiles = user.getProfileNames();
 
         await this.userCache.cachePermissions(userId, permissions);
         await this.userCache.cacheProfiles(userId, profiles);
