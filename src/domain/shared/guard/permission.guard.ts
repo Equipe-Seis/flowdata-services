@@ -37,6 +37,7 @@ export class PermissionGuard implements CanActivate {
 
         // 1. Tenta pegar permissões do Redis
         let userPermissions = await this.redis.getPermissions(user.sub);
+        console.log("1. Tenta pegar permissões do Redis", userPermissions);
 
         if (!userPermissions) {
             // 2. Não achou no cache? Busca no banco, atualiza cache e usa resultado

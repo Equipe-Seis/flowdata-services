@@ -6,7 +6,7 @@ import { IUserCache } from '@application/user/cache/iuser.cache';
 export class UserCache implements IUserCache {
     private readonly PERMISSIONS_PREFIX = 'user_permissions:';
     private readonly PROFILES_PREFIX = 'user_profiles:';
-    private readonly DEFAULT_TTL = 60 * 60; // 1 hora em segundos
+    private readonly DEFAULT_TTL = 60 * 60;
 
     constructor(private readonly redis: RedisService) { }
 
@@ -33,5 +33,17 @@ export class UserCache implements IUserCache {
     async clear(userId: number): Promise<void> {
         await this.redis.del(`${this.PERMISSIONS_PREFIX}${userId}`);
         await this.redis.del(`${this.PROFILES_PREFIX}${userId}`);
+    }
+
+    async clearUserCache(userId: number): Promise<void> {
+        await this.redis.clearUserCache(userId);
+    }
+
+    async cachePermissions(userId: number, permissions: string[]): Promise<void> {
+        await this.redis.cachePermissions(userId, permissions);
+    }
+
+    async cacheProfiles(userId: number, profiles: string[]): Promise<void> {
+        await this.redis.cacheProfiles(userId, profiles);
     }
 }

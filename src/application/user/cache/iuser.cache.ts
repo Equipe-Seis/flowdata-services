@@ -32,6 +32,10 @@ export interface IUserCache {
      * @param userId Id do usuário
      */
     clear(userId: number): Promise<void>;
+
+    clearUserCache(userId: number): Promise<void>;
+    cachePermissions(userId: number, permissions: string[]): Promise<void>;
+    cacheProfiles(userId: number, profiles: string[]): Promise<void>;
 }
 
 export const IUserCache = Symbol('IUserCache'); 

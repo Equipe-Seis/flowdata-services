@@ -47,7 +47,19 @@ export class UserRepository
 				where: { id },
 				include: {
 					person: true,
-					userProfiles: true,
+					userProfiles: {
+						include: {
+							profile: {
+								include: {
+									permissions: {
+										include: {
+											permission: true,
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			}),
 		);
@@ -61,7 +73,22 @@ export class UserRepository
 						email,
 					},
 				},
-				include: { person: true, userProfiles: true },
+				include: {
+					person: true,
+					userProfiles: {
+						include: {
+							profile: {
+								include: {
+									permissions: {
+										include: {
+											permission: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			}),
 		);
 	}
@@ -74,7 +101,22 @@ export class UserRepository
 						email,
 					},
 				},
-				include: { person: true, userProfiles: true, },
+				include: {
+					person: true,
+					userProfiles: {
+						include: {
+							profile: {
+								include: {
+									permissions: {
+										include: {
+											permission: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			}),
 		);
 	}
@@ -147,5 +189,27 @@ export class UserRepository
 		} catch (error) {
 			return Result.Fail('Error deleting user');
 		}
+	}
+
+	async findUserWithProfiles(userId: number): Promise<UserWithPerson | null> {
+		return this.prismaService.user.findUnique({
+			where: { id: userId },
+			include: {
+				person: true,
+				userProfiles: {
+					include: {
+						profile: {
+							include: {
+								permissions: {
+									include: {
+										permission: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
 	}
 }

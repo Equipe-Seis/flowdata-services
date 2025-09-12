@@ -49,6 +49,10 @@ export interface IUserRepository {
 	 * @returns Result<void> - Resultado da operação, com sucesso ou falha
 	 */
 	delete(id: number): Promise<Result<void>>;
+
+
+	findUserWithProfiles(userId: number): Promise<UserWithPerson | null>
+
 }
 
 export const IUserRepository = Symbol('IUserRepository');

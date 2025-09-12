@@ -1,41 +1,22 @@
 //src\application\user\user-access.service.ts
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
-import { RedisService } from '@infrastructure/cache/redis.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { IUserRepository } from '@application/user/persistence/iuser.repository';
+import { IUserCache } from '@application/user/cache/iuser.cache';
 
 @Injectable()
 export class UserAccessService {
     constructor(
-        private readonly prisma: PrismaService,
-        private readonly redis: RedisService,
+        @Inject(IUserRepository) private readonly userRepository: IUserRepository,
+        @Inject(IUserCache) private readonly userCache: IUserCache,
     ) { }
 
     async updateUserPermissionsCache(userId: number): Promise<void> {
-        const userWithProfiles = await this.prisma.user.findUnique({
-            where: { id: userId },
-            include: {
-                userProfiles: {
-                    include: {
-                        profile: {
-                            include: {
-                                permissions: {
-                                    include: {
-                                        permission: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
+        const userWithProfiles = await this.userRepository.findUserWithProfiles(userId);
+        console.log("----------------------IDDDDDDDD", userId);
+        console.log("----------------------userWithProfiles", userWithProfiles);
+        await this.userCache.clearUserCache(userId);
 
-        // Limpa cache anterior, independente se achou usuário ou não
-        await this.redis.clearUserCache(userId);
-
-        if (!userWithProfiles) {
-            return;
-        }
+        if (!userWithProfiles) return;
 
         const permissions =
             userWithProfiles.userProfiles.flatMap(up =>
@@ -45,8 +26,10 @@ export class UserAccessService {
         const profiles =
             userWithProfiles.userProfiles.map(up => up.profile.name) ?? [];
 
-        await this.redis.cachePermissions(userId, permissions);
-        await this.redis.cacheProfiles(userId, profiles);
-    }
+        console.log("----------------------permissions", permissions);
+        console.log("----------------------profiles", profiles);
 
+        await this.userCache.cachePermissions(userId, permissions);
+        await this.userCache.cacheProfiles(userId, profiles);
+    }
 }

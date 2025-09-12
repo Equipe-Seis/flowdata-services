@@ -1,3 +1,5 @@
+
+//src\infrastructure\infrastructure.module.ts
 import { Module } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 
@@ -42,6 +44,6 @@ import { ProfileRepository } from '@infrastructure/persistence/profile/profile.r
 			useClass: ProfileRepository,
 		}
 	],
-	exports: [PrismaService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache, IProfileRepository],
+	exports: [PrismaService, RedisService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache, IProfileRepository],
 })
 export class InfrastructureModule { }

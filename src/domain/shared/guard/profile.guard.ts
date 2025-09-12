@@ -35,6 +35,7 @@ export class ProfileGuard implements CanActivate {
 
         // Tenta pegar perfis do cache
         let userProfiles = await this.redis.getProfiles(user.sub);
+        console.log("1. Tenta pegar permissões do Redis", userProfiles);
 
         if (!userProfiles) {
             // Se não tiver, atualiza cache via UserAccessService

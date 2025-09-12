@@ -1,3 +1,4 @@
+//src\application\user\user-access.service.ts
 import { Module } from '@nestjs/common';
 import { InfrastructureModule } from '@infrastructure/infrastructure.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -6,14 +7,11 @@ import { SupplyItemService } from '@application/supply-item/services/supply-item
 import { AuthService } from '@application/auth/services/auth.service';
 import { UserService } from '@application/user/user.service';
 import { UserAccessService } from '@application/user/user-access.service';
-import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
-import { RedisService } from '@infrastructure/cache/redis.service';
-
 import { ProfileService } from '@application/profile/services/profile.service';
 
 @Module({
 	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
-	providers: [PrismaService, RedisService, AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
-	exports: [PrismaService, RedisService, AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
+	providers: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
+	exports: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
 })
 export class ApplicationModule { }

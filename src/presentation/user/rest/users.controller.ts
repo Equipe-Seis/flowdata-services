@@ -82,7 +82,7 @@ export class UsersController {
 	@ApiResponse({ status: 404, description: 'User not found' })
 
 
-	@UseGuards(JwtGuard)
+	@UseGuards(JwtGuard, ProfileGuard)
 	@Get(':id')
 	@HasPermission('read_user')
 	async getUserById(@Param('id') id: string) {
