@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { Result } from '@domain/shared/result/result.pattern';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
 import { SignInDto } from '@application/auth/dto';
-import { UserAccessService } from '@application/user/user-access.service';
+import { UserAccessService } from '@application/user/services/user-access.service';
 
 @Injectable()
 export class AuthService {

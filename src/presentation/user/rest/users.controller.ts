@@ -16,7 +16,7 @@ import {
 	ClassSerializerInterceptor
 } from '@nestjs/common';
 
-import { UserService } from '@application/user/user.service';
+import { UserService } from '@application/user/services/user.service';
 import { JwtGuard } from '@domain/shared/guard';
 import { ProfileGuard } from '@infrastructure/auth/guards/profile.guard';
 import { CreateUserDto } from '@application/user/dto/create-user.dto';

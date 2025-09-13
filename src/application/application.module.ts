@@ -4,8 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { DomainModule } from '@domain/domain.module';
 import { SupplyItemService } from '@application/supply-item/services/supply-item.service';
 import { AuthService } from '@application/auth/services/auth.service';
-import { UserService } from '@application/user/user.service';
-import { UserAccessService } from '@application/user/user-access.service';
+import { UserService } from '@application/user/services/user.service';
+import { UserAccessService } from '@application/user/services/user-access.service';
 import { ProfileService } from '@application/profile/services/profile.service';
 
 @Module({

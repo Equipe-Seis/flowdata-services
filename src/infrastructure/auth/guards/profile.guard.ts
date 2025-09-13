@@ -9,7 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { PROFILES_KEY } from '@infrastructure/auth/decorators/profile.decorator';
 import { IUserCache } from '@application/user/cache/iuser.cache';
-import { UserAccessService } from '@application/user/user-access.service';
+import { UserAccessService } from '@application/user/services/user-access.service';
 
 @Injectable()
 export class ProfileGuard implements CanActivate {
