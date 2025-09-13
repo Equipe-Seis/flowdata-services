@@ -16,7 +16,8 @@ import { UserCache } from '@infrastructure/cache/user.cache';
 import { IUserCache } from '@application/user/cache/iuser.cache';
 import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
 import { ProfileRepository } from '@infrastructure/persistence/profile/profile.repository';
-
+import { ISupplierRepository } from '@application/supplier/persistence/isupplier.repository';
+import { SupplierRepository } from '@infrastructure/persistence/supplier/supplier.repository';
 
 @Module({
 	imports: [RedisModule],
@@ -42,8 +43,12 @@ import { ProfileRepository } from '@infrastructure/persistence/profile/profile.r
 		{
 			provide: IProfileRepository,
 			useClass: ProfileRepository,
+		},
+		{
+			provide: ISupplierRepository,
+			useClass: SupplierRepository,
 		}
 	],
-	exports: [PrismaService, RedisService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache, IProfileRepository],
+	exports: [PrismaService, RedisService, IUserRepository, IPersonRepository, ISupplyItemRepository, IUserCache, IProfileRepository, ISupplierRepository],
 })
 export class InfrastructureModule { }

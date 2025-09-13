@@ -4,7 +4,7 @@ import { ProfileModel } from '@domain/profile/models/profile.model';
 
 export class UserMapper {
 	static toDomain(user: UserWithPerson): UserModel {
-		const person = user.person; // Já é PersonModel agora
+		const person = user.person;
 
 		const profiles = user.userProfiles.map(up => {
 			const permissionNames = up.profile.permissions.map(p => p.permission.name);

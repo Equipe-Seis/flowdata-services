@@ -7,10 +7,11 @@ import { AuthService } from '@application/auth/services/auth.service';
 import { UserService } from '@application/user/services/user.service';
 import { UserAccessService } from '@application/user/services/user-access.service';
 import { ProfileService } from '@application/profile/services/profile.service';
+import { SupplierService } from '@application/supplier/services/supplier.service';
 
 @Module({
 	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
-	providers: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
-	exports: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService],
+	providers: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService, SupplierService],
+	exports: [AuthService, SupplyItemService, UserService, UserAccessService, ProfileService, SupplierService],
 })
 export class ApplicationModule { }
