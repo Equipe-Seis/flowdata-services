@@ -5,6 +5,8 @@ import { UserModel } from '@domain/user/models/user.model';
 import { Person, User } from '@prisma/client';
 
 export interface IUserRepository {
+
+	findAll(): Promise<UserWithPerson[]>;
 	/**
 	 * Cria e salva um novo usuário
 	 * @param email email do usuário

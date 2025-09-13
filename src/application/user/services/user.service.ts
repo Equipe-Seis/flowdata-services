@@ -32,6 +32,10 @@ export class UserService {
 		private readonly userAccessService: UserAccessService
 	) { }
 
+	async getAllUsers() {
+		return this.userRepository.findAll();
+	}
+
 	async createUser(dto: CreateUserDto): Promise<Result<User>> {
 		const personDto = dto.person;
 

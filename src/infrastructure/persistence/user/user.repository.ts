@@ -1,4 +1,5 @@
 
+//src\infrastructure\persistence\user\user.repository.ts
 import { Injectable } from '@nestjs/common';
 import { UserModel } from '@domain/user/models/user.model';
 import { Result } from '@domain/shared/result/result.pattern';
@@ -8,7 +9,7 @@ import { User } from '@prisma/client';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
 
-// Tipo auxiliar para representar os dados do Prisma
+
 type PrismaUserWithPerson = {
 	id: number;
 	hash: string;
@@ -55,6 +56,29 @@ function convertPrismaToUserWithPerson(prismaUser: PrismaUserWithPerson): UserWi
 export class UserRepository
 	extends PrismaRepository
 	implements IUserRepository {
+
+	async findAll(): Promise<UserWithPerson[]> {
+		const users = await this.prismaService.user.findMany({
+			include: {
+				person: true,
+				userProfiles: {
+					include: {
+						profile: {
+							include: {
+								permissions: {
+									include: {
+										permission: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		return users.map((user) => convertPrismaToUserWithPerson(user));
+	}
 	async create(user: UserModel, personId: number): Promise<Result<User>> {
 		try {
 			const createdUser = await this.prismaService.user.create({
