@@ -8,6 +8,49 @@ import { User } from '@prisma/client';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
 
+// Tipo auxiliar para representar os dados do Prisma
+type PrismaUserWithPerson = {
+	id: number;
+	hash: string;
+	person: {
+		id: number;
+		name: string;
+		personType: any;
+		documentNumber: string;
+		birthDate: Date | null;
+		status: any;
+		email: string | null;
+	};
+	userProfiles: {
+		profile: {
+			id: number;
+			name: string;
+			description: string;
+			permissions: {
+				permission: {
+					name: string;
+				};
+			}[];
+		};
+	}[];
+};
+
+function convertPrismaToUserWithPerson(prismaUser: PrismaUserWithPerson): UserWithPerson {
+	return {
+		id: prismaUser.id,
+		hash: prismaUser.hash,
+		person: PersonMapper.fromPrisma(prismaUser.person),
+		userProfiles: prismaUser.userProfiles.map(up => ({
+			profile: {
+				id: up.profile.id,
+				name: up.profile.name,
+				description: up.profile.description,
+				permissions: up.profile.permissions
+			}
+		}))
+	};
+}
+
 @Injectable()
 export class UserRepository
 	extends PrismaRepository
@@ -43,7 +86,7 @@ export class UserRepository
 			return Result.BadRequest('Invalid user ID.');
 		}
 
-		return this.execute<UserWithPerson | null>(() =>
+		const result = await this.execute<PrismaUserWithPerson | null>(() =>
 			this.prismaService.user.findUnique({
 				where: { id },
 				include: {
@@ -64,10 +107,22 @@ export class UserRepository
 				},
 			}),
 		);
+
+		if (result.isFailure) {
+			return result as Result<UserWithPerson | null>;
+		}
+
+		const prismaUser = result.getValue();
+		if (!prismaUser) {
+			return Result.Ok(null);
+		}
+
+		const userWithPerson = convertPrismaToUserWithPerson(prismaUser);
+		return Result.Ok(userWithPerson);
 	}
 
 	async findByEmail(email: string): Promise<Result<UserWithPerson | null>> {
-		return this.execute<UserWithPerson | null>(() =>
+		const result = await this.execute<PrismaUserWithPerson | null>(() =>
 			this.prismaService.user.findFirst({
 				where: {
 					person: {
@@ -92,14 +147,26 @@ export class UserRepository
 				},
 			}),
 		);
+
+		if (result.isFailure) {
+			return result as Result<UserWithPerson | null>;
+		}
+
+		const prismaUser = result.getValue();
+		if (!prismaUser) {
+			return Result.Ok(null);
+		}
+
+		const userWithPerson = convertPrismaToUserWithPerson(prismaUser);
+		return Result.Ok(userWithPerson);
 	}
 
-	async findByDocumentNumber(email: string): Promise<Result<UserWithPerson | null>> {
-		return this.execute<UserWithPerson | null>(() =>
+	async findByDocumentNumber(documentNumber: string): Promise<Result<UserWithPerson | null>> {
+		const result = await this.execute<PrismaUserWithPerson | null>(() =>
 			this.prismaService.user.findFirst({
 				where: {
 					person: {
-						email,
+						documentNumber,
 					},
 				},
 				include: {
@@ -120,9 +187,21 @@ export class UserRepository
 				},
 			}),
 		);
+
+		if (result.isFailure) {
+			return result as Result<UserWithPerson | null>;
+		}
+
+		const prismaUser = result.getValue();
+		if (!prismaUser) {
+			return Result.Ok(null);
+		}
+
+		const userWithPerson = convertPrismaToUserWithPerson(prismaUser);
+		return Result.Ok(userWithPerson);
 	}
 
-	async update(id: number, user: UserModel): Promise<Result<User>> {
+	async update(id: number, user: UserModel): Promise<Result<UserWithPerson | null>> {
 		const prisma = this.prismaService;
 
 		try {
@@ -132,7 +211,7 @@ export class UserRepository
 				return Result.Fail('Person ID not found for the user.');
 			}
 
-			const updatedUser = await prisma.$transaction(async (tx) => {
+			await prisma.$transaction(async (tx) => {
 				const updatedPerson = await tx.person.update({
 					where: { id: personId },
 					data: {
@@ -145,7 +224,7 @@ export class UserRepository
 					},
 				});
 
-				const updatedUser = await tx.user.update({
+				await tx.user.update({
 					where: { id: id },
 					data: {
 						hash: user.hash,
@@ -167,8 +246,13 @@ export class UserRepository
 						data: userProfilesData,
 					});
 				}
-				return updatedUser;
 			});
+
+			// Buscar o usuário atualizado com todos os relacionamentos
+			const updatedUser = await this.findUserWithProfiles(id);
+			if (!updatedUser) {
+				return Result.NotFound('User not found after update.');
+			}
 
 			return Result.Ok(updatedUser);
 		} catch (error) {
@@ -189,7 +273,7 @@ export class UserRepository
 	}
 
 	async findUserWithProfiles(userId: number): Promise<UserWithPerson | null> {
-		return this.prismaService.user.findUnique({
+		const prismaUser = await this.prismaService.user.findUnique({
 			where: { id: userId },
 			include: {
 				person: true,
@@ -208,5 +292,11 @@ export class UserRepository
 				},
 			},
 		});
+
+		if (!prismaUser) {
+			return null;
+		}
+
+		return convertPrismaToUserWithPerson(prismaUser);
 	}
 }

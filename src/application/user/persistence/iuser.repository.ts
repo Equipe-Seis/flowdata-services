@@ -39,9 +39,9 @@ export interface IUserRepository {
 	/**
 	 * Atualiza dados do usuário
 	 * @param user entidade User com dados atualizados
-	 * @returns Result<User> - Resultado da operação, com sucesso ou falha
+	 * @returns Result<UserWithPerson | null> - Resultado da operação, com sucesso ou falha
 	 */
-	update(id: number, user: UserModel): Promise<Result<User>>;
+	update(id: number, user: UserModel): Promise<Result<UserWithPerson | null>>;
 
 	/**
 	 * Remove usuário pelo ID

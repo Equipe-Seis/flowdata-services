@@ -6,8 +6,6 @@ import {
 import * as argon from 'argon2';
 
 import { User } from '@prisma/client';
-import { PersonType } from '@domain/person/enums/person-type.enum';
-import { Status } from '@domain/shared/enums/status.enum';
 
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
@@ -22,6 +20,7 @@ import { UserMapper } from '@application/user/mappers/user.mapper';
 import { UserAccessService } from '@application/user/user-access.service';
 import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
 import { PersonModel } from '@domain/person/models/person.model';
+import { PersonMapper } from '@application/person/mappers/person.mapper';
 
 @Injectable()
 export class UserService {
@@ -72,16 +71,8 @@ export class UserService {
 			}
 		}
 
-		const personResult = await this.personRepository.create(
-			new PersonModel(
-				personDto.name,
-				PersonType.Individual,
-				personDto.documentNumber,
-				personDto.birthDate ? new Date(personDto.birthDate) : null,
-				Status.Active,
-				personDto.email,
-			),
-		);
+		const personData = PersonMapper.fromDto(personDto);
+		const personResult = await this.personRepository.create(personData);
 
 		if (personResult.isFailure) {
 			return Result.Fail(personResult.getError());
@@ -106,7 +97,7 @@ export class UserService {
 		return result;
 	}
 
-	async getMe(userId: number): Promise<Result<User | null>> {
+	async getMe(userId: number): Promise<Result<UserWithPerson | null>> {
 
 		if (!userId || typeof userId !== 'number') {
 			return Result.BadRequest('Invalid user ID.');
@@ -132,7 +123,7 @@ export class UserService {
 		return result;
 	}
 
-	async findByEmail(email: string): Promise<Result<User | null>> {
+	async findByEmail(email: string): Promise<Result<UserWithPerson | null>> {
 		const result = await this.userRepository.findByEmail(email);
 
 		if (result.isFailure) {
@@ -170,7 +161,7 @@ export class UserService {
 	async updateUser(
 		id: number,
 		dto: UpdateUserDto,
-	): Promise<Result<User | null>> {
+	): Promise<Result<UserWithPerson | null>> {
 		const result = await this.userRepository.findById(id);
 
 		if (result.isFailure) {
