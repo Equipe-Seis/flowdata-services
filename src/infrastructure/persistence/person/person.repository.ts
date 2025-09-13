@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
-import { Person } from '@prisma/client';
+import { Person, Address, Contact } from '@prisma/client';
 import { PersonModel } from '@domain/person/models/person.model';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
+import { ContactModel } from '@domain/person/models/contact.model';
+import { AddressModel } from '@domain/person/models/address.model';
+import { AddressMapper } from '@application/person/mappers/address.mapper';
+import { ContactMapper } from '@application/person/mappers/contact.mapper';
+
 
 function convertPersonToModel(person: Person): PersonModel {
 	return new PersonModel(
@@ -116,5 +121,87 @@ export class PersonRepository
 		);
 
 		return convertResultToPersonModelOrNull(result);
+	}
+
+
+	async deleteContacts(personId: number): Promise<Result<void>> {
+		try {
+			await this.prismaService.contact.deleteMany({
+				where: { personId }
+			});
+			return Result.Ok(undefined);
+		} catch (error) {
+			return Result.Fail(
+				error instanceof Error ? error.message : 'Failed to delete contacts.'
+			);
+		}
+	}
+
+	async deleteAddresses(personId: number): Promise<Result<void>> {
+		try {
+			await this.prismaService.address.deleteMany({
+				where: { personId }
+			});
+			return Result.Ok(undefined);
+		} catch (error) {
+			return Result.Fail(
+				error instanceof Error ? error.message : 'Failed to delete addresses.'
+			);
+		}
+	}
+
+	async createAddress(
+		personId: number,
+		address: AddressModel,
+		linkType: 'supplier' | 'customer' | 'person' = 'person'
+	): Promise<Result<AddressModel>> {
+		try {
+			const created = await this.prismaService.address.create({
+				data: {
+					personId,
+					street: address.street,
+					district: address.district,
+					city: address.city,
+					state: address.state,
+					postalCode: address.postalCode,
+					linkType,
+				},
+			});
+
+			const mappedAddress = AddressMapper.fromPrisma(created);
+
+			return Result.Ok(mappedAddress);
+		} catch (error) {
+			return Result.Fail(
+				'Failed to create address: ' + (error instanceof Error ? error.message : 'Unknown error')
+			);
+		}
+	}
+
+	async createContact(
+		personId: number,
+		contact: ContactModel,
+		linkType: 'supplier' | 'customer' | 'person' = 'person'
+	): Promise<Result<ContactModel>> {
+		try {
+			const created = await this.prismaService.contact.create({
+				data: {
+					personId,
+					primary: contact.primary ?? false,
+					type: contact.type,
+					value: contact.value,
+					note: contact.note ?? undefined,
+					linkType,
+				},
+			});
+
+			const mappedContact = ContactMapper.fromPrisma(created);
+
+			return Result.Ok(mappedContact);
+		} catch (error) {
+			return Result.Fail(
+				'Failed to create contact: ' + (error instanceof Error ? error.message : 'Unknown error')
+			);
+		}
 	}
 }

@@ -5,7 +5,7 @@ import { PersonType } from '@domain/person/enums/person-type.enum';
 import { Status } from '@domain/shared/enums/status.enum';
 import { ISupplierRepository } from '@application/supplier/persistence/isupplier.repository';
 import { SupplierSummary } from '@domain/supplier/types/supplierSummary.type';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { SupplierMapper } from '../mappers/supplier.mapper';
 import { Result } from '@domain/shared/result/result.pattern';
 import { SupplierModel } from '@domain/supplier/models/supplier.model';
@@ -14,6 +14,7 @@ import { PersonMapper } from '@application/person/mappers/person.mapper';
 import { SupplierWithPerson } from '@domain/supplier/types/supplierPerson.type';
 import { ContactMapper } from '@application/person/mappers/contact.mapper';
 import { AddressMapper } from '@application/person/mappers/address.mapper';
+import { UpdateSupplierDto } from '@application/supplier/dto/update-supplier.dto';
 
 @Injectable()
 export class SupplierService {
@@ -77,26 +78,90 @@ export class SupplierService {
 
 		const rawSupplier = createResult.getValue();
 
-		const contactsModels = (dto.contacts ?? []).map(ContactMapper.fromDto);
-		const addressesModels = (dto.addresses ?? []).map(AddressMapper.fromDto);
+		// Buscar o supplier completo com relacionamentos
+		const supplierResult = await this.supplierRepository.findById(rawSupplier.id);
+		if (supplierResult.isFailure) return Result.Fail(supplierResult.getError());
 
-		const supplierWithPerson: SupplierWithPerson = {
-			id: rawSupplier.id,
-			tradeName: rawSupplier.tradeName ?? undefined,
-			openingDate: rawSupplier.openingDate ?? undefined,
-			type: rawSupplier.type ?? undefined,
-			size: rawSupplier.size ?? undefined,
-			legalNature: rawSupplier.legalNature ?? undefined,
-			person: {
-				...person
-			},
-			contacts: contactsModels,
-			addresses: addressesModels,
-		};
+		const supplier = supplierResult.getValue();
+		if (!supplier) return Result.Fail('Failed to retrieve created supplier.');
 
-		const supplierDomainModel = SupplierMapper.toDomain(supplierWithPerson);
+		const supplierDomainModel = SupplierMapper.toDomain(supplier);
 		return Result.Ok(supplierDomainModel);
 	}
+
+	async findById(id: number): Promise<Result<SupplierModel>> {
+		const supplierResult = await this.supplierRepository.findById(id);
+		if (supplierResult.isFailure) return Result.Fail(supplierResult.getError());
+
+		const supplier = supplierResult.getValue();
+		if (!supplier) return Result.Fail('Supplier not found.');
+
+		const supplierDomainModel = SupplierMapper.toDomain(supplier);
+		return Result.Ok(supplierDomainModel);
+	}
+
+	async updateSupplier(id: number, dto: UpdateSupplierDto): Promise<Result<SupplierModel>> {
+		const supplierResult = await this.supplierRepository.findById(id);
+		if (supplierResult.isFailure) return Result.Fail(supplierResult.getError());
+
+		const existingSupplier = supplierResult.getValue();
+		if (!existingSupplier) return Result.Fail('Supplier not found.');
+
+		const personData = PersonMapper.fromUpdateDto(dto.person);
+
+		const supplierModel = SupplierMapper.fromDto(dto, personData);
+
+		const updateResult = await this.supplierRepository.update(id, supplierModel);
+		if (updateResult.isFailure) return Result.Fail(updateResult.getError());
+
+		if (!existingSupplier.person.id) {
+			return Result.Fail('Person ID is undefined.');
+		}
+
+		const personId = existingSupplier.person.id;
+
+		await this.personRepository.deleteContacts(personId);
+		await this.personRepository.deleteAddresses(personId);
+
+		for (const contactDto of dto.contacts ?? []) {
+			const contactModel = ContactMapper.fromDto(contactDto);
+			const createContactResult = await this.personRepository.createContact(personId, contactModel);
+
+			if (createContactResult.isFailure) {
+				return Result.Fail(createContactResult.getError());
+			}
+		}
+
+		for (const addressDto of dto.addresses ?? []) {
+			const addressModel = AddressMapper.fromDto(addressDto);
+			const createAddressResult = await this.personRepository.createAddress(personId, addressModel);
+
+			if (createAddressResult.isFailure) {
+				return Result.Fail(createAddressResult.getError());
+			}
+		}
+
+		const updatedSupplier = updateResult.getValue();
+		if (!updatedSupplier) return Result.Fail('Failed to update supplier.');
+
+		return Result.Ok(SupplierMapper.toDomain(updatedSupplier));
+	}
+
+	async deleteSupplier(id: number): Promise<Result<void>> {
+		const supplierResult = await this.supplierRepository.findById(id);
+		if (supplierResult.isFailure) return Result.Fail(supplierResult.getError());
+
+		const supplier = supplierResult.getValue();
+		if (!supplier) return Result.Fail('Supplier not found.');
+
+		const deleteResult = await this.supplierRepository.delete(id);
+		if (deleteResult.isFailure) return Result.Fail(deleteResult.getError());
+
+		return Result.Ok(undefined);
+	}
+
+
+
 
 
 }

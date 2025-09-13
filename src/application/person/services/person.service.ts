@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonDto } from '@application/person/dto/create-person.dto';
 import { Result } from '@domain/shared/result/result.pattern';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { PersonModel } from '@domain/person/models/person.model';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
 

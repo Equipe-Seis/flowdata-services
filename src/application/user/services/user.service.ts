@@ -10,7 +10,7 @@ import { User } from '@prisma/client';
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { UserModel } from '@domain/user/models/user.model';
 import { ProfileModel } from '@domain/profile/models/profile.model';

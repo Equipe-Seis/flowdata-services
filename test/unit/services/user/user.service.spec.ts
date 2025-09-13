@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 
 import { Result } from '@domain/shared/result/result.pattern';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 
 jest.mock('bcrypt');

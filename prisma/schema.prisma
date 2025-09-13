@@ -24,7 +24,7 @@ model Person {
   Supplier Supplier?
   User     User?
 
-  adresses Address[]
+  addresses Address[]
   contacts Contact[]
 }
 

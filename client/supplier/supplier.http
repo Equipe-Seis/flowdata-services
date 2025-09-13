@@ -1,0 +1,108 @@
+### Supplier CRUD Operations
+
+### 1. Get all suppliers (paginated)
+GET http://localhost:3000/suppliers?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### 2. Get supplier by ID
+GET http://localhost:3000/suppliers/1
+Authorization: Bearer {{token}}
+
+### 3. Create new supplier
+POST http://localhost:3000/suppliers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "person": {
+    "name": "Fornecedor Exemplo LTDA",
+    "personType": "JURIDICA",
+    "documentNumber": "12345678000195",
+    "email": "contato@fornecedor.com",
+    "birthDate": "2020-01-01",
+    "status": "ACTIVE"
+  },
+  "tradeName": "Fornecedor Exemplo",
+  "openingDate": "2020-01-01",
+  "type": "DISTRIBUIDOR",
+  "size": "MEDIA",
+  "legalNature": "LTDA",
+  "contacts": [
+    {
+      "type": "PHONE",
+      "value": "(11) 99999-9999",
+      "linkType": "WORK",
+      "primary": true,
+      "note": "Telefone principal"
+    },
+    {
+      "type": "EMAIL",
+      "value": "contato@fornecedor.com",
+      "linkType": "WORK",
+      "primary": true,
+      "note": "Email principal"
+    }
+  ],
+  "addresses": [
+    {
+      "street": "Rua das Flores, 123",
+      "district": "Centro",
+      "city": "São Paulo",
+      "state": "SP",
+      "postalCode": "01234-567",
+      "linkType": "WORK"
+    }
+  ]
+}
+
+### 4. Update supplier
+PUT http://localhost:3000/suppliers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "person": {
+    "name": "Fornecedor Exemplo Atualizado LTDA",
+    "personType": "JURIDICA",
+    "documentNumber": "12345678000195",
+    "email": "novo@fornecedor.com",
+    "birthDate": "2020-01-01",
+    "status": "ACTIVE"
+  },
+  "tradeName": "Fornecedor Exemplo Atualizado",
+  "openingDate": "2020-01-01",
+  "type": "FABRICANTE",
+  "size": "GRANDE",
+  "legalNature": "LTDA",
+  "contacts": [
+    {
+      "type": "PHONE",
+      "value": "(11) 88888-8888",
+      "linkType": "WORK",
+      "primary": true,
+      "note": "Novo telefone"
+    }
+  ],
+  "addresses": [
+    {
+      "street": "Avenida Principal, 456",
+      "district": "Vila Nova",
+      "city": "São Paulo",
+      "state": "SP",
+      "postalCode": "04567-890",
+      "linkType": "WORK"
+    }
+  ]
+}
+
+### 5. Delete supplier
+DELETE http://localhost:3000/suppliers/1
+Authorization: Bearer {{token}}
+
+### 6. Get suppliers by email (using repository method)
+# This would be used internally by the service
+# GET http://localhost:3000/suppliers/by-email/contato@fornecedor.com
+
+### 7. Get suppliers by document number (using repository method)
+# This would be used internally by the service
+# GET http://localhost:3000/suppliers/by-document/12345678000195

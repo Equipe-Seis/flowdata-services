@@ -23,11 +23,13 @@ import {
 } from '@nestjs/swagger';
 import { SupplierService } from '@application/supplier/services/supplier.service';
 import { CreateSupplierDto } from '@application/supplier/dto/create-supplier.dto';
+import { UpdateSupplierDto } from '@application/supplier/dto/update-supplier.dto';
 import { SupplierSummary } from '@domain/supplier/types/supplierSummary.type';
 import { JwtGuard } from '@domain/shared/guard';
 import { HasPermission } from '@infrastructure/auth/decorators/permission.decorator';
 import { HasProfile } from '@infrastructure/auth/decorators/profile.decorator';
 import { ProfileGuard } from '@infrastructure/auth/guards/profile.guard';
+
 
 @ApiTags('Suppliers')
 @Controller('suppliers')
@@ -61,6 +63,44 @@ export class SupplierController {
     @HasProfile('admin')
     async createSupplier(@Body() createSupplierDto: CreateSupplierDto) {
         const result = await this.supplierService.createSupplier(createSupplierDto);
+        return result.mapToPresentationResult();
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'Get supplier by ID' })
+    @ApiResponse({ status: 200, description: 'Supplier retrieved successfully' })
+    @ApiResponse({ status: 404, description: 'Supplier not found' })
+    @UseGuards(JwtGuard, ProfileGuard)
+    @HasProfile('admin')
+    async findById(@Param('id', ParseIntPipe) id: number) {
+        const result = await this.supplierService.findById(id);
+        return result.mapToPresentationResult();
+    }
+
+    @Put(':id')
+    @ApiOperation({ summary: 'Update supplier' })
+    @ApiResponse({ status: 200, description: 'Supplier updated successfully' })
+    @ApiResponse({ status: 404, description: 'Supplier not found' })
+    @ApiResponse({ status: 400, description: 'Invalid input data' })
+    @UseGuards(JwtGuard, ProfileGuard)
+    @HasProfile('admin')
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() dto: UpdateSupplierDto
+    ) {
+        const result = await this.supplierService.updateSupplier(id, dto);
+        return result.mapToPresentationResult();
+    }
+
+    @Delete(':id')
+    @ApiOperation({ summary: 'Delete supplier' })
+    @ApiResponse({ status: 200, description: 'Supplier deleted successfully' })
+    @ApiResponse({ status: 404, description: 'Supplier not found' })
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(JwtGuard, ProfileGuard)
+    @HasProfile('admin')
+    async delete(@Param('id', ParseIntPipe) id: number) {
+        const result = await this.supplierService.deleteSupplier(id);
         return result.mapToPresentationResult();
     }
 }

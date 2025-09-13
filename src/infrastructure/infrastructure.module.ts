@@ -7,7 +7,7 @@ import { PersonRepository } from '@infrastructure/persistence/person/person.repo
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
 import { SupplyItemRepository } from '@infrastructure/persistence/supply-item/repository/supply-item.repository';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { UserRepository } from '@infrastructure/persistence/user/user.repository';
 import { RedisModule } from '@infrastructure/cache/redis.module';
 import { RedisService } from '@infrastructure/cache/redis.service';

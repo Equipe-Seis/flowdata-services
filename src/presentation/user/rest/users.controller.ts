@@ -32,14 +32,28 @@ import { HasProfile } from '@infrastructure/auth/decorators/profile.decorator';
 
 @ApiTags('Users')
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
 	constructor(private readonly userService: UserService) { }
+
+	private transformUser(user: any) {
+		const transformedUser = plainToInstance(ResponseUserDto, user, {
+			excludeExtraneousValues: true,
+		});
+
+		// Transforma userProfiles para extrair apenas o profile
+		if (transformedUser.userProfiles && user.userProfiles) {
+			transformedUser.userProfiles = user.userProfiles.map((up: any) => up.profile);
+		}
+
+		return transformedUser;
+	}
 
 
 	@ApiOperation({ summary: 'Get all users' })
 	@ApiQuery({ name: 'page', required: false, type: Number })
 	@ApiQuery({ name: 'limit', required: false, type: Number })
-	@ApiResponse({ status: 200, description: 'List of users successfully returned', type: [ResponseUserDto] })
+	@ApiResponse({ status: 200, description: 'List of users successfully returned' })
 	@ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid' })
 	@ApiForbiddenResponse({ description: 'Access denied.' })
 	@Get()
@@ -74,43 +88,54 @@ export class UsersController {
 	@ApiResponse({
 		status: 200,
 		description: 'Authenticated user returned successfully',
+		type: ResponseUserDto,
 	})
 	@ApiResponse({
 		status: 401,
 		description: 'Unauthorized – invalid or missing token',
 	})
-
 	@UseGuards(JwtGuard, ProfileGuard)
 	@Get('me')
 	@HasProfile('admin', 'supply_supervisor')
 	async getMe(@Req() req: Request) {
 		const userId = req.user?.['sub'];
-		console.log("@getMe", userId);
-		const user = await this.userService.getMe(userId);
-		const plainUser = { ...user };
-		//console.log('user recebido do service:', user);
-		//console.log('user recebido do service:', plainUser);
-		//return plainToInstance(ResponseUserDto, plainUser, {
-		//excludeExtraneousValues: true,
-		//});
-		//const plainUser = { ...user.value };
-		//delete plainUser.value.hash;
-		return plainToInstance(ResponseUserDto, plainUser);
+		const result = await this.userService.getMe(userId);
+
+		if (result.isFailure) {
+			return result.mapToPresentationResult();
+		}
+
+		const user = result.getValue();
+		if (!user) {
+			return { message: 'User not found' };
+		}
+
+		return this.transformUser(user);
 	}
 
 	@ApiOperation({ summary: 'Get a user by ID' })
 	@ApiResponse({
 		status: 200,
 		description: 'User found and returned successfully',
+		type: ResponseUserDto,
 	})
 	@ApiResponse({ status: 404, description: 'User not found' })
-
-
 	@UseGuards(JwtGuard, ProfileGuard)
 	@Get(':id')
 	@HasPermission('read_user')
 	async getUserById(@Param('id') id: string) {
-		return this.userService.findById(Number(id));
+		const result = await this.userService.findById(Number(id));
+
+		if (result.isFailure) {
+			return result.mapToPresentationResult();
+		}
+
+		const user = result.getValue();
+		if (!user) {
+			return { message: 'User not found' };
+		}
+
+		return this.transformUser(user);
 	}
 
 	@ApiOperation({ summary: 'Update a user by ID' })
