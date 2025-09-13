@@ -276,7 +276,6 @@ export class UserRepository
 				}
 			});
 
-			// Buscar o usuário atualizado com todos os relacionamentos
 			const updatedUser = await this.findUserWithProfiles(id);
 			if (!updatedUser) {
 				return Result.NotFound('User not found after update.');

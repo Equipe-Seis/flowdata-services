@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+
 import { CreateSupplierDto } from '@application/supplier/dto/create-supplier.dto';
 import { PersonType } from '@domain/person/enums/person-type.enum';
 import { Status } from '@domain/shared/enums/status.enum';

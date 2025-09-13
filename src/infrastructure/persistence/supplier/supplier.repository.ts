@@ -44,10 +44,31 @@ export class SupplierRepository
 	}
 
 
-	async create(user: SupplierModel, personId: number): Promise<Result<Supplier>> {
-		// Stub temporário: retorna um Result "success" falso
-		return Result.Ok({} as Supplier);
+	async create(
+		user: SupplierModel,
+		personId: number,
+		tx?: any, // Recebe o cliente de transação do Prisma (se não passado, usa this.prismaService)
+	): Promise<Result<Supplier>> {
+		const client = tx ?? this.prismaService;
+
+		try {
+			const supplier = await client.supplier.create({
+				data: {
+					tradeName: user.tradeName,
+					openingDate: user.openingDate,
+					type: user.type,
+					size: user.size,
+					legalNature: user.legalNature,
+					personId: personId,
+				},
+			});
+
+			return Result.Ok(supplier);
+		} catch (error) {
+			return Result.Fail('Failed to create supplier: ' + (error instanceof Error ? error.message : 'Unknown'));
+		}
 	}
+
 
 	async findById(id: number): Promise<Result<SupplierWithPerson | null>> {
 		return Result.Ok(null);
