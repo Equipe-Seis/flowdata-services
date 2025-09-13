@@ -1,5 +1,6 @@
 
-import { Status, PersonType } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 import { Exclude, Expose } from 'class-transformer';
 //@Exclude()
 export class ResponseUserDto {

@@ -1,4 +1,5 @@
-import { Status, PersonType } from '@prisma/client';
+import { PersonType } from '../enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 
 export class PersonModel {
     constructor(
@@ -6,7 +7,7 @@ export class PersonModel {
         public personType: PersonType,
         public documentNumber: string,
         public birthDate: Date | null,
-        public status: Status = Status.active,
+        public status: Status = Status.Active,
         public email?: string | null,
         public id?: number,
     ) { }

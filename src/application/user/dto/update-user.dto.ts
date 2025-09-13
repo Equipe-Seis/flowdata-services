@@ -10,7 +10,8 @@ import {
     ArrayNotEmpty,
     IsNumber
 } from 'class-validator';
-import { Status, PersonType } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 export class UpdateUserDto {
 

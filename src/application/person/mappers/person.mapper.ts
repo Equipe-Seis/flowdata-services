@@ -1,27 +1,50 @@
-import { CreatePersonDto } from "@application/person/dto/create-person.dto";
+import {
+    PersonType as PrismaPersonType,
+    Status as PrismaStatus,
+    Person as PrismaPerson,
+} from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 import { PersonModel } from '@domain/person/models/person.model';
-import { Person } from "@prisma/client";
+import { CreatePersonDto } from '@application/person/dto/create-person.dto';
 
 export class PersonMapper {
+    static toPrismaPersonType(type: PersonType): PrismaPersonType {
+        return type as PrismaPersonType;
+    }
+
+    static toDomainPersonType(type: PrismaPersonType): PersonType {
+        return type as PersonType;
+    }
+
+    static toPrismaStatus(status: Status): PrismaStatus {
+        return status as PrismaStatus;
+    }
+
+    static toDomainStatus(status: PrismaStatus): Status {
+        return status as Status;
+    }
+
     static fromDto(dto: CreatePersonDto): PersonModel {
         return new PersonModel(
             dto.name,
             dto.personType,
             dto.documentNumber,
             dto.birthDate ? new Date(dto.birthDate) : null,
-            dto.status,
+            dto.status || Status.Active,
             dto.email,
-        )
+        );
     }
 
-    static fromPrisma(person: Person): PersonModel {
+    static fromPrisma(person: PrismaPerson): PersonModel {
         return new PersonModel(
             person.name,
-            person.personType,
+            this.toDomainPersonType(person.personType),
             person.documentNumber,
             person.birthDate,
-            person.status,
-            person.email ?? undefined,
-        )
-    } 
+            this.toDomainStatus(person.status),
+            person.email,
+            person.id,
+        );
+    }
 }

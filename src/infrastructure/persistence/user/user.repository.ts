@@ -6,6 +6,7 @@ import { IUserRepository } from '@application/user/persistence/iuser.repository'
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { User } from '@prisma/client';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
+import { PersonMapper } from '@application/person/mappers/person.mapper';
 
 @Injectable()
 export class UserRepository
@@ -136,10 +137,10 @@ export class UserRepository
 					where: { id: personId },
 					data: {
 						name: user.person.name,
-						personType: user.person.personType,
+						personType: PersonMapper.toPrismaPersonType(user.person.personType),
 						documentNumber: user.person.documentNumber,
 						birthDate: user.person.birthDate,
-						status: user.person.status,
+						status: PersonMapper.toPrismaStatus(user.person.status),
 						email: user.person.email,
 					},
 				});

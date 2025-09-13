@@ -3,11 +3,11 @@ import { Result } from '@domain/shared/result/result.pattern';
 import { Person } from '@prisma/client';
 
 export interface IPersonRepository {
-	create(data: PersonModel): Promise<Result<Person>>;
-	findAll(): Promise<Result<Person[]>>;
-	findById(id: number): Promise<Result<Person | null>>;
-	findByDocumentNumber(documentNumber: string): Promise<Result<Person | null>>;
-	findByEmail(email: string): Promise<Result<Person | null>>;
+	create(data: PersonModel): Promise<Result<PersonModel>>;
+	findAll(): Promise<Result<PersonModel[]>>;
+	findById(id: number): Promise<Result<PersonModel | null>>;
+	findByDocumentNumber(documentNumber: string): Promise<Result<PersonModel | null>>;
+	findByEmail(email: string): Promise<Result<PersonModel | null>>;
 }
 
 export const IPersonRepository = Symbol('IPersonRepository');

@@ -1,5 +1,6 @@
 import { PersonModel } from '@domain/person/models/person.model';
-import { PersonType, Status } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 
 export class SupplierModel extends PersonModel {
 	constructor(

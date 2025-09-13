@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSupplierDto } from '@application/supplier/dto/create-supplier.dto';
-import { PersonType, Status } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 import { ISupplierRepository } from '@application/supplier/persistence/isupplier.repository';
 import { SupplierModel } from '@domain/supplier/models/supplier.model';
 
 @Injectable()
 export class SupplierService {
-	constructor(private readonly supplierRepository: ISupplierRepository) {}
+	constructor(private readonly supplierRepository: ISupplierRepository) { }
 
 	async createSupplier(dto: CreateSupplierDto) {
 		const personDto = dto.person;
 
-		const personType = PersonType.individual;
-		const status = Status.active;
+		const personType = PersonType.Individual;
+		const status = Status.Active;
 
 		const supplierEntity = new SupplierModel(
 			personDto.name,

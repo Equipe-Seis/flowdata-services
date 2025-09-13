@@ -5,7 +5,9 @@ import {
 
 import * as argon from 'argon2';
 
-import { PersonType, Status, User } from '@prisma/client';
+import { User } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
@@ -19,6 +21,7 @@ import { RedisService } from '@infrastructure/cache/redis.service';
 import { UserMapper } from '@application/user/mappers/user.mapper';
 import { UserAccessService } from '@application/user/user-access.service';
 import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
+import { PersonModel } from '@domain/person/models/person.model';
 
 @Injectable()
 export class UserService {
@@ -69,14 +72,16 @@ export class UserService {
 			}
 		}
 
-		const personResult = await this.personRepository.create({
-			name: personDto.name,
-			documentNumber: personDto.documentNumber,
-			birthDate: personDto.birthDate ? new Date(personDto.birthDate) : null,
-			personType: PersonType.individual,
-			status: Status.active,
-			email: personDto.email,
-		});
+		const personResult = await this.personRepository.create(
+			new PersonModel(
+				personDto.name,
+				PersonType.Individual,
+				personDto.documentNumber,
+				personDto.birthDate ? new Date(personDto.birthDate) : null,
+				Status.Active,
+				personDto.email,
+			),
+		);
 
 		if (personResult.isFailure) {
 			return Result.Fail(personResult.getError());
@@ -87,6 +92,10 @@ export class UserService {
 		const person = personResult.getValue()!;
 		const profileModels = (dto.profiles || []).map(id => ({ id } as ProfileModel));
 		const user = new UserModel(person, passwordHash, profileModels);
+
+		if (!person.id) {
+			return Result.BadRequest('Person ID is required for user creation.');
+		}
 
 		const result = await this.userRepository.create(user, person.id);
 
