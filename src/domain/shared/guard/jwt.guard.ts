@@ -1,9 +1,9 @@
-//src\domain\shared\guard\jwt.guard.ts
+
 
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from '@domain/shared/decorator/public.decorator';
+import { IS_PUBLIC_KEY } from '@infrastructure/auth/decorators/public.decorator';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
@@ -17,11 +17,8 @@ export class JwtGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
     if (isPublic) {
-      // libera a rota pública sem verificar JWT
       return true;
     }
-
-    // se não for pública, usa o AuthGuard padrão para verificar JWT
     return super.canActivate(context);
   }
 }

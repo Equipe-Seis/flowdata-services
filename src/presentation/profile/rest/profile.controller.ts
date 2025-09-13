@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ProfileService } from '@application/profile/services/profile.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { Public } from '@domain/shared/decorator/public.decorator';
+import { Public } from '@infrastructure/auth/decorators/public.decorator';
 
 @ApiTags('Profiles')
 @Controller('profiles')

@@ -1,3 +1,5 @@
+
+//src\domain\shared\guard\profile.guard.ts
 import {
     CanActivate,
     ExecutionContext,
@@ -5,12 +7,12 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PERMISSIONS_KEY } from '../decorator/permission.decorator';
+import { PROFILES_KEY } from '@infrastructure/auth/decorators/profile.decorator';
 import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserAccessService } from '@application/user/user-access.service';
 
 @Injectable()
-export class PermissionGuard implements CanActivate {
+export class ProfileGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         @Inject(IUserCache) private readonly userCache: IUserCache,
@@ -18,29 +20,32 @@ export class PermissionGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
-            PERMISSIONS_KEY,
+        const requiredProfiles = this.reflector.getAllAndOverride<string[]>(
+            PROFILES_KEY,
             [context.getHandler(), context.getClass()],
         );
 
-        if (!requiredPermissions || requiredPermissions.length === 0) {
+        if (!requiredProfiles || requiredProfiles.length === 0) {
             return true;
         }
 
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
+
         if (!user?.sub) return false;
 
-        let userPermissions = await this.userCache.getPermissions(user.sub);
+        let userProfiles = await this.userCache.getProfiles(user.sub);
 
-        if (!userPermissions) {
+
+        if (!userProfiles) {
             await this.userAccessService.updateUserPermissionsCache(user.sub);
-            userPermissions = await this.userCache.getPermissions(user.sub);
+            userProfiles = await this.userCache.getProfiles(user.sub);
+
         }
 
-        if (!userPermissions) return false;
+        if (!userProfiles) return false;
 
-        return requiredPermissions.every(p => userPermissions.includes(p));
+        return requiredProfiles.some(profile => userProfiles.includes(profile));
     }
 }

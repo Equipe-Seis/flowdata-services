@@ -8,7 +8,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from '@application/auth/services/auth.service';
 import { SignInDto } from '@application/auth/dto';
-import { Public } from '@domain/shared/decorator/public.decorator';
+import { Public } from '@infrastructure/auth/decorators/public.decorator';
 
 @ApiTags('auth')
 @Controller('auth')

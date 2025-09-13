@@ -1,5 +1,3 @@
-
-//src\domain\shared\guard\profile.guard.ts
 import {
     CanActivate,
     ExecutionContext,
@@ -7,12 +5,12 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PROFILES_KEY } from '../decorator/profile.decorator';
+import { PERMISSIONS_KEY } from '@infrastructure/auth/decorators/permission.decorator';
 import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserAccessService } from '@application/user/user-access.service';
 
 @Injectable()
-export class ProfileGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         @Inject(IUserCache) private readonly userCache: IUserCache,
@@ -20,35 +18,29 @@ export class ProfileGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const requiredProfiles = this.reflector.getAllAndOverride<string[]>(
-            PROFILES_KEY,
+        const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+            PERMISSIONS_KEY,
             [context.getHandler(), context.getClass()],
         );
 
-        if (!requiredProfiles || requiredProfiles.length === 0) {
+        if (!requiredPermissions || requiredPermissions.length === 0) {
             return true;
         }
 
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> user.sub:', user.sub);
-
         if (!user?.sub) return false;
 
-        let userProfiles = await this.userCache.getProfiles(user.sub);
+        let userPermissions = await this.userCache.getPermissions(user.sub);
 
-        console.log('>>> Perfis do cache:', userProfiles, typeof userProfiles);
-
-        if (!userProfiles) {
+        if (!userPermissions) {
             await this.userAccessService.updateUserPermissionsCache(user.sub);
-            userProfiles = await this.userCache.getProfiles(user.sub);
-
-            console.log('>>> Perfis do cache:', userProfiles, typeof userProfiles);
+            userPermissions = await this.userCache.getPermissions(user.sub);
         }
 
-        if (!userProfiles) return false;
+        if (!userPermissions) return false;
 
-        return requiredProfiles.some(profile => userProfiles.includes(profile));
+        return requiredPermissions.every(p => userPermissions.includes(p));
     }
 }

@@ -9,8 +9,8 @@ import { ApplicationModule } from './application/application.module';
 
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './domain/shared/guard/jwt.guard';
-import { PermissionGuard } from './domain/shared/guard/permission.guard';
-import { ProfileGuard } from './domain/shared/guard/profile.guard';
+import { PermissionGuard } from '@infrastructure/auth/guards/permission.guard';
+import { ProfileGuard } from '@infrastructure/auth/guards/profile.guard';
 @Module({
   imports: [
     InfrastructureModule,
