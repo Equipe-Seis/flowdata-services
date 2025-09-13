@@ -13,7 +13,8 @@ import {
 	HttpStatus,
 	ParseIntPipe,
 	UseInterceptors,
-	ClassSerializerInterceptor
+	ClassSerializerInterceptor,
+	Query
 } from '@nestjs/common';
 
 import { UserService } from '@application/user/services/user.service';
@@ -23,7 +24,7 @@ import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import { ResponseUserDto } from '@application/user/dto/response-user.dto';
 import type { Request } from 'express';
-import { ApiTags, ApiOperation, ApiResponse, ApiUnauthorizedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiQuery } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { HasPermission } from '@infrastructure/auth/decorators/permission.decorator';
 import { HasProfile } from '@infrastructure/auth/decorators/profile.decorator';
@@ -36,14 +37,25 @@ export class UsersController {
 
 
 	@ApiOperation({ summary: 'Get all users' })
+	@ApiQuery({ name: 'page', required: false, type: Number })
+	@ApiQuery({ name: 'limit', required: false, type: Number })
 	@ApiResponse({ status: 200, description: 'List of users successfully returned', type: [ResponseUserDto] })
 	@ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid' })
 	@ApiForbiddenResponse({ description: 'Access denied.' })
 	@Get()
 	@UseGuards(JwtGuard, ProfileGuard)
 	@HasProfile('admin')
-	async findAll() {
-		return this.userService.getAllUsers();
+	async getAllUsers(@Query('page') page = '1', @Query('limit') limit = '10') {
+		const pageNumber = parseInt(page, 10);
+		const limitNumber = parseInt(limit, 10);
+		const { data, total } = await this.userService.getAllUsers(pageNumber, limitNumber);
+		return {
+			data,
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limitNumber),
+		};
 	}
 
 	@ApiOperation({ summary: 'Create a new user' })

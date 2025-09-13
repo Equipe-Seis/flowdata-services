@@ -3,10 +3,11 @@ import { Result } from '@domain/shared/result/result.pattern';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { UserModel } from '@domain/user/models/user.model';
 import { Person, User } from '@prisma/client';
+import { UserSummary } from '@domain/user/types/userSummary.type';
 
 export interface IUserRepository {
 
-	findAll(): Promise<UserWithPerson[]>;
+	findAll(page: number, limit: number): Promise<{ data: UserSummary[]; total: number }>;
 	/**
 	 * Cria e salva um novo usuário
 	 * @param email email do usuário

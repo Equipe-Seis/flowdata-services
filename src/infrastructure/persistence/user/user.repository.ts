@@ -8,7 +8,7 @@ import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.
 import { User } from '@prisma/client';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
-
+import { UserSummaryDto } from '@application/user/dto/user-summary.dto';
 
 type PrismaUserWithPerson = {
 	id: number;
@@ -57,27 +57,31 @@ export class UserRepository
 	extends PrismaRepository
 	implements IUserRepository {
 
-	async findAll(): Promise<UserWithPerson[]> {
-		const users = await this.prismaService.user.findMany({
-			include: {
-				person: true,
-				userProfiles: {
-					include: {
-						profile: {
-							include: {
-								permissions: {
-									include: {
-										permission: true,
-									},
-								},
-							},
+	async findAll(page: number, limit: number): Promise<{ data: UserSummaryDto[]; total: number }> {
+		const skip = (page - 1) * limit;
+
+		const [users, total] = await this.prismaService.$transaction([
+			this.prismaService.user.findMany({
+				skip,
+				take: limit,
+				select: {
+					id: true,
+					person: {
+						select: {
+							name: true,
+							email: true,
 						},
 					},
-				},
-			},
-		});
+				}
+			}),
+			this.prismaService.user.count(),
+		]);
 
-		return users.map((user) => convertPrismaToUserWithPerson(user));
+		const usersMapped = users.map(user => new UserSummaryDto(user.id, user.person.name, user.person.email));
+		return {
+			data: usersMapped,
+			total,
+		};
 	}
 	async create(user: UserModel, personId: number): Promise<Result<User>> {
 		try {

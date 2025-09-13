@@ -1,4 +1,4 @@
-
+//src\infrastructure\cache\user.cache.ts
 import { Injectable } from '@nestjs/common';
 import { RedisService } from './redis.service';
 import { IUserCache } from '@application/user/cache/iuser.cache';
@@ -8,6 +8,9 @@ export class UserCache implements IUserCache {
     private readonly PERMISSIONS_PREFIX = 'user_permissions:';
     private readonly PROFILES_PREFIX = 'user_profiles:';
     private readonly DEFAULT_TTL = 60 * 60;
+
+    private readonly USERS_LIST_KEY = 'users_list';
+    private readonly USERS_LIST_TTL = 60 * 5;
 
     constructor(private redis: RedisService) { }
 
@@ -47,4 +50,17 @@ export class UserCache implements IUserCache {
     async cacheProfiles(userId: number, profiles: string[]): Promise<void> {
         await this.redis.cacheProfiles(userId, profiles);
     }
+
+    async setUsersList(users: any[], ttlSeconds = this.USERS_LIST_TTL): Promise<void> {
+        await this.redis.set(this.USERS_LIST_KEY, users, ttlSeconds);
+    }
+
+    async getUsersList(): Promise<any[] | null> {
+        return await this.redis.get<any[]>(this.USERS_LIST_KEY);
+    }
+
+    async clearUsersList(): Promise<void> {
+        await this.redis.del(this.USERS_LIST_KEY);
+    }
+
 }

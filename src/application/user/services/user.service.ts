@@ -32,8 +32,9 @@ export class UserService {
 		private readonly userAccessService: UserAccessService
 	) { }
 
-	async getAllUsers() {
-		return this.userRepository.findAll();
+
+	async getAllUsers(page: number, limit: number) {
+		return this.userRepository.findAll(page, limit);
 	}
 
 	async createUser(dto: CreateUserDto): Promise<Result<User>> {
