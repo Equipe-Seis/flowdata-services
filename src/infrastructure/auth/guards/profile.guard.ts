@@ -1,5 +1,4 @@
 
-//src\domain\shared\guard\profile.guard.ts
 import {
     CanActivate,
     ExecutionContext,
