@@ -15,7 +15,7 @@ import { Result } from '@domain/shared/result/result.pattern';
 import { UserModel } from '@domain/user/models/user.model';
 import { ProfileModel } from '@domain/profile/models/profile.model';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
-import { RedisService } from '@infrastructure/cache/redis.service';
+import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserMapper } from '@application/user/mappers/user.mapper';
 import { UserAccessService } from '@application/user/services/user-access.service';
 import { IProfileRepository } from '@application/profile/persistence/iprofile.repository';
@@ -28,7 +28,7 @@ export class UserService {
 		@Inject(IUserRepository) private userRepository: IUserRepository,
 		@Inject(IPersonRepository) private personRepository: IPersonRepository,
 		@Inject(IProfileRepository) private profileRepository: IProfileRepository,
-		private readonly redisService: RedisService,
+		@Inject(IUserCache) private readonly userCache: IUserCache,
 		private readonly userAccessService: UserAccessService
 	) { }
 
@@ -110,8 +110,8 @@ export class UserService {
 
 		const result = await this.userRepository.findById(userId);
 
-		const permissions = await this.redisService.getPermissions(userId);
-		const profiles = await this.redisService.getProfiles(userId);
+		const permissions = await this.userCache.getPermissions(userId);
+		const profiles = await this.userCache.getProfiles(userId);
 
 		console.log(`Redis cache para o usuário ${userId}`);
 		console.log('Permissões:', permissions);
@@ -153,8 +153,8 @@ export class UserService {
 			return Result.NotFound('User not found.');
 		}
 
-		const permissions = await this.redisService.getPermissions(id);
-		const profiles = await this.redisService.getProfiles(id);
+		const permissions = await this.userCache.getPermissions(id);
+		const profiles = await this.userCache.getProfiles(id);
 
 		console.log(`Redis cache para o usuário ${id}`);
 		console.log('Permissões:', permissions);
