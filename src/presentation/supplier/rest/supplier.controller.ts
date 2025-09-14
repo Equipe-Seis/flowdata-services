@@ -28,7 +28,7 @@ import { SupplierSummary } from '@domain/supplier/types/supplierSummary.type';
 import { JwtGuard } from '@domain/shared/guard';
 import { HasPermission } from '@presentation/shared/decorators/permission.decorator';
 import { HasProfile } from '@presentation/shared/decorators/profile.decorator';
-import { ProfileGuard } from '@infrastructure/auth/guards/profile.guard';
+import { ProfileGuard } from '@presentation/shared/guards/profile.guard';
 
 
 @ApiTags('Suppliers')

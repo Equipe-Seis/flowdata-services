@@ -19,7 +19,7 @@ import {
 
 import { UserService } from '@application/user/services/user.service';
 import { JwtGuard } from '@domain/shared/guard';
-import { ProfileGuard } from '@infrastructure/auth/guards/profile.guard';
+import { ProfileGuard } from '@presentation/shared/guards/profile.guard';
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import { ResponseUserDto } from '@application/user/dto/response-user.dto';
