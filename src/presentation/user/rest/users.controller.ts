@@ -26,8 +26,8 @@ import { ResponseUserDto } from '@application/user/dto/response-user.dto';
 import type { Request } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiQuery } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { HasPermission } from '@infrastructure/auth/decorators/permission.decorator';
-import { HasProfile } from '@infrastructure/auth/decorators/profile.decorator';
+import { HasPermission } from '@presentation/shared/decorators/permission.decorator';
+import { HasProfile } from '@presentation/shared/decorators/profile.decorator';
 
 
 @ApiTags('Users')

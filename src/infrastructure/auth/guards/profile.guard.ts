@@ -6,7 +6,7 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PROFILES_KEY } from '@infrastructure/auth/decorators/profile.decorator';
+import { PROFILES_KEY } from '@/domain/shared/constants/metadata-keys';
 import { IUserCache } from '@application/user/cache/iuser.cache';
 import { UserAccessService } from '@application/user/services/user-access.service';
 

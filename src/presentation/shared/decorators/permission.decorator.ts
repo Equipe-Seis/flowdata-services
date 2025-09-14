@@ -1,7 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-
-export const PERMISSIONS_KEY = 'permissions';
-
+import { PERMISSIONS_KEY } from '@/domain/shared/constants/metadata-keys';
 /**
  * Define permissões necessárias para acessar a rota.
  * Exemplo: @HasPermission('create_user', 'read_user')

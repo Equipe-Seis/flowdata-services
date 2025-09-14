@@ -1,7 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-
-export const PROFILES_KEY = 'profiles';
-
+import { PROFILES_KEY } from '@/domain/shared/constants/metadata-keys';
 /**
  * Define perfis necessários para acessar a rota.
  * Exemplo: @HasProfile('admin', 'buyer')
