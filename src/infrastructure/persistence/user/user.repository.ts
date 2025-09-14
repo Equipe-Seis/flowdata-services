@@ -1,5 +1,4 @@
 
-//src\infrastructure\persistence\user\user.repository.ts
 import { Injectable } from '@nestjs/common';
 import { UserModel } from '@domain/user/models/user.model';
 import { Result } from '@domain/shared/result/result.pattern';

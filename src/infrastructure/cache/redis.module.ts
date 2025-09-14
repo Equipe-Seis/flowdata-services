@@ -1,4 +1,4 @@
-//src\infrastructure\cache\redis.module.ts
+
 import { Module } from '@nestjs/common';
 import {
     RedisModule as NestRedisModule,

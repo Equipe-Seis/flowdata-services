@@ -1,5 +1,4 @@
 export interface IUserCache {
-    //src\application\user\cache\iuser.cache.ts
 
     /**
      * Salva as permissões de um usuário no cache Redis
