@@ -19,15 +19,22 @@ import {
 
 import { UserService } from '@application/user/services/user.service';
 import { JwtGuard } from '@domain/shared/guard';
-import { ProfileGuard } from '@presentation/shared/guards/profile.guard';
+import { ProfileGuard } from '@domain/shared/guard/profile.guard';
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import { ResponseUserDto } from '@application/user/dto/response-user.dto';
 import type { Request } from 'express';
-import { ApiTags, ApiOperation, ApiResponse, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiQuery } from '@nestjs/swagger';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiUnauthorizedResponse,
+	ApiForbiddenResponse,
+	ApiQuery,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { HasPermission } from '@presentation/shared/decorators/permission.decorator';
-import { HasProfile } from '@presentation/shared/decorators/profile.decorator';
+import { HasPermission } from '@domain/shared/decorator/permission.decorator';
+import { HasProfile } from '@domain/shared/decorator/profile.decorator';
 
 
 @ApiTags('Users')
