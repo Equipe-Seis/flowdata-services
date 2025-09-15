@@ -1,7 +1,7 @@
-import { ISupplyItemRepository } from 'src/application/supply-item/persistence/isupply-item.repository';
-import { Result } from 'src/domain/shared/result/result.pattern';
-import { SupplyItemModel } from 'src/domain/supply-item/models/supply-item.model';
-import { PrismaRepository } from '../../repository/prisma.repository';
+import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
+import { Result } from '@domain/shared/result/result.pattern';
+import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
+import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { SupplyItem } from '@prisma/client';
 

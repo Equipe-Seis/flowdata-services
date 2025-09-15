@@ -1,3 +1,5 @@
+import { CreateSupplyDto } from '@application/supply-item/dto';
+import { SupplyItemService } from '@application/supply-item/services/supply-item.service';
 import {
 	Body,
 	Controller,
@@ -6,8 +8,6 @@ import {
 	ParseIntPipe,
 	Post,
 } from '@nestjs/common';
-import { CreateSupplyDto } from 'src/application/supply-item/dto';
-import { SupplyItemService } from 'src/application/supply-item/services/supply-item.service';
 
 @Controller('supply')
 export class SupplyItemController {
