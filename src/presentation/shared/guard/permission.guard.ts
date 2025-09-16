@@ -1,20 +1,17 @@
 import {
     CanActivate,
     ExecutionContext,
-    Inject,
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from '@/domain/shared/constants/metadata-keys';
-import { IUserCache } from '@application/user/cache/iuser.cache';
-import { UserAccessService } from '@application/user/services/user-access.service';
+import { AuthorizationService } from '@application/authorization/services/authorization.service';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
-        @Inject(IUserCache) private readonly userCache: IUserCache,
-        private readonly userAccessService: UserAccessService,
+        private readonly authorizationService: AuthorizationService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,16 +28,7 @@ export class PermissionGuard implements CanActivate {
         const user = request.user;
 
         if (!user?.sub) return false;
-
-        let userPermissions = await this.userCache.getPermissions(user.sub);
-
-        if (!userPermissions) {
-            await this.userAccessService.updateUserPermissionsCache(user.sub);
-            userPermissions = await this.userCache.getPermissions(user.sub);
-        }
-
-        if (!userPermissions) return false;
-
-        return requiredPermissions.every(p => userPermissions.includes(p));
+        
+        return await this.authorizationService.permissionAccessGranted(requiredPermissions, user.sub); 
     }
 }

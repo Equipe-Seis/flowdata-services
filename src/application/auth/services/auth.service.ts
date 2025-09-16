@@ -38,8 +38,6 @@ export class AuthService {
 			return Result.Forbidden('Incorrect credentials');
 		}
 
-
-
 		await this.userAccessService.updateUserPermissionsCache(user.id);
 
 		const token = await this.generateToken(user.id, user.person.email!);
@@ -54,7 +52,6 @@ export class AuthService {
 		try {
 			return await argon.verify(hash, password);
 		} catch (error) {
-			console.log("error", error)
 			return false;
 		}
 	}

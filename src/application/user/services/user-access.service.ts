@@ -14,7 +14,6 @@ export class UserAccessService {
         const userWithProfiles = await this.userRepository.findUserWithProfiles(userId);
         await this.userCache.clearUserCache(userId);
 
-
         if (!userWithProfiles) return;
 
         const user = UserMapper.toDomain(userWithProfiles);

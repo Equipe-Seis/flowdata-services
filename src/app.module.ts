@@ -1,37 +1,37 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
-import { PrismaService } from './infrastructure/persistence/prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { DomainModule } from './domain/domain.module';
 import { PresentationModule } from './presentation/presentation.module';
 import { ApplicationModule } from './application/application.module';
 
 import { APP_GUARD } from '@nestjs/core';
-import { JwtGuard } from './domain/shared/guard/jwt.guard';
-import { PermissionGuard } from '@presentation/shared/guards/permission.guard';
-import { ProfileGuard } from '@presentation/shared/guards/profile.guard';
+import { JwtGuard } from './presentation/shared/guard/jwt.guard';
+import { PermissionGuard } from '@presentation/shared/guard/permission.guard';
+import { ProfileGuard } from '@presentation/shared/guard/profile.guard';
+
+@Global()
 @Module({
-  imports: [
-    InfrastructureModule,
-    ConfigModule.forRoot({ isGlobal: true }),
-    DomainModule,
-    PresentationModule,
-    ApplicationModule,
-  ],
-  providers: [
-    PrismaService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: PermissionGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ProfileGuard,
-    },
-  ],
+	imports: [
+		ConfigModule.forRoot({ isGlobal: true }),
+		DomainModule,
+		InfrastructureModule,
+		ApplicationModule,
+		PresentationModule,
+	],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: JwtGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: PermissionGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ProfileGuard,
+		},
+	],
 })
-export class AppModule { }
+export class AppModule {}

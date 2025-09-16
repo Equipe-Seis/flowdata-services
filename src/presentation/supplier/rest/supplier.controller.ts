@@ -25,10 +25,10 @@ import { SupplierService } from '@application/supplier/services/supplier.service
 import { CreateSupplierDto } from '@application/supplier/dto/create-supplier.dto';
 import { UpdateSupplierDto } from '@application/supplier/dto/update-supplier.dto';
 import { SupplierSummary } from '@domain/supplier/types/supplierSummary.type';
-import { JwtGuard } from '@domain/shared/guard';
-import { HasPermission } from '@presentation/shared/decorators/permission.decorator';
-import { HasProfile } from '@presentation/shared/decorators/profile.decorator';
-import { ProfileGuard } from '@presentation/shared/guards/profile.guard';
+import { JwtGuard } from '@presentation/shared/guard';
+import { HasPermission } from '@presentation/shared/decorator/permission.decorator';
+import { HasProfile } from '@presentation/shared/decorator/profile.decorator';
+import { ProfileGuard } from '@presentation/shared/guard/profile.guard';
 
 
 @ApiTags('Suppliers')
