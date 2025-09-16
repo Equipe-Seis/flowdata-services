@@ -1,5 +1,5 @@
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 
 import { PersonRepository } from '@infrastructure/persistence/person/person.repository';

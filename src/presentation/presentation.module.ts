@@ -5,10 +5,9 @@ import { AuthController } from '@presentation/auth/rest/auth.controller';
 import { UsersController } from '@presentation/user/rest/users.controller';
 import { ProfileController } from '@presentation/profile/rest/profile.controller';
 import { SupplierController } from '@presentation/supplier/rest/supplier.controller';
-import { DomainModule } from '@domain/domain.module';
 
 @Module({
-	imports: [ApplicationModule, DomainModule],
+	imports: [ApplicationModule],
 	controllers: [
 		AuthController,
 		SupplyItemController,
