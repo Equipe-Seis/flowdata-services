@@ -1,5 +1,5 @@
-import { Result } from 'src/domain/shared/result/result.pattern';
-import { PrismaService } from '../prisma/prisma.service';
+import { Result } from '@domain/shared/result/result.pattern';
+import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -7,7 +7,7 @@ const PRISMA_UNIQUE_CONSTRAINT_ERROR = 'P2002';
 
 @Injectable()
 export class PrismaRepository {
-	constructor(protected prismaService: PrismaService) {}
+	constructor(protected prismaService: PrismaService) { }
 
 	async execute<T>(cb: () => Promise<T>): Promise<Result<T>> {
 		try {

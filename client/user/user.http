@@ -1,13 +1,80 @@
-post http://localhost:3333/users
+### User Routes - Hash Excluded
+
+### 1. Get all users (paginated) - Hash will be excluded
+GET http://localhost:3000/users?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### 2. Get current authenticated user - Hash will be excluded
+GET http://localhost:3000/users/me
+Authorization: Bearer {{token}}
+
+### 3. Get user by ID - Hash will be excluded
+GET http://localhost:3000/users/1
+Authorization: Bearer {{token}}
+
+### 4. Create new user
+POST http://localhost:3000/users
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "password": "123456",
-    "person" : {
-        "name": "Teste da silva",
-        "personType": "individual",
-        "documentNumber": "9876543100",
-        "birthDate": "1988-01-01",
-        "email": "teste_da_silva@hmail.com"
-    }
+  "person": {
+    "name": "João Silva",
+    "personType": "individual",
+    "documentNumber": "12345678900",
+    "email": "joao@email.com",
+    "birthDate": "1990-01-01",
+    "status": "active"
+  },
+  "password": "123456",
+  "profiles": [1]
 }
+
+### 5. Update user
+PUT http://localhost:3000/users/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "person": {
+    "name": "João Silva Atualizado",
+    "personType": "individual",
+    "documentNumber": "12345678900",
+    "email": "joao.novo@email.com",
+    "birthDate": "1990-01-01",
+    "status": "active"
+  },
+  "profiles": [1, 2]
+}
+
+### 6. Delete user
+DELETE http://localhost:3000/users/1
+Authorization: Bearer {{token}}
+
+### Expected Response Structure (without hash):
+# {
+#   "id": 1,
+#   "person": {
+#     "id": 1,
+#     "name": "João Silva",
+#     "personType": "individual",
+#     "documentNumber": "12345678900",
+#     "birthDate": "1990-01-01T00:00:00.000Z",
+#     "status": "active",
+#     "email": "joao@email.com"
+#   },
+#   "userProfiles": [
+#     {
+#       "id": 1,
+#       "name": "admin",
+#       "description": "Administrator",
+#       "permissions": [
+#         {
+#           "permission": {
+#             "name": "create_user"
+#           }
+#         }
+#       ]
+#     }
+#   ]
+# }

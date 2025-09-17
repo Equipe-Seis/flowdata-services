@@ -1,9 +1,13 @@
-import { Result } from '@domain/shared/result/result.pattern'; // Certifique-se de importar o Result
+
+import { Result } from '@domain/shared/result/result.pattern';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 import { UserModel } from '@domain/user/models/user.model';
 import { Person, User } from '@prisma/client';
+import { UserSummary } from '@domain/user/types/userSummary.type';
 
 export interface IUserRepository {
+
+	findAll(page: number, limit: number): Promise<{ data: UserSummary[]; total: number }>;
 	/**
 	 * Cria e salva um novo usuário
 	 * @param email email do usuário
@@ -26,12 +30,21 @@ export interface IUserRepository {
 	 */
 	findByEmail(email: string): Promise<Result<UserWithPerson | null>>;
 
+
+	/**
+	 * Busca usuário pelo numero do documento
+	 * @param documentNumber numero do documento do usuário
+	 * @returns Result<User> - Resultado da operação, com usuário ou erro
+	 */
+	findByDocumentNumber(documentNumber: string): Promise<Result<UserWithPerson | null>>;
+
+
 	/**
 	 * Atualiza dados do usuário
 	 * @param user entidade User com dados atualizados
-	 * @returns Result<User> - Resultado da operação, com sucesso ou falha
+	 * @returns Result<UserWithPerson | null> - Resultado da operação, com sucesso ou falha
 	 */
-	update(id: number, user: UserModel): Promise<Result<User>>;
+	update(id: number, user: UserModel): Promise<Result<UserWithPerson | null>>;
 
 	/**
 	 * Remove usuário pelo ID
@@ -39,6 +52,10 @@ export interface IUserRepository {
 	 * @returns Result<void> - Resultado da operação, com sucesso ou falha
 	 */
 	delete(id: number): Promise<Result<void>>;
+
+
+	findUserWithProfiles(userId: number): Promise<UserWithPerson | null>
+
 }
 
 export const IUserRepository = Symbol('IUserRepository');

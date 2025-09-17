@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '@application/user/user.service';
+import { UserService } from '@application/user/services/user.service';
 import { CreateUserDto } from '@application/user/dto/create-user.dto';
 import { UpdateUserDto } from '@application/user/dto/update-user.dto';
 import {
@@ -7,12 +7,14 @@ import {
 	NotFoundException,
 	BadRequestException,
 } from '@nestjs/common';
-import { Person, PersonType, Status } from '@prisma/client';
+import { Person } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 import * as bcrypt from 'bcrypt';
 
 import { Result } from '@domain/shared/result/result.pattern';
 import { IUserRepository } from '@application/user/persistence/iuser.repository';
-import { IPersonRepository } from '@application/auth/persistence/iperson.repository';
+import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { UserWithPerson } from '@domain/user/types/userPerson.type';
 
 jest.mock('bcrypt');
@@ -60,7 +62,7 @@ describe('UserService', () => {
 				email: 'john@example.com',
 				documentNumber: '12345678900',
 				birthDate: '1990-01-01',
-				personType: PersonType.individual,
+				personType: PersonType.Individual,
 			},
 		};
 
@@ -96,8 +98,8 @@ describe('UserService', () => {
 				documentNumber: dto.person.documentNumber,
 				birthDate: dto.person.birthDate ? new Date(dto.person.birthDate) : null,
 				email: dto.person.email,
-				status: Status.active,
-				personType: PersonType.individual,
+				status: Status.Active,
+				personType: PersonType.Individual,
 			} as Person;
 
 			personRepository.create.mockResolvedValueOnce(Result.Ok(person));
@@ -138,8 +140,8 @@ describe('UserService', () => {
 					documentNumber: '11111111111',
 					birthDate: new Date('1990-01-01'),
 					email: 'old@example.com',
-					personType: PersonType.individual,
-					status: Status.active,
+					personType: PersonType.Individual,
+					status: Status.Active,
 				},
 				personId: 10,
 			} as UserWithPerson;
@@ -172,8 +174,8 @@ describe('UserService', () => {
 					documentNumber: '11111111111',
 					birthDate: new Date('1990-01-01'),
 					email: 'old@example.com',
-					personType: PersonType.individual,
-					status: Status.active,
+					personType: PersonType.Individual,
+					status: Status.Active,
 				},
 				personId: 10,
 			} as UserWithPerson;
@@ -218,8 +220,8 @@ describe('UserService', () => {
 					documentNumber: '11111111111',
 					birthDate: new Date('1990-01-01'),
 					email: 'old@example.com',
-					personType: PersonType.individual,
-					status: Status.active,
+					personType: PersonType.Individual,
+					status: Status.Active,
 				},
 				personId: 10,
 			} as UserWithPerson;

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, IsDateString, IsEmail } from 'class-validator';
-import { Status, PersonType } from '@prisma/client';
+import { PersonType } from '@domain/person/enums/person-type.enum';
+import { Status } from '@domain/shared/enums/status.enum';
 
 export class CreatePersonDto {
     @ApiProperty({ example: 'João Silva' })
