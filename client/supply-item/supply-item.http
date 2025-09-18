@@ -1,17 +1,25 @@
+### Variables 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MTYxOTMxLCJleHAiOjE3NTgxNjU1MzF9.qgO7ubnnxpZPqDmRXQNWx8hp_JoAWnTZt5EvltRXV6A
+@port = 3333
+
 post http://localhost:3333/supply
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "name": "Lima",
     "code": "321",
     "description": "Lima pra fazer suco",
-    "price": 0.89
+    "price": 0.89,
+    "supplierId": 1 
 }
 
 ###
 
-get http://localhost:3333/supply
+GET http://localhost:3333/supply
+Authorization: Bearer {{token}} 
 
 
 ###
-get http://localhost:3333/supply/90
+get http://localhost:3333/supply/2
+Authorization: Bearer {{token}} 

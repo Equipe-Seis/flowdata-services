@@ -1,6 +1,7 @@
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
+import { SupplyItemWithSupplier } from '@domain/supply-item/types/supplyItemSupplier';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { SupplyItem } from '@prisma/client';
@@ -10,17 +11,24 @@ export class SupplyItemRepository
 	extends PrismaRepository
 	implements ISupplyItemRepository
 {
-	getAll(): Promise<Result<Array<SupplyItem>>> {
-		return this.execute<Array<SupplyItem>>(() =>
-			this.prismaService.supplyItem.findMany(),
+	getAll(): Promise<Result<Array<SupplyItemWithSupplier>>> {
+		return this.execute<Array<SupplyItemWithSupplier>>(() =>
+			this.prismaService.supplyItem.findMany({
+				include: {
+					supplier: true,
+				},
+			}),
 		);
 	}
 
-	getById(id: number): Promise<Result<SupplyItem | null>> {
-		return this.execute<SupplyItem | null>(() =>
+	getById(id: number): Promise<Result<SupplyItemWithSupplier | null>> {
+		return this.execute<SupplyItemWithSupplier | null>(() =>
 			this.prismaService.supplyItem.findFirst({
 				where: {
 					id: id,
+				},
+				include: {
+					supplier: true,
 				},
 			}),
 		);

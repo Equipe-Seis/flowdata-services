@@ -1,17 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 import { CreateSupplierDto } from '@application/supplier/dto/create-supplier.dto';
-import { PersonType } from '@domain/person/enums/person-type.enum';
-import { Status } from '@domain/shared/enums/status.enum';
 import { ISupplierRepository } from '@application/supplier/persistence/isupplier.repository';
 import { SupplierSummary } from '@domain/supplier/types/supplierSummary.type';
 import { IPersonRepository } from '@application/person/persistence/iperson.repository';
 import { SupplierMapper } from '../mappers/supplier.mapper';
 import { Result } from '@domain/shared/result/result.pattern';
 import { SupplierModel } from '@domain/supplier/models/supplier.model';
-import { PersonModel } from '@domain/person/models/person.model';
 import { PersonMapper } from '@application/person/mappers/person.mapper';
-import { SupplierWithPerson } from '@domain/supplier/types/supplierPerson.type';
 import { ContactMapper } from '@application/person/mappers/contact.mapper';
 import { AddressMapper } from '@application/person/mappers/address.mapper';
 import { UpdateSupplierDto } from '@application/supplier/dto/update-supplier.dto';

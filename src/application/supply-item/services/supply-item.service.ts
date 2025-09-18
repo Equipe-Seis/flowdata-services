@@ -1,18 +1,37 @@
+import { ISupplierRepository } from '@application/supplier/persistence/isupplier.repository';
 import { CreateSupplyDto } from '@application/supply-item/dto';
 import { SupplyItemDto } from '@application/supply-item/dto/supply-item.dto';
 import { SupplyItemMapper } from '@application/supply-item/mappers/supply-item.mapper';
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
 import { Result } from '@domain/shared/result/result.pattern';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Res } from '@nestjs/common';
 
 @Injectable()
 export class SupplyItemService {
 	constructor(
 		@Inject(ISupplyItemRepository)
 		private supplyItemRepository: ISupplyItemRepository,
+		@Inject(ISupplierRepository)
+		private supplierRepository: ISupplierRepository,
 	) {}
 
 	async createSupplyItem(dto: CreateSupplyDto): Promise<Result<number>> {
+		const supplierResult = await this.supplierRepository.findById(
+			dto.supplierId,
+		);
+
+		if (supplierResult.isFailure) {
+			return Result.Fail(supplierResult.getError());
+		}
+
+		const supplier = supplierResult.getValue();
+
+		if (!supplier) {
+			return Result.BadRequest(
+				'Fornecedor não cadastrado para o Id ' + dto.supplierId,
+			);
+		}
+
 		const model = SupplyItemMapper.toModel(dto);
 
 		const result = await this.supplyItemRepository.create(model);

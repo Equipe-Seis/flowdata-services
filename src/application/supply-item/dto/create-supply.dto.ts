@@ -9,10 +9,14 @@ export class CreateSupplyDto {
 	@IsNotEmpty()
 	code: string;
 
-	@IsNumber()	
+	@IsNumber()
 	@IsPositive()
 	price: number;
 
+	@IsNumber()
+	@IsPositive()
+	supplierId: number;
+
 	@IsString()
-	description?: string; 
+	description?: string;
 }

@@ -61,7 +61,10 @@ model Supplier {
   createdAt DateTime @default(now())
 
   personId Int    @unique
+
   person   Person @relation(fields: [personId], references: [id])
+
+  supplyItems SupplyItem[]
 }
 
 model Address {
@@ -144,7 +147,30 @@ model SupplyItem {
   description String?
   price       Float
   createdAt   DateTime @default(now())
+
+  supplierId  Int
+  supplier  Supplier   @relation(fields: [supplierId], references: [id], onDelete: NoAction)
 }
+
+// Checking 
+
+// id (PK)
+// supplier_id (FK para fornecedor)
+// receipt_date (data da chegada da carga)
+// status (ex.: Draft, Received, Cancelled)
+// created_at
+// updated_at
+// ReceiptItems (Itens do Recebimento)
+
+// CheckingLines
+
+// id (PK)
+// receipt_id (FK para Receipts)
+// supply_item_id (FK para insumo cadastrado)
+// expected_quantity (opcional, caso venha de uma ordem de compra)
+// received_quantity (quantidade efetivamente recebida)
+// received_unit_of_measure
+// expected_unit_of_measure
 
 enum Status {
   active

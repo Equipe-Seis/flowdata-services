@@ -1,16 +1,15 @@
-import { Global, Module } from '@nestjs/common';
-import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DomainModule } from './domain/domain.module';
-import { PresentationModule } from './presentation/presentation.module';
-import { ApplicationModule } from './application/application.module';
 
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './presentation/shared/guard/jwt.guard';
 import { PermissionGuard } from '@presentation/shared/guard/permission.guard';
 import { ProfileGuard } from '@presentation/shared/guard/profile.guard';
+import { InfrastructureModule } from '@infrastructure/infrastructure.module';
+import { DomainModule } from '@domain/domain.module';
+import { ApplicationModule } from '@application/application.module';
+import { PresentationModule } from '@presentation/presentation.module';
 
-@Global()
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
