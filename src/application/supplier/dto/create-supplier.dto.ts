@@ -1,11 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsOptional,
-    IsString,
-    IsDateString,
-    ValidateNested,
-    IsArray,
-    ArrayNotEmpty,
+	IsOptional,
+	IsString,
+	IsDateString,
+	ValidateNested,
+	IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePersonDto } from '@application/person/dto/create-person.dto';

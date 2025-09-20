@@ -19,6 +19,8 @@ import { SupplierRepository } from '@infrastructure/persistence/supplier/supplie
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { ICacheRepository } from '@application/user/cache/icache.repository';
+import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
+import { CheckingRepository } from '@infrastructure/persistence/checking/checking.repository';
 
 @Module({
 	imports: [
@@ -67,6 +69,10 @@ import { ICacheRepository } from '@application/user/cache/icache.repository';
 			provide: ICacheRepository,
 			useClass: RedisCacheRepository,
 		},
+		{
+			provide: ICheckingRepository,
+			useClass: CheckingRepository,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -77,6 +83,7 @@ import { ICacheRepository } from '@application/user/cache/icache.repository';
 		IProfileRepository,
 		ISupplierRepository,
 		ICacheRepository,
+		ICheckingRepository,
 	],
 })
 export class InfrastructureModule {}

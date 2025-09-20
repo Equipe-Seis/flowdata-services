@@ -150,27 +150,38 @@ model SupplyItem {
 
   supplierId  Int
   supplier  Supplier   @relation(fields: [supplierId], references: [id], onDelete: NoAction)
+
+  checkingLines CheckingLine[]
 }
 
-// Checking 
+model Checking {
+  id            Int             @id @default(autoincrement())
+  receiptDate   DateTime        @default(now())
+  status        CheckingStatus  @default(draft) 
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
 
-// id (PK)
-// supplier_id (FK para fornecedor)
-// receipt_date (data da chegada da carga)
-// status (ex.: Draft, Received, Cancelled)
-// created_at
-// updated_at
-// ReceiptItems (Itens do Recebimento)
+  lines         CheckingLine[]
+}
 
-// CheckingLines
 
-// id (PK)
-// receipt_id (FK para Receipts)
-// supply_item_id (FK para insumo cadastrado)
-// expected_quantity (opcional, caso venha de uma ordem de compra)
-// received_quantity (quantidade efetivamente recebida)
-// received_unit_of_measure
-// expected_unit_of_measure
+model CheckingLine {
+  id            Int             @id @default(autoincrement())
+  checkingId    Int
+  supplyItemId  Int         
+  receivedQty   Decimal
+  unitOfMeasure String
+
+  supplyItem  SupplyItem @relation(fields: [supplyItemId], references: [id], onDelete: NoAction)
+  
+  checking Checking @relation(fields: [checkingId], references: [id], onDelete: Cascade)
+}
+
+enum CheckingStatus {
+ draft
+ received 
+ cancelled
+}
 
 enum Status {
   active

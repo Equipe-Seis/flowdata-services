@@ -1,0 +1,20 @@
+
+### Variables
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MzQ2MzE1LCJleHAiOjE3NTgzNDk5MTV9.gXn8FYb9DHZbcIC0tbM-_aEtUsTtNHzqsxQESrgvf2g
+@port = 3333
+
+GET http://localhost:3333/checkings 
+Authorization: Bearer {{token}}
+
+###
+GET http://localhost:3333/checkings/2 
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:3333/checkings 
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "receiptDate": "2025-09-12T23:45:00.000Z"
+}
