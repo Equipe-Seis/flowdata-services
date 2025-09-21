@@ -1,6 +1,5 @@
 ### Variables 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MTYxOTMxLCJleHAiOjE3NTgxNjU1MzF9.qgO7ubnnxpZPqDmRXQNWx8hp_JoAWnTZt5EvltRXV6A
-@port = 3333
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDIxNjUyLCJleHAiOjE3NTg0MjUyNTJ9.yJykfL4K6qRLS--LWbFwipj9ebaGmVYTo6OJdoJfnpI
 
 post http://localhost:3333/supply
 Content-Type: application/json

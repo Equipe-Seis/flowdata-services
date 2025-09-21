@@ -1,6 +1,6 @@
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MzQ2MzE1LCJleHAiOjE3NTgzNDk5MTV9.gXn8FYb9DHZbcIC0tbM-_aEtUsTtNHzqsxQESrgvf2g
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDMzMDc0LCJleHAiOjE3NTg0MzY2NzR9.TPoMbpBeAJchwRhGCHYUfDX1W6S75Wos17We0vyFMp0
 @port = 3333
 
 GET http://localhost:3333/checkings 
@@ -18,3 +18,29 @@ Content-Type: application/json
 {
   "receiptDate": "2025-09-12T23:45:00.000Z"
 }
+
+###
+POST http://localhost:3333/checkings/lines 
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+[
+  {
+    "checkingId": 1,
+    "supplyItemId": 2,
+    "receivedQty": 200.5,
+    "unitOfMeasure": "KG" 
+  }
+]
+
+###
+PATCH http://localhost:3333/checkings/1/lines/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "receivedQty": 100.90, "unitOfMeasure": "G" }
+
+###
+DELETE http://localhost:3333/checkings/1/lines/1
+Authorization: Bearer {{token}}
+Content-Type: application/jsonN
