@@ -1,11 +1,7 @@
-
-
 import { PrismaClient } from '@prisma/client';
 import * as argon from 'argon2';
 
-const prisma = new PrismaClient();
-
-async function main() {
+export async function seedAdminUser(prisma: PrismaClient) {
 	const email = 'admin@flowdata.com';
 	const documentNumber = '1234567890';
 	const passwordHash = await argon.hash('2025@flow');
@@ -23,8 +19,8 @@ async function main() {
 		const newPerson = await prisma.person.create({
 			data: {
 				name: 'Admin User',
-				documentNumber: documentNumber,
-				email: email,
+				documentNumber,
+				email,
 				personType: 'individual',
 				status: 'active',
 			},
@@ -38,31 +34,19 @@ async function main() {
 	}
 
 	const existingUser = await prisma.user.findFirst({
-		where: {
-			personId: personId,
-		},
+		where: { personId },
 	});
 
-	if (existingUser) {
+	if (!existingUser) {
+		await prisma.user.create({
+			data: {
+				personId,
+				hash: passwordHash,
+			},
+		});
+
+		console.log('Usuário admin criado com sucesso');
+	} else {
 		console.log('Usuário admin já existe');
-		return;
 	}
-
-	await prisma.user.create({
-		data: {
-			personId: personId,
-			hash: passwordHash,
-		},
-	});
-
-	console.log('Usuário admin criado com sucesso');
 }
-
-main()
-	.catch((e) => {
-		console.error(e);
-		process.exit(1);
-	})
-	.finally(async () => {
-		await prisma.$disconnect();
-	});
