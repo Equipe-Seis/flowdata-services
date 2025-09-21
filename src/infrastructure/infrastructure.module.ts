@@ -19,6 +19,8 @@ import { SupplierRepository } from '@infrastructure/persistence/supplier/supplie
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { ICacheRepository } from '@application/user/cache/icache.repository';
+import { IConsultaCnpjRepository } from '@/application/shared/cnpj/persistence/iconsulta-cnpj.repository';
+import { ConsultaCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/consulta-cnpj.repository';
 
 @Module({
 	imports: [
@@ -67,6 +69,13 @@ import { ICacheRepository } from '@application/user/cache/icache.repository';
 			provide: ICacheRepository,
 			useClass: RedisCacheRepository,
 		},
+		{
+			provide: IConsultaCnpjRepository,
+			useClass: ConsultaCnpjRepository,
+		},
+
+
+
 	],
 	exports: [
 		PrismaService,
@@ -77,6 +86,7 @@ import { ICacheRepository } from '@application/user/cache/icache.repository';
 		IProfileRepository,
 		ISupplierRepository,
 		ICacheRepository,
+		IConsultaCnpjRepository
 	],
 })
-export class InfrastructureModule {}
+export class InfrastructureModule { }
