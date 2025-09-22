@@ -29,7 +29,7 @@ export class UserService {
 		@Inject(IProfileRepository) private profileRepository: IProfileRepository,
 		@Inject(IUserCache) private readonly userCache: IUserCache,
 		private readonly userAccessService: UserAccessService,
-	) {}
+	) { }
 
 	async getAllUsers(page: number, limit: number) {
 		return this.userRepository.findAll(page, limit);

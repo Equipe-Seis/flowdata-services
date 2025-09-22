@@ -1,4 +1,5 @@
 import { CreateSupplyDto } from '@application/supply-item/dto';
+import { FindAllSuppliesDto } from '@application/supply-item/dto/find-all-supplies.dto';
 import { SupplyItemService } from '@application/supply-item/services/supply-item.service';
 import {
 	Body,
@@ -7,6 +8,7 @@ import {
 	Param,
 	ParseIntPipe,
 	Post,
+	Query, // 1. Importar o Query decorator
 	UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from '@presentation/shared/guard';
@@ -21,10 +23,9 @@ export class SupplyItemController {
 
 	@UseGuards(JwtGuard, ProfileGuard)
 	@HasProfile('admin', 'supply_supervisor', 'supply_stock_keeper')
-
 	@Get()
-	async get() {
-		const result = await this.supplyItemService.getAll();
+	async get(@Query() filters: FindAllSuppliesDto) {
+		const result = await this.supplyItemService.getAll(filters);
 		return result.mapToPresentationResult();
 	}
 
