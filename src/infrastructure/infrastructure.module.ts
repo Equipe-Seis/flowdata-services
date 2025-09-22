@@ -21,6 +21,8 @@ import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { ICacheRepository } from '@application/user/cache/icache.repository';
 import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
 import { CheckingRepository } from '@infrastructure/persistence/checking/checking.repository';
+import { ITransactionManager } from '@domain/shared/transaction/itrsanction.manager';
+import { PrismaTransactionManager } from '@infrastructure/persistence/transaction/transaction.manager';
 
 @Module({
 	imports: [
@@ -73,6 +75,10 @@ import { CheckingRepository } from '@infrastructure/persistence/checking/checkin
 			provide: ICheckingRepository,
 			useClass: CheckingRepository,
 		},
+		{
+			provide: ITransactionManager,
+			useClass: PrismaTransactionManager,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -84,6 +90,7 @@ import { CheckingRepository } from '@infrastructure/persistence/checking/checkin
 		ISupplierRepository,
 		ICacheRepository,
 		ICheckingRepository,
+		ITransactionManager,
 	],
 })
 export class InfrastructureModule {}

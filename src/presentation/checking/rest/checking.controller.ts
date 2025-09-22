@@ -35,6 +35,12 @@ export class CheckingController {
 		return result.mapToPresentationResult();
 	}
 
+	@Post(':id/conclude')
+	async conclude(@Param('id', ParseIntPipe) id: number) {
+		const result = await this.checkingService.concludeChecking(id);
+		return result.mapToPresentationResult();
+	}
+
 	//#region Lines
 	@Post('lines')
 	async addLine(@Body() dto: CreateCheckingLineDto[]) {

@@ -1,13 +1,13 @@
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDMzMDc0LCJleHAiOjE3NTg0MzY2NzR9.TPoMbpBeAJchwRhGCHYUfDX1W6S75Wos17We0vyFMp0
-@port = 3333
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NTA4NjI4LCJleHAiOjE3NTg1MTIyMjh9.f8ApbVtX_1BzS92rPL1kRX_T-FBhwtTB9gp0WQ8Pd3A
+@checkingId = 5
+###
 GET http://localhost:3333/checkings 
 Authorization: Bearer {{token}}
 
 ###
-GET http://localhost:3333/checkings/2 
+GET http://localhost:3333/checkings/{{checkingId}}
 Authorization: Bearer {{token}}
 
 ###
@@ -16,7 +16,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "receiptDate": "2025-09-12T23:45:00.000Z"
+  "receiptDate": "2025-09-21T23:45:00.000Z"
 }
 
 ###
@@ -26,21 +26,26 @@ Content-Type: application/json
 
 [
   {
-    "checkingId": 1,
-    "supplyItemId": 2,
-    "receivedQty": 200.5,
+    "checkingId": {{checkingId}},
+    "supplyItemId": 3,
+    "receivedQty": 50,
     "unitOfMeasure": "KG" 
   }
 ]
 
 ###
-PATCH http://localhost:3333/checkings/1/lines/2
+PATCH http://localhost:3333/checkings/{{checkingId}}/lines/9
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
-{ "receivedQty": 100.90, "unitOfMeasure": "G" }
+{ "receivedQty": 90, "unitOfMeasure": "KG" }
 
 ###
-DELETE http://localhost:3333/checkings/1/lines/1
+DELETE http://localhost:3333/checkings/{{checkingId}}/lines/1
 Authorization: Bearer {{token}}
-Content-Type: application/jsonN
+Content-Type: application/json
+
+###
+POST http://localhost:3333/checkings/{{checkingId}}/conclude 
+Authorization: Bearer {{token}}
+Content-Type: application/json

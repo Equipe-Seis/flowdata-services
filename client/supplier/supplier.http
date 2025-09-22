@@ -1,7 +1,7 @@
 ### Supplier CRUD Operations
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MTU5Nzg3LCJleHAiOjE3NTgxNjA2ODd9.eDH8aajSctjCo2mhJoChR0qCHZnGbLqwFCU1dGMRmG0
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDk0NzEyLCJleHAiOjE3NTg0OTgzMTJ9.6ZKfQ3kbpSkHWLsd2gtKsX_VtS6lSjUTShxMfR6IRow
 @port = 3333
 
 ### 1. Get all suppliers (paginated)
@@ -24,7 +24,7 @@ Content-Type: application/json
     "documentNumber": "12345678000195",
     "email": "contato@fornecedor.com",
     "birthDate": "2020-01-01",
-    "status": "dasdasd"
+    "status": "active"
   },
   "tradeName": "Fornecedor Exemplo",
   "openingDate": "2020-01-01",

@@ -1,12 +1,14 @@
 import { CheckingResponseDto } from '@application/checking/dto/checking-response.dto';
 import { CreateCheckingLineDto } from '@application/checking/dto/create-checking-line.dto';
 import { CreateCheckingDto } from '@application/checking/dto/create-checking.dto';
+import { CreateTransferResponseDto } from '@application/checking/dto/create-transfer-response.dto';
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 import { CheckingMapper } from '@application/checking/mappers/checking.mapper';
 import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
 import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
 import { Result } from '@domain/shared/result/result.pattern';
-import { Inject, Injectable, Res } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { CheckingStatus, TransferType } from '@prisma/client';
 
 @Injectable()
 export class CheckingService {
@@ -14,6 +16,80 @@ export class CheckingService {
 		@Inject(ICheckingRepository)
 		private checkingRepository: ICheckingRepository,
 	) {}
+
+	// TODO: create unit of work
+	async concludeChecking(
+		id: number,
+	): Promise<Result<CreateTransferResponseDto>> {
+		const checkingResult = await this.findById(id);
+
+		if (checkingResult.isFailure) {
+			return Result.Fail(checkingResult.getError());
+		}
+
+		const checking = checkingResult.getValue()!;
+
+		if (checking.status !== CheckingStatus.draft) {
+			return Result.BadRequest(
+				`Não é possivel processar o recebimento ${id} no status ${checking.status}`,
+			);
+		}
+
+		if (checking.lines.length === 0) {
+			return Result.BadRequest(
+				`Não é possivel processar o recebimento ${id} com 0 linhas`,
+			);
+		}
+
+		const createTransferResult = await this.checkingRepository.createTransfer({
+			transferType: TransferType.inbound,
+		});
+
+		if (createTransferResult.isFailure) {
+			return Result.Fail(checkingResult.getError());
+		}
+
+		const transfer = createTransferResult.getValue()!;
+
+		const lines = checking.lines.map(CheckingMapper.toInventTransferLineModel);
+
+		const createLinesResult = await this.checkingRepository.createTransferLines(
+			transfer.id,
+			lines,
+		);
+
+		if (createTransferResult.isFailure) {
+			return Result.Fail(createLinesResult.getError());
+		}
+
+		const updateStatusResult =
+			await this.checkingRepository.updateCheckingStatus(
+				id,
+				CheckingStatus.received,
+			);
+
+		if (updateStatusResult.isFailure) {
+			return Result.Fail(
+				'Falha ao atualizar o status do recebimento: ' +
+					createLinesResult.getError(),
+			);
+		}
+
+		const transferResult = await this.checkingRepository.findTransferById(
+			transfer.id,
+		);
+
+		if (transferResult.isFailure) {
+			return Result.Fail(
+				'Transferência criada, mas ocorreu um erro ao buscar os dados finais: ' +
+					transferResult.getError(),
+			);
+		}
+
+		const transferData = transferResult.getValue()!;
+
+		return Result.Ok(CheckingMapper.toCreateTransferResponseDto(transferData));
+	}
 
 	async create(dto: CreateCheckingDto): Promise<Result<CheckingResponseDto>> {
 		const model = CheckingMapper.toModel(dto);

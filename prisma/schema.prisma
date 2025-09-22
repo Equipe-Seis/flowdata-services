@@ -149,9 +149,12 @@ model SupplyItem {
   createdAt   DateTime @default(now())
 
   supplierId  Int
-  supplier  Supplier   @relation(fields: [supplierId], references: [id], onDelete: NoAction)
+  supplier    Supplier   @relation(fields: [supplierId], references: [id], onDelete: NoAction)
 
-  checkingLines CheckingLine[]
+  checkingLines       CheckingLine[]
+  inventTransferLine  InventTransferLine[]
+  inventSum           InventSum[]
+  inventBatchHistory  InventSumHistory[]
 }
 
 model Checking {
@@ -164,18 +167,90 @@ model Checking {
   lines         CheckingLine[]
 }
 
-
 model CheckingLine {
   id            Int             @id @default(autoincrement())
   checkingId    Int
   supplyItemId  Int         
   receivedQty   Decimal
-  unitOfMeasure String
+  unitOfMeasure UnitOfMeasure 
 
   supplyItem  SupplyItem @relation(fields: [supplyItemId], references: [id], onDelete: NoAction)
   
   checking Checking @relation(fields: [checkingId], references: [id], onDelete: Cascade)
+
+  inventTransferLines  InventTransferLine[]
 }
+
+model InventTransfer {
+  id            Int             @id @default(autoincrement())
+  transferType  TransferType
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+
+  inventTransferLines InventTransferLine[]
+}
+
+model InventTransferLine {
+  id                  Int         @id @default(autoincrement())
+  transferQty         Decimal 
+  unitOfMeasure       UnitOfMeasure 
+
+  inventTransferId    Int
+  supplyItemId        Int
+  checkingLineId      Int?
+
+  checkingLine    CheckingLine?   @relation(fields: [checkingLineId], references: [id], onDelete: NoAction)
+  inventTransfer  InventTransfer  @relation(fields: [inventTransferId], references: [id], onDelete: Cascade)
+  supplyItem      SupplyItem      @relation(fields: [supplyItemId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @default(now())
+
+  inventSumHistory  InventSumHistory[]
+}
+
+model InventSum {
+  id                  Int         @id @default(autoincrement())
+  supplyItemId        Int
+  unitOfMeasure       UnitOfMeasure 
+  quantity            Decimal 
+
+  updatedAt           DateTime          @default(now())
+
+  supplyItem           SupplyItem  @relation(fields: [supplyItemId], references: [id], onDelete: Cascade)
+}
+
+model InventSumHistory {
+  id                  Int         @id @default(autoincrement())
+  unitOfMeasure       UnitOfMeasure
+  previousQty         Decimal
+  newQty              Decimal
+  changedQty          Decimal
+  changeDate          DateTime       @default(now())  
+
+  supplyItemId        Int
+  supplyItem           SupplyItem  @relation(fields: [supplyItemId], references: [id], onDelete: Cascade)
+
+  transferLineId      Int
+  transferLine        InventTransferLine  @relation(fields: [transferLineId], references: [id], onDelete: NoAction)
+}
+
+model InventSumBatchCheckpoint {
+  id                      Int         @id @default(autoincrement())
+
+  lastProcessedTransferId Int
+}
+
+enum TransferType {
+  inbound
+  outbound
+}
+
+enum UnitOfMeasure {
+  KG
+  UN
+} 
 
 enum CheckingStatus {
  draft

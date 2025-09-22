@@ -10,9 +10,15 @@ import { ProfileService } from '@application/profile/services/profile.service';
 import { SupplierService } from '@application/supplier/services/supplier.service';
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
 import { CheckingService } from '@application/checking/services/checking.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
+	imports: [
+		InfrastructureModule,
+		DomainModule,
+		JwtModule.register({}),
+		ScheduleModule.forRoot(),
+	],
 	providers: [
 		AuthService,
 		SupplyItemService,

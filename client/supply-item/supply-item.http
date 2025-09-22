@@ -1,15 +1,15 @@
 ### Variables 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDIxNjUyLCJleHAiOjE3NTg0MjUyNTJ9.yJykfL4K6qRLS--LWbFwipj9ebaGmVYTo6OJdoJfnpI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NTAwNzQ0LCJleHAiOjE3NTg1MDQzNDR9.mBjs27fFNcm2t9zEgsXvsWHhSeGreM4PyCe7SnmEeE4
 
 post http://localhost:3333/supply
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name": "Lima",
-    "code": "321",
-    "description": "Lima pra fazer suco",
-    "price": 0.89,
+    "name": "Acerrola",
+    "code": "123",
+    "description": "Acerrola pra fazer suco BEEEEM doce",
+    "price": 1.50,
     "supplierId": 1 
 }
 

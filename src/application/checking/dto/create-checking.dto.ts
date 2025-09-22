@@ -1,8 +1,7 @@
-import { IsDateString, IsOptional } from "class-validator";
+import { IsDateString, IsOptional } from 'class-validator';
 
 export class CreateCheckingDto {
-
-   @IsOptional()
-   @IsDateString()
-   receiptDate?: Date;
+	@IsOptional()
+	@IsDateString()
+	receiptDate?: Date;
 }

@@ -1,17 +1,74 @@
 import { Injectable } from '@nestjs/common';
-import { Checking } from '@prisma/client';
+import { Checking, CheckingStatus } from '@prisma/client';
 import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
 import { CheckingModel } from '@domain/checking/models/checking.model';
 import { Result } from '@domain/shared/result/result.pattern';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
 import { CheckingLineModel } from '@domain/checking/models/checking-line.model';
+import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
+import { InventTransferModel } from '@domain/transfer/models/invent-transfer.model';
+import { InventTransferWithLines } from '@domain/transfer/types/inventTrasnferWithLines';
 
 @Injectable()
 export class CheckingRepository
 	extends PrismaRepository
 	implements ICheckingRepository
 {
+	async findTransferById(
+		inventTransferId: number,
+	): Promise<Result<InventTransferWithLines | null>> {
+		return this.execute<InventTransferWithLines | null>(() =>
+			this.prismaService.inventTransfer.findUnique({
+				where: { id: inventTransferId },
+				include: { inventTransferLines: true },
+			}),
+		);
+	}
+
+	async updateCheckingStatus(
+		id: number,
+		status: CheckingStatus,
+	): Promise<Result<CheckingWithLines>> {
+		return this.execute<CheckingWithLines>(() =>
+			this.prismaService.checking.update({
+				where: { id: id },
+				data: { status },
+				include: { lines: true },
+			}),
+		);
+	}
+
+	async createTransfer(
+		model: InventTransferModel,
+	): Promise<Result<InventTransferWithLines>> {
+		return this.execute<InventTransferWithLines>(() =>
+			this.prismaService.inventTransfer.create({
+				data: { ...model },
+				include: {
+					inventTransferLines: true,
+				},
+			}),
+		);
+	}
+
+	async createTransferLines(
+		inventTransferId: number,
+		lines: InventTransferLineModel[],
+	): Promise<Result<InventTransferWithLines>> {
+		return this.execute<InventTransferWithLines>(() =>
+			this.prismaService.inventTransfer.update({
+				where: { id: inventTransferId },
+				data: {
+					inventTransferLines: {
+						create: lines,
+					},
+				},
+				include: { inventTransferLines: true },
+			}),
+		);
+	}
+
 	async addLines(
 		checkingId: number,
 		lines: CheckingLineModel[],

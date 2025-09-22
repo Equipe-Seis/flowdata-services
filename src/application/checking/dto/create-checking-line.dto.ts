@@ -1,21 +1,21 @@
-import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { UnitOfMeasure } from '@prisma/client';
+import { IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCheckingLineDto {
-
-    @IsNotEmpty()
-    @IsNumber()
+	@IsNotEmpty()
+	@IsNumber()
 	checkingId: number;
 
-    @IsNotEmpty()
-    @IsNumber()
+	@IsNotEmpty()
+	@IsNumber()
 	supplyItemId: number;
 
-    @IsNotEmpty()
-    @IsNumber()
+	@IsNotEmpty()
+	@IsNumber()
 	receivedQty: number;
 
-    @IsNotEmpty()
-    @IsString()
-    @IsIn(['KG', 'UN', 'G', 'ML', 'CM']) // TODO: temp, convert into Enum or Table
-	unitOfMeasure: string;
+	@IsNotEmpty()
+	@IsString()
+	@IsIn(['KG', 'UN']) // TODO: temp, convert into Enum or Table
+	unitOfMeasure: UnitOfMeasure;
 }

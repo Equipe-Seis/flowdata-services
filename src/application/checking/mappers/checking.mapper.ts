@@ -1,11 +1,17 @@
 import { CheckingLinesResponseDto, CheckingResponseDto } from "@application/checking/dto/checking-response.dto";
 import { CreateCheckingLineDto } from '@application/checking/dto/create-checking-line.dto';
 import { CreateCheckingDto } from '@application/checking/dto/create-checking.dto';
+import {
+	CreateTransferLineResponseDto,
+	CreateTransferResponseDto,
+} from '@application/checking/dto/create-transfer-response.dto';
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 import { CheckingLineModel } from '@domain/checking/models/checking-line.model';
 import { CheckingModel } from '@domain/checking/models/checking.model';
 import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
-import { CheckingLine } from '@prisma/client';
+import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
+import { InventTransferWithLines } from '@domain/transfer/types/inventTrasnferWithLines';
+import { CheckingLine, InventTransferLine } from '@prisma/client';
 
 export class CheckingMapper {
 	static fromEntity(model: CheckingWithLines): CheckingResponseDto {
@@ -43,5 +49,34 @@ export class CheckingMapper {
 
 	static toModel(dto: CreateCheckingDto): CheckingModel {
 		return new CheckingModel(dto.receiptDate);
+	}
+
+	static toInventTransferLineModel(dto: CheckingLinesResponseDto) {
+		return new InventTransferLineModel(
+			dto.receivedQty,
+			dto.unitOfMeasure,
+			dto.supplyItemId,
+			dto.id,
+		);
+	}
+
+	static toCreateTransferResponseDto(model: InventTransferWithLines) {
+		return new CreateTransferResponseDto(
+			model.id,
+			model.transferType,
+			model.inventTransferLines.map(
+				CheckingMapper.toCreateTransferLineResponseDto,
+			),
+		);
+	}
+
+	static toCreateTransferLineResponseDto(model: InventTransferLine) {
+		return new CreateTransferLineResponseDto(
+			model.id,
+			model.supplyItemId,
+			model.unitOfMeasure,
+			model.transferQty.toNumber(),
+			model.checkingLineId,
+		);
 	}
 }
