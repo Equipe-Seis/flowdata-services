@@ -1,7 +1,7 @@
 ### Supplier CRUD Operations
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NDk0NzEyLCJleHAiOjE3NTg0OTgzMTJ9.6ZKfQ3kbpSkHWLsd2gtKsX_VtS6lSjUTShxMfR6IRow
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NTk2NDcxLCJleHAiOjE3NTg2MDAwNzF9.nKOr8V3duwTYcJCIAnETOYLqfLl3EA-1ozv_avze0zw
 @port = 3333
 
 ### 1. Get all suppliers (paginated)

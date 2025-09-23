@@ -11,13 +11,14 @@ import { SupplierService } from '@application/supplier/services/supplier.service
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
 import { CheckingService } from '@application/checking/services/checking.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { InventJobService } from '@application/jobs/invent/services/invent-job.service';
 
 @Module({
 	imports: [
 		InfrastructureModule,
 		DomainModule,
 		JwtModule.register({}),
-		ScheduleModule.forRoot(),
+		ScheduleModule.forRoot({}),
 	],
 	providers: [
 		AuthService,
@@ -28,6 +29,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 		SupplierService,
 		AuthorizationService,
 		CheckingService,
+		InventJobService,
 	],
 	exports: [
 		AuthService,

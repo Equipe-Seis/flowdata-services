@@ -13,6 +13,7 @@ import {
 import { CreateCheckingLineDto } from '@application/checking/dto/create-checking-line.dto';
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 
+// TODO: improve API documentation
 @Controller('checkings')
 export class CheckingController {
 	constructor(private readonly checkingService: CheckingService) {}
