@@ -1,24 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { ConsultaCnpj } from '@/domain/shared/cnpj/models/consulta-cnpj.model';
-import { ConsultaCnpjResponseDto } from '@/application/shared/cnpj/dto/consulta-cnpj-response.dto';
+import { SearchCnpjResponseDto } from '@/application/shared/cnpj/dto/search-cnpj-response.dto';
 
 
 @Injectable()
-export class ConsultaCnpjService {
+export class SearchCnpjService {
     private readonly apiUrl = 'https://www.receitaws.com.br/v1/cnpj/';
 
-    async consultarCnpj(cnpj: string): Promise<ConsultaCnpjResponseDto> {
+    async searchCnpj(cnpj: string): Promise<SearchCnpjResponseDto> {
         try {
             const response = await axios.get(`${this.apiUrl}${cnpj}`);
             return this.mapResponseToDto(response.data);
         } catch (error) {
-            throw new Error('Erro ao consultar o CNPJ: ' + error.message);
+            throw new Error('Error consulting CNPJ: ' + (error as Error).message);
         }
     }
 
-    private mapResponseToDto(response: any): ConsultaCnpjResponseDto {
-        const dto = new ConsultaCnpjResponseDto();
+    private mapResponseToDto(response: any): SearchCnpjResponseDto {
+        const dto = new SearchCnpjResponseDto();
         dto.cnpj = response.cnpj;
         dto.nome = response.nome;
         dto.fantasia = response.fantasia;
@@ -39,3 +38,4 @@ export class ConsultaCnpjService {
         return dto;
     }
 }
+

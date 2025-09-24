@@ -1,4 +1,4 @@
-export class ConsultaCnpjResponseDto {
+export class SearchCnpjResponseDto {
     cnpj: string;
     nome: string;
     fantasia: string;
@@ -17,3 +17,4 @@ export class ConsultaCnpjResponseDto {
     email: string;
     telefone: string;
 }
+

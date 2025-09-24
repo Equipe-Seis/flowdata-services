@@ -1,4 +1,4 @@
-export class ConsultaCnpj {
+export class SearchCnpj {
     cnpj: string;
     nome: string;
     fantasia: string;
@@ -17,3 +17,4 @@ export class ConsultaCnpj {
     email: string;
     telefone: string;
 }
+

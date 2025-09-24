@@ -5,7 +5,7 @@ import { AuthController } from '@presentation/auth/rest/auth.controller';
 import { UsersController } from '@presentation/user/rest/users.controller';
 import { ProfileController } from '@presentation/profile/rest/profile.controller';
 import { SupplierController } from '@presentation/supplier/rest/supplier.controller';
-import { ConsultaCnpjController } from '@presentation/shared/cnpj/rest/consulta-cnpj.controller';
+import { SearchCnpjController } from '@presentation/shared/cnpj/rest/search-cnpj.controller';
 
 @Module({
 	imports: [ApplicationModule],
@@ -15,7 +15,7 @@ import { ConsultaCnpjController } from '@presentation/shared/cnpj/rest/consulta-
 		UsersController,
 		ProfileController,
 		SupplierController,
-		ConsultaCnpjController
+		SearchCnpjController
 	],
 })
 export class PresentationModule { }

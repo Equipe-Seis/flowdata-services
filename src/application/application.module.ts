@@ -9,7 +9,7 @@ import { UserAccessService } from '@application/user/services/user-access.servic
 import { ProfileService } from '@application/profile/services/profile.service';
 import { SupplierService } from '@application/supplier/services/supplier.service';
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
-import { ConsultaCnpjService } from '@/application/shared/cnpj/services/consulta-cnpj.service';
+import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnpj.service';
 
 @Module({
 	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
@@ -21,7 +21,7 @@ import { ConsultaCnpjService } from '@/application/shared/cnpj/services/consulta
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
-		ConsultaCnpjService
+		SearchCnpjService
 	],
 	exports: [
 		AuthService,
@@ -31,7 +31,7 @@ import { ConsultaCnpjService } from '@/application/shared/cnpj/services/consulta
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
-		ConsultaCnpjService
+		SearchCnpjService
 	],
 })
 export class ApplicationModule { }

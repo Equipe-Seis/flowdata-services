@@ -19,8 +19,8 @@ import { SupplierRepository } from '@infrastructure/persistence/supplier/supplie
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { ICacheRepository } from '@application/user/cache/icache.repository';
-import { IConsultaCnpjRepository } from '@/application/shared/cnpj/persistence/iconsulta-cnpj.repository';
-import { ConsultaCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/consulta-cnpj.repository';
+import { ISearchCnpjRepository } from '@/application/shared/cnpj/persistence/isearch-cnpj.repository';
+import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/search-cnpj.repository';
 
 @Module({
 	imports: [
@@ -70,8 +70,8 @@ import { ConsultaCnpjRepository } from '@/infrastructure/persistence/shared/cnpj
 			useClass: RedisCacheRepository,
 		},
 		{
-			provide: IConsultaCnpjRepository,
-			useClass: ConsultaCnpjRepository,
+			provide: ISearchCnpjRepository,
+			useClass: SearchCnpjRepository,
 		},
 
 
@@ -86,7 +86,7 @@ import { ConsultaCnpjRepository } from '@/infrastructure/persistence/shared/cnpj
 		IProfileRepository,
 		ISupplierRepository,
 		ICacheRepository,
-		IConsultaCnpjRepository
+		ISearchCnpjRepository
 	],
 })
 export class InfrastructureModule { }
