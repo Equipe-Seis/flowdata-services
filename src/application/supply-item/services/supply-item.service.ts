@@ -1,4 +1,5 @@
 import { CreateSupplyDto } from '@application/supply-item/dto';
+import { FindAllSuppliesDto } from '@application/supply-item/dto/find-all-supplies.dto';
 import { SupplyItemDto } from '@application/supply-item/dto/supply-item.dto';
 import { SupplyItemMapper } from '@application/supply-item/mappers/supply-item.mapper';
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
@@ -10,11 +11,10 @@ export class SupplyItemService {
 	constructor(
 		@Inject(ISupplyItemRepository)
 		private supplyItemRepository: ISupplyItemRepository,
-	) {}
+	) { }
 
 	async createSupplyItem(dto: CreateSupplyDto): Promise<Result<number>> {
 		const model = SupplyItemMapper.toModel(dto);
-
 		const result = await this.supplyItemRepository.create(model);
 
 		if (result.isFailure) {
@@ -24,8 +24,8 @@ export class SupplyItemService {
 		return Result.Ok(result.getValue().id);
 	}
 
-	async getAll(): Promise<Result<Array<SupplyItemDto>>> {
-		const result = await this.supplyItemRepository.getAll();
+	async getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItemDto>>> {
+		const result = await this.supplyItemRepository.getAll(filters);
 
 		if (result.isFailure) {
 			return Result.Fail<Array<SupplyItemDto>>(result.error!);

@@ -1,21 +1,23 @@
 import { PrismaClient } from '@prisma/client';
-import { seedUsers } from './seeds/seed-users';
-//import { seedPermissions } from './seeds/seed-permissions';
-//import { seedProfiles } from './seeds/seed-profiles';
+
+import { seedAdminUser } from './seeds/seed-create-user-admin';
+import { seedRolesAndPermissions } from './seeds/seed-roles-permitions';
+import { seedUserProfiles } from './seeds/seed-user_admin-roles-permissions';
 
 const prisma = new PrismaClient();
 
 async function main() {
-    await seedUsers();
-    //await seedPermissions();
-    //await seedProfiles();
-
-    console.log('Seeding complete');
+    await seedAdminUser(prisma);
+    await seedRolesAndPermissions(prisma);
+    await seedUserProfiles(prisma);
+    console.log('Seeding complete ✅');
 }
 
 main()
-    .catch(e => {
-        console.error(e);
+    .catch((e) => {
+        console.error('Erro no seed:', e);
         process.exit(1);
     })
-    .finally(() => prisma.$disconnect());
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

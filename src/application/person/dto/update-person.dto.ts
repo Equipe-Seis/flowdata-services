@@ -14,7 +14,7 @@ export class UpdatePersonDto {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({ example: 'individual' })
+    @ApiProperty({ example: 'individual', enum: PersonType })
     @IsEnum(PersonType)
     personType: PersonType;
 

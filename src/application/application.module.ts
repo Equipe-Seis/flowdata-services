@@ -9,6 +9,7 @@ import { UserAccessService } from '@application/user/services/user-access.servic
 import { ProfileService } from '@application/profile/services/profile.service';
 import { SupplierService } from '@application/supplier/services/supplier.service';
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
+import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnpj.service';
 
 @Module({
 	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
@@ -20,6 +21,7 @@ import { AuthorizationService } from '@application/authorization/services/author
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
+		SearchCnpjService
 	],
 	exports: [
 		AuthService,
@@ -29,6 +31,7 @@ import { AuthorizationService } from '@application/authorization/services/author
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
+		SearchCnpjService
 	],
 })
-export class ApplicationModule {}
+export class ApplicationModule { }
