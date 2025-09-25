@@ -4,7 +4,10 @@ import { ICheckingRepository } from '@application/checking/persistence/ichecking
 import { CheckingModel } from '@domain/checking/models/checking.model';
 import { Result } from '@domain/shared/result/result.pattern';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
-import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
+import {
+	CheckingWithLines,
+	CheckingWithSupplyItem,
+} from '@domain/checking/types/checkingWithLines';
 import { CheckingLineModel } from '@domain/checking/models/checking-line.model';
 import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
 import { InventTransferModel } from '@domain/transfer/models/invent-transfer.model';
@@ -134,11 +137,17 @@ export class CheckingRepository
 		);
 	}
 
-	async findById(id: number): Promise<Result<CheckingWithLines | null>> {
-		return this.execute<CheckingWithLines | null>(() =>
+	async findById(id: number): Promise<Result<CheckingWithSupplyItem | null>> {
+		return this.execute<CheckingWithSupplyItem | null>(() =>
 			this.prismaService.checking.findUnique({
 				where: { id },
-				include: { lines: true },
+				include: {
+					lines: {
+						include: {
+							supplyItem: true,
+						},
+					},
+				},
 			}),
 		);
 	}

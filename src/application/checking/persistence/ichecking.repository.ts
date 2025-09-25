@@ -1,6 +1,9 @@
 import { CheckingLineModel } from '@domain/checking/models/checking-line.model';
 import { CheckingModel } from '@domain/checking/models/checking.model';
-import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
+import {
+	CheckingWithLines,
+	CheckingWithSupplyItem,
+} from '@domain/checking/types/checkingWithLines';
 import { Result } from '@domain/shared/result/result.pattern';
 import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
 import { InventTransferModel } from '@domain/transfer/models/invent-transfer.model';
@@ -15,7 +18,7 @@ export interface ICheckingRepository {
 		status: CheckingStatus,
 	): Promise<Result<CheckingWithLines>>;
 
-	findById(id: number): Promise<Result<CheckingWithLines | null>>;
+	findById(id: number): Promise<Result<CheckingWithSupplyItem | null>>;
 
 	findAll(): Promise<Result<CheckingWithLines[]>>;
 

@@ -14,6 +14,7 @@ import { CreateCheckingLineDto } from '@application/checking/dto/create-checking
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 
 // TODO: improve API documentation
+// TODO: add delete method
 @Controller('checkings')
 export class CheckingController {
 	constructor(private readonly checkingService: CheckingService) {}

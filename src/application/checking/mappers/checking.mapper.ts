@@ -1,4 +1,8 @@
-import { CheckingLinesResponseDto, CheckingResponseDto } from "@application/checking/dto/checking-response.dto";
+import {
+	CheckingLineItemResponseDto,
+	CheckingLinesResponseDto,
+	CheckingResponseDto,
+} from '@application/checking/dto/checking-response.dto';
 import { CreateCheckingLineDto } from '@application/checking/dto/create-checking-line.dto';
 import { CreateCheckingDto } from '@application/checking/dto/create-checking.dto';
 import {
@@ -8,10 +12,13 @@ import {
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 import { CheckingLineModel } from '@domain/checking/models/checking-line.model';
 import { CheckingModel } from '@domain/checking/models/checking.model';
-import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
+import {
+	CheckingLineWithSupplyItem,
+	CheckingWithLines,
+} from '@domain/checking/types/checkingWithLines';
 import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
 import { InventTransferWithLines } from '@domain/transfer/types/inventTrasnferWithLines';
-import { CheckingLine, InventTransferLine } from '@prisma/client';
+import { CheckingLine, InventTransferLine, SupplyItem } from '@prisma/client';
 
 export class CheckingMapper {
 	static fromEntity(model: CheckingWithLines): CheckingResponseDto {
@@ -24,12 +31,24 @@ export class CheckingMapper {
 		);
 	}
 
-	static fromLinesEntity(model: CheckingLine): CheckingLinesResponseDto {
+	static fromLinesEntity(
+		model: CheckingLineWithSupplyItem,
+	): CheckingLinesResponseDto {
 		return new CheckingLinesResponseDto(
 			model.id,
 			model.supplyItemId,
 			model.receivedQty.toNumber(),
 			model.unitOfMeasure,
+			CheckingMapper.fromSupplyItemEntity(model.supplyItem),
+		);
+	}
+
+	static fromSupplyItemEntity(model: SupplyItem) {
+		return new CheckingLineItemResponseDto(
+			model.id,
+			model.name,
+			model.code,
+			model.description ?? '',
 		);
 	}
 
