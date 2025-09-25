@@ -12,6 +12,7 @@ import { AuthorizationService } from '@application/authorization/services/author
 import { CheckingService } from '@application/checking/services/checking.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { InventJobService } from '@application/jobs/invent/services/invent-job.service';
+import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnpj.service';
 
 @Module({
 	imports: [
@@ -30,6 +31,7 @@ import { InventJobService } from '@application/jobs/invent/services/invent-job.s
 		AuthorizationService,
 		CheckingService,
 		InventJobService,
+		SearchCnpjService
 	],
 	exports: [
 		AuthService,
@@ -40,6 +42,7 @@ import { InventJobService } from '@application/jobs/invent/services/invent-job.s
 		SupplierService,
 		AuthorizationService,
 		CheckingService,
+		SearchCnpjService
 	],
 })
-export class ApplicationModule {}
+export class ApplicationModule { }

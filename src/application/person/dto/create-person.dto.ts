@@ -9,7 +9,7 @@ export class CreatePersonDto {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({ example: 'individual' })
+    @ApiProperty({ example: 'individual', enum: PersonType })
     @IsEnum(PersonType)
     personType: PersonType;
 

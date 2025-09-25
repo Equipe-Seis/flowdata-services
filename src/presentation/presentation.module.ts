@@ -6,6 +6,7 @@ import { UsersController } from '@presentation/user/rest/users.controller';
 import { ProfileController } from '@presentation/profile/rest/profile.controller';
 import { SupplierController } from '@presentation/supplier/rest/supplier.controller';
 import { CheckingController } from '@presentation/checking/rest/checking.controller';
+import { SearchCnpjController } from '@presentation/shared/cnpj/rest/search-cnpj.controller';
 
 @Module({
 	imports: [ApplicationModule],
@@ -16,6 +17,7 @@ import { CheckingController } from '@presentation/checking/rest/checking.control
 		ProfileController,
 		SupplierController,
 		CheckingController,
+		SearchCnpjController
 	],
 })
-export class PresentationModule {}
+export class PresentationModule { }

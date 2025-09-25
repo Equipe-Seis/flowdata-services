@@ -23,6 +23,8 @@ import { ICheckingRepository } from '@application/checking/persistence/ichecking
 import { CheckingRepository } from '@infrastructure/persistence/checking/checking.repository';
 import { ITransactionManager } from '@domain/shared/transaction/itrsanction.manager';
 import { PrismaTransactionManager } from '@infrastructure/persistence/transaction/transaction.manager';
+import { ISearchCnpjRepository } from '@/application/shared/cnpj/persistence/isearch-cnpj.repository';
+import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/search-cnpj.repository';
 
 @Module({
 	imports: [
@@ -79,6 +81,10 @@ import { PrismaTransactionManager } from '@infrastructure/persistence/transactio
 			provide: ITransactionManager,
 			useClass: PrismaTransactionManager,
 		},
+		{
+			provide: ISearchCnpjRepository,
+			useClass: SearchCnpjRepository,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -91,6 +97,7 @@ import { PrismaTransactionManager } from '@infrastructure/persistence/transactio
 		ICacheRepository,
 		ICheckingRepository,
 		ITransactionManager,
+		ISearchCnpjRepository
 	],
 })
-export class InfrastructureModule {}
+export class InfrastructureModule { }

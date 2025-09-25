@@ -1,5 +1,5 @@
 export enum PersonType {
-	Individual = 'individual',
-	Legalentity = 'legalentity',
+    Individual = 'individual',
+    LegalEntity = 'legalentity'
 }
 

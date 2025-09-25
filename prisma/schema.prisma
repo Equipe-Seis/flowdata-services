@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -24,7 +23,7 @@ model Person {
   User     User?
 
   addresses Address[]
-  contacts Contact[]
+  contacts  Contact[]
 }
 
 model User {
@@ -135,7 +134,7 @@ model ProfilePermission {
   profile    Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  @@id([profileId, permissionId]) 
+  @@id([profileId, permissionId])
   @@index([profileId])
   @@index([permissionId])
 }
@@ -147,6 +146,8 @@ model SupplyItem {
   description String?
   price       Float
   createdAt   DateTime @default(now())
+  type        String   @default("Indefinido")
+  status      Status   @default(active)
 
   supplierId  Int
   supplier    Supplier   @relation(fields: [supplierId], references: [id], onDelete: NoAction)

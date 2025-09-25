@@ -10,27 +10,52 @@ import { CreatePersonDto } from '@application/person/dto/create-person.dto';
 import { UpdatePersonDto } from '@application/person/dto/update-person.dto';
 
 export class PersonMapper {
-    // Mapeia PersonType do domínio para o Prisma
     static toPrismaPersonType(type: PersonType): PrismaPersonType {
-        return type as unknown as PrismaPersonType;
+        switch (type) {
+            case PersonType.Individual:
+                return PrismaPersonType.individual;
+            case PersonType.LegalEntity:
+                return PrismaPersonType.legalentity;
+            default:
+                return PrismaPersonType.individual;
+        }
     }
 
-    // Mapeia PersonType do Prisma para o domínio
     static toDomainPersonType(type: PrismaPersonType): PersonType {
-        return type as unknown as PersonType;
+        switch (type) {
+            case PrismaPersonType.individual:
+                return PersonType.Individual;
+            case PrismaPersonType.legalentity:
+                return PersonType.LegalEntity;
+            default:
+                return PersonType.Individual;
+        }
     }
 
-    // Mapeia Status do domínio para o Prisma
     static toPrismaStatus(status: Status): PrismaStatus {
-        return status as unknown as PrismaStatus;
+        switch (status) {
+            case Status.Active:
+                return PrismaStatus.active;
+            case Status.Inactive:
+                return PrismaStatus.inactive;
+            case Status.Suspended:
+                return PrismaStatus.inactive;
+            default:
+                return PrismaStatus.active;
+        }
     }
 
-    // Mapeia Status do Prisma para o domínio
     static toDomainStatus(status: PrismaStatus): Status {
-        return status as unknown as Status;
+        switch (status) {
+            case PrismaStatus.active:
+                return Status.Active;
+            case PrismaStatus.inactive:
+                return Status.Inactive;
+            default:
+                return Status.Active;
+        }
     }
 
-    // Converte DTO para o modelo de domínio
     static fromDto(dto: CreatePersonDto): PersonModel {
         return new PersonModel(
             dto.name,
@@ -42,7 +67,6 @@ export class PersonMapper {
         );
     }
 
-    // Converte UpdatePersonDto para o modelo de domínio
     static fromUpdateDto(dto: UpdatePersonDto): PersonModel {
         return new PersonModel(
             dto.name,
@@ -55,7 +79,6 @@ export class PersonMapper {
         );
     }
 
-    // Converte o objeto PrismaPerson para o modelo de domínio PersonModel
     static fromPrisma(person: PrismaPerson): PersonModel {
         return new PersonModel(
             person.name,
@@ -68,10 +91,9 @@ export class PersonMapper {
         );
     }
 
-    // Converte o modelo de domínio PersonModel para o objeto PrismaPerson
     static toPrisma(personModel: PersonModel): PrismaPerson {
         return {
-            id: personModel.id!,  // O ! é usado para indicar que o id nunca será null ou undefined
+            id: personModel.id!,
             name: personModel.name,
             personType: this.toPrismaPersonType(personModel.personType),
             documentNumber: personModel.documentNumber,

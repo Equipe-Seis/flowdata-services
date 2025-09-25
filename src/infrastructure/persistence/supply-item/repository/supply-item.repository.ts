@@ -1,22 +1,56 @@
+import { FindAllSuppliesDto } from '@application/supply-item/dto/find-all-supplies.dto';
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
 import { SupplyItemWithSupplier } from '@domain/supply-item/types/supplyItemSupplier';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { Injectable } from '@nestjs/common';
-import { SupplyItem } from '@prisma/client';
+import { Prisma, Status, SupplyItem } from '@prisma/client';
 
 @Injectable({})
 export class SupplyItemRepository
 	extends PrismaRepository
-	implements ISupplyItemRepository
-{
-	getAll(): Promise<Result<Array<SupplyItemWithSupplier>>> {
+	implements ISupplyItemRepository {
+	getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItemWithSupplier>>> {
+		const { search, tipoInsumo, statusInsumo } = filters;
+
+		const where: Prisma.SupplyItemWhereInput = {};
+
+		if (search) {
+			where.OR = [
+				{
+					name: {
+						contains: search,
+						mode: 'insensitive',
+					},
+				},
+				{
+					code: {
+						contains: search,
+						mode: 'insensitive',
+					},
+				},
+			];
+		}
+
+		if (tipoInsumo && tipoInsumo.length > 0) {
+			where.type = {
+				in: tipoInsumo,
+			};
+		}
+
+		if (statusInsumo && statusInsumo.length > 0) {
+			where.status = {
+				in: statusInsumo as Status[],
+			};
+		}
+
 		return this.execute<Array<SupplyItemWithSupplier>>(() =>
 			this.prismaService.supplyItem.findMany({
+				where,
 				include: {
-					supplier: true,
-				},
+					supplier: true
+				}
 			}),
 		);
 	}
