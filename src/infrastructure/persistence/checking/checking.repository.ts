@@ -18,6 +18,18 @@ export class CheckingRepository
 	extends PrismaRepository
 	implements ICheckingRepository
 {
+	async delete(id: number): Promise<Result<number>> {
+		return this.execute<number>(async () => {
+			const deleted = await this.prismaService.checking.delete({
+				where: {
+					id: id,
+				},
+			});
+
+			return deleted.id;
+		});
+	}
+
 	async findTransferById(
 		inventTransferId: number,
 	): Promise<Result<InventTransferWithLines | null>> {

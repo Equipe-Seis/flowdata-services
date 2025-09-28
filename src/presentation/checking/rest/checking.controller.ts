@@ -43,6 +43,12 @@ export class CheckingController {
 		return result.mapToPresentationResult();
 	}
 
+	@Delete(':id')
+	async delete(@Param('id', ParseIntPipe) id: number) {
+		const result = await this.checkingService.delete(id);
+		return result.mapToPresentationResult();
+	}
+
 	//#region Lines
 	@Post('lines')
 	async addLine(@Body() dto: CreateCheckingLineDto[]) {

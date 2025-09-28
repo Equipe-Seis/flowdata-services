@@ -13,6 +13,8 @@ import { Checking, CheckingStatus } from '@prisma/client';
 export interface ICheckingRepository {
 	create(model: CheckingModel): Promise<Result<Checking>>;
 
+	delete(id: number): Promise<Result<number>>;
+
 	updateCheckingStatus(
 		id: number,
 		status: CheckingStatus,

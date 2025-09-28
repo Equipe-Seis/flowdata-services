@@ -91,6 +91,18 @@ export class CheckingService {
 		return Result.Ok(CheckingMapper.toCreateTransferResponseDto(transferData));
 	}
 
+	async delete(id: number): Promise<Result<number>> {
+		const checkingResult = await this.findById(id);
+
+		if (checkingResult.isFailure) {
+			return Result.Fail(checkingResult.getError());
+		}
+
+		const checking = checkingResult.getValue()!;
+
+		return this.checkingRepository.delete(checking.id);
+	}
+
 	async create(dto: CreateCheckingDto): Promise<Result<CheckingResponseDto>> {
 		const model = CheckingMapper.toModel(dto);
 
