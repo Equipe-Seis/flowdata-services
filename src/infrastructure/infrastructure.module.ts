@@ -25,6 +25,8 @@ import { ITransactionManager } from '@domain/shared/transaction/itrsanction.mana
 import { PrismaTransactionManager } from '@infrastructure/persistence/transaction/transaction.manager';
 import { ISearchCnpjRepository } from '@/application/shared/cnpj/persistence/isearch-cnpj.repository';
 import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/search-cnpj.repository';
+import { IInventoryRepository } from '@application/inventory/persistence/iinvent.repository';
+import { InventoryRepository } from '@infrastructure/persistence/inventory/inventory.repository';
 
 @Module({
 	imports: [
@@ -85,6 +87,10 @@ import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/s
 			provide: ISearchCnpjRepository,
 			useClass: SearchCnpjRepository,
 		},
+		{
+			provide: IInventoryRepository,
+			useClass: InventoryRepository,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -97,7 +103,8 @@ import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/s
 		ICacheRepository,
 		ICheckingRepository,
 		ITransactionManager,
-		ISearchCnpjRepository
+		ISearchCnpjRepository,
+		IInventoryRepository,
 	],
 })
-export class InfrastructureModule { }
+export class InfrastructureModule {}

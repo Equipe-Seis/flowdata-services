@@ -11,8 +11,9 @@ import { SupplierService } from '@application/supplier/services/supplier.service
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
 import { CheckingService } from '@application/checking/services/checking.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { InventJobService } from '@application/jobs/invent/services/invent-job.service';
+import { InventJobService } from '@application/inventory/services/jobs/invent-job.service';
 import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnpj.service';
+import { InventoryService } from '@application/inventory/services/inventory.service';
 
 @Module({
 	imports: [
@@ -31,7 +32,8 @@ import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnp
 		AuthorizationService,
 		CheckingService,
 		InventJobService,
-		SearchCnpjService
+		SearchCnpjService,
+		InventoryService,
 	],
 	exports: [
 		AuthService,
@@ -42,7 +44,8 @@ import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnp
 		SupplierService,
 		AuthorizationService,
 		CheckingService,
-		SearchCnpjService
+		SearchCnpjService,
+		InventoryService,
 	],
 })
-export class ApplicationModule { }
+export class ApplicationModule {}

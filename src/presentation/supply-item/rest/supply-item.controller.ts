@@ -23,7 +23,6 @@ import { ProfileGuard } from '@presentation/shared/guard/profile.guard';
 export class SupplyItemController {
 	constructor(private supplyItemService: SupplyItemService) {}
 
-	@UseGuards(JwtGuard, ProfileGuard)
 	@HasProfile('admin', 'supply_supervisor', 'supply_stock_keeper')
 	@Get()
 	@ApiOperation({ summary: 'Get all supply items.' })
@@ -31,7 +30,7 @@ export class SupplyItemController {
 		status: HttpStatus.OK,
 		description: 'List of all supply items.',
 	})
-	@UseGuards(JwtGuard)
+	@UseGuards(JwtGuard, ProfileGuard)
 	async get(@Query() filters: FindAllSuppliesDto) {
 		const result = await this.supplyItemService.getAll(filters);
 		return result.mapToPresentationResult();
