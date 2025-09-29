@@ -1,7 +1,8 @@
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4OTk1MDI0LCJleHAiOjE3NTkwMDIyMjR9.pk8WeYdxgMt0Z7B5Iq1Eld73ib1G-Cty1eGjRKJo0g4
-@checkingId = 1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MTEzNjU0LCJleHAiOjE3NTkxMTcyNTR9.wEqLouIg4qa3TpKQEmNabZZaaY55d9jRlH_4c943Gas
+
+@checkingId = 11
 ###
 GET http://localhost:3333/checkings 
 Authorization: Bearer {{token}}
@@ -41,7 +42,7 @@ Content-Type: application/json
 { "receivedQty": 90, "unitOfMeasure": "KG" }
 
 ###
-DELETE http://localhost:3333/checkings/{{checkingId}}/lines/1
+DELETE http://localhost:3333/checkings/{{checkingId}}/lines/12
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

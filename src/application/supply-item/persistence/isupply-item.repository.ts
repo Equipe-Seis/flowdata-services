@@ -7,9 +7,13 @@ import { SupplyItem } from '@prisma/client';
 export interface ISupplyItemRepository {
 	create(item: SupplyItemModel): Promise<Result<SupplyItem>>;
 
-	getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItemWithSupplier>>>;
+	getAll(
+		filters: FindAllSuppliesDto,
+	): Promise<Result<Array<SupplyItemWithSupplier>>>;
 
 	getById(id: number): Promise<Result<SupplyItemWithSupplier | null>>;
+
+	getByCode(code: string): Promise<Result<SupplyItemWithSupplier | null>>;
 
 	update(id: number, item: SupplyItemModel): Promise<Result<SupplyItem>>;
 }

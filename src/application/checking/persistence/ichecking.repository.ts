@@ -28,18 +28,18 @@ export interface ICheckingRepository {
 	addLines(
 		checkingId: number,
 		lines: CheckingLineModel[],
-	): Promise<Result<CheckingWithLines>>;
+	): Promise<Result<CheckingWithSupplyItem>>;
 
 	deleteLine(
 		checkingId: number,
 		lineId: number,
-	): Promise<Result<CheckingWithLines>>;
+	): Promise<Result<CheckingWithSupplyItem>>;
 
 	updateLine(
 		checkingId: number,
 		lineId: number,
 		model: Partial<CheckingLineModel>,
-	): Promise<Result<CheckingWithLines>>;
+	): Promise<Result<CheckingWithSupplyItem>>;
 	//#endregion
 
 	// #region Transfer

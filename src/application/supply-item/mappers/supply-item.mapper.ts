@@ -5,6 +5,7 @@ import {
 } from '@application/supply-item/dto/supply-item.dto';
 import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
 import { SupplyItemWithSupplier } from '@domain/supply-item/types/supplyItemSupplier';
+import { UnitOfMeasure } from '@prisma/client';
 
 export class SupplyItemMapper {
 	static toModel(dto: CreateSupplyDto): SupplyItemModel {
@@ -14,6 +15,7 @@ export class SupplyItemMapper {
 			dto.price,
 			dto.supplierId,
 			dto.description,
+			dto.unitOfMeasure as UnitOfMeasure,
 		);
 	}
 
@@ -38,6 +40,7 @@ export class SupplyItemMapper {
 			entity.name,
 			entity.code,
 			entity.price,
+			entity.unitOfMeasure,
 			entity.description,
 			SupplyItemMapper.toSupplierDto(entity.supplier),
 		);

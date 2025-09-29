@@ -87,8 +87,8 @@ export class CheckingRepository
 	async addLines(
 		checkingId: number,
 		lines: CheckingLineModel[],
-	): Promise<Result<CheckingWithLines>> {
-		return this.execute<CheckingWithLines>(() =>
+	): Promise<Result<CheckingWithSupplyItem>> {
+		return this.execute<CheckingWithSupplyItem>(() =>
 			this.prismaService.checking.update({
 				where: { id: checkingId },
 				data: {
@@ -96,7 +96,13 @@ export class CheckingRepository
 						create: lines,
 					},
 				},
-				include: { lines: true },
+				include: {
+					lines: {
+						include: {
+							supplyItem: true,
+						},
+					},
+				},
 			}),
 		);
 	}
@@ -104,8 +110,8 @@ export class CheckingRepository
 	async deleteLine(
 		checkingId: number,
 		lineId: number,
-	): Promise<Result<CheckingWithLines>> {
-		return this.execute<CheckingWithLines>(() =>
+	): Promise<Result<CheckingWithSupplyItem>> {
+		return this.execute<CheckingWithSupplyItem>(() =>
 			this.prismaService.checking.update({
 				where: { id: checkingId },
 				data: {
@@ -113,7 +119,13 @@ export class CheckingRepository
 						delete: { id: lineId },
 					},
 				},
-				include: { lines: true },
+				include: {
+					lines: {
+						include: {
+							supplyItem: true,
+						},
+					},
+				},
 			}),
 		);
 	}
@@ -122,8 +134,8 @@ export class CheckingRepository
 		checkingId: number,
 		lineId: number,
 		line: Partial<CheckingLineModel>,
-	): Promise<Result<CheckingWithLines>> {
-		return this.execute<CheckingWithLines>(() =>
+	): Promise<Result<CheckingWithSupplyItem>> {
+		return this.execute<CheckingWithSupplyItem>(() =>
 			this.prismaService.checking.update({
 				where: { id: checkingId },
 				data: {
@@ -134,7 +146,7 @@ export class CheckingRepository
 						},
 					},
 				},
-				include: { lines: true },
+				include: { lines: { include: { supplyItem: true } } },
 			}),
 		);
 	}

@@ -10,8 +10,24 @@ import { Prisma, Status, SupplyItem } from '@prisma/client';
 @Injectable({})
 export class SupplyItemRepository
 	extends PrismaRepository
-	implements ISupplyItemRepository {
-	getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItemWithSupplier>>> {
+	implements ISupplyItemRepository
+{
+	getByCode(code: string): Promise<Result<SupplyItemWithSupplier | null>> {
+		return this.execute<SupplyItemWithSupplier | null>(() =>
+			this.prismaService.supplyItem.findFirst({
+				where: {
+					code,
+				},
+				include: {
+					supplier: true,
+				},
+			}),
+		);
+	}
+
+	getAll(
+		filters: FindAllSuppliesDto,
+	): Promise<Result<Array<SupplyItemWithSupplier>>> {
 		const { search, tipoInsumo, statusInsumo } = filters;
 
 		const where: Prisma.SupplyItemWhereInput = {};
@@ -49,8 +65,8 @@ export class SupplyItemRepository
 			this.prismaService.supplyItem.findMany({
 				where,
 				include: {
-					supplier: true
-				}
+					supplier: true,
+				},
 			}),
 		);
 	}

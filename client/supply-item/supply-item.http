@@ -1,5 +1,5 @@
 ### Variables 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NTk2NDcxLCJleHAiOjE3NTg2MDAwNzF9.nKOr8V3duwTYcJCIAnETOYLqfLl3EA-1ozv_avze0zw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MTEwMDM3LCJleHAiOjE3NTkxMTM2Mzd9.pWCYdJOKyO1HE9zU-dyQR9-ylXCoUd0ctHuCNxLWNHU
 
 post http://localhost:3333/supply
 Content-Type: application/json
@@ -22,3 +22,8 @@ Authorization: Bearer {{token}}
 ###
 get http://localhost:3333/supply/2
 Authorization: Bearer {{token}} 
+
+###
+GET http://localhost:3333/supply/getByCode/123
+Authorization: Bearer {{token}} 
+

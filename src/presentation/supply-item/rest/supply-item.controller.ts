@@ -21,7 +21,7 @@ import { ProfileGuard } from '@presentation/shared/guard/profile.guard';
 @ApiTags('SupplyItem')
 @Controller('supply')
 export class SupplyItemController {
-	constructor(private supplyItemService: SupplyItemService) { }
+	constructor(private supplyItemService: SupplyItemService) {}
 
 	@UseGuards(JwtGuard, ProfileGuard)
 	@HasProfile('admin', 'supply_supervisor', 'supply_stock_keeper')
@@ -34,6 +34,21 @@ export class SupplyItemController {
 	@UseGuards(JwtGuard)
 	async get(@Query() filters: FindAllSuppliesDto) {
 		const result = await this.supplyItemService.getAll(filters);
+		return result.mapToPresentationResult();
+	}
+
+	@ApiOperation({ summary: 'Get supply item info by code.' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'Supply item info',
+	})
+	@ApiResponse({
+		status: HttpStatus.NOT_FOUND,
+	})
+	@UseGuards(JwtGuard, ProfileGuard)
+	@Get('getByCode/:code')
+	async getByCode(@Param('code') code: string) {
+		const result = await this.supplyItemService.getByCode(code);
 		return result.mapToPresentationResult();
 	}
 
@@ -55,9 +70,6 @@ export class SupplyItemController {
 		return result.mapToPresentationResult();
 	}
 
-	@UseGuards(JwtGuard, ProfileGuard)
-	@HasProfile('admin', 'supply_supervisor')
-	@Post()
 	@ApiOperation({ summary: 'Create a new supply item.' })
 	@ApiResponse({
 		status: HttpStatus.CREATED,
@@ -72,7 +84,9 @@ export class SupplyItemController {
 		status: HttpStatus.INTERNAL_SERVER_ERROR,
 		description: 'Internal server error',
 	})
-	@UseGuards(JwtGuard)
+	@HasProfile('admin', 'supply_supervisor')
+	@UseGuards(JwtGuard, ProfileGuard)
+	@Post()
 	async post(@Body() dto: CreateSupplyDto) {
 		const result = await this.supplyItemService.createSupplyItem(dto);
 		return result.mapToPresentationResult();

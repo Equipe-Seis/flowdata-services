@@ -1,3 +1,5 @@
+import { UnitOfMeasure } from '@prisma/client';
+
 export class SupplyItemModel {
 	constructor(
 		public name: string,
@@ -5,5 +7,6 @@ export class SupplyItemModel {
 		public price: number,
 		public supplierId: number,
 		public description?: string,
+		public unitOfMeasure?: UnitOfMeasure,
 	) {}
 }

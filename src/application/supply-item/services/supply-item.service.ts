@@ -14,7 +14,21 @@ export class SupplyItemService {
 		private supplyItemRepository: ISupplyItemRepository,
 		@Inject(ISupplierRepository)
 		private supplierRepository: ISupplierRepository,
-	) { }
+	) {}
+
+	async getByCode(code: string): Promise<Result<SupplyItemDto>> {
+		const result = await this.supplyItemRepository.getByCode(code);
+
+		if (result.isFailure) {
+			return Result.Fail<SupplyItemDto>(result.error!);
+		}
+
+		if (result.value) {
+			return Result.Ok(SupplyItemMapper.fromEntity(result.value));
+		}
+
+		return Result.NotFound();
+	}
 
 	async createSupplyItem(dto: CreateSupplyDto): Promise<Result<number>> {
 		const supplierResult = await this.supplierRepository.findById(
@@ -43,7 +57,9 @@ export class SupplyItemService {
 		return Result.Ok(result.getValue().id);
 	}
 
-	async getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItemDto>>> {
+	async getAll(
+		filters: FindAllSuppliesDto,
+	): Promise<Result<Array<SupplyItemDto>>> {
 		const result = await this.supplyItemRepository.getAll(filters);
 
 		if (result.isFailure) {

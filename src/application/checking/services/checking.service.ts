@@ -141,6 +141,8 @@ export class CheckingService {
 			return Result.Fail(result.getError());
 		}
 
+		console.log(result.getValue());
+
 		return Result.Ok(CheckingMapper.fromEntity(result.getValue()));
 	}
 

@@ -4,6 +4,7 @@ export class SupplyItemDto {
 		public name: string,
 		public code: string,
 		public price: number,
+		public unitOfMeasure: string,
 		public description: string | null,
 		public supplier: SupplyItemSuplierDto,
 	) {}

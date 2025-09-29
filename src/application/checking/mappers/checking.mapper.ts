@@ -18,7 +18,7 @@ import {
 } from '@domain/checking/types/checkingWithLines';
 import { InventTransferLineModel } from '@domain/transfer/models/invent-transfer-line.model';
 import { InventTransferWithLines } from '@domain/transfer/types/inventTrasnferWithLines';
-import { CheckingLine, InventTransferLine, SupplyItem } from '@prisma/client';
+import { InventTransferLine, SupplyItem } from '@prisma/client';
 
 export class CheckingMapper {
 	static fromEntity(model: CheckingWithLines): CheckingResponseDto {
@@ -39,7 +39,9 @@ export class CheckingMapper {
 			model.supplyItemId,
 			model.receivedQty.toNumber(),
 			model.unitOfMeasure,
-			CheckingMapper.fromSupplyItemEntity(model.supplyItem),
+			model.supplyItem
+				? CheckingMapper.fromSupplyItemEntity(model.supplyItem)
+				: undefined,
 		);
 	}
 
