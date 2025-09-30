@@ -1,21 +1,14 @@
+import { InventTransferLineWithTransfer } from '@domain/inventory/types/inventTransferLineWithTransfer';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import {
 	InventSumBatchCheckpoint,
 	InventTransferLine,
-	Prisma,
 	TransferType,
 } from '@prisma/client';
 
-// TODO: export type from another file
-export type InventTransferLineWithTransfer =
-	Prisma.InventTransferLineGetPayload<{
-		include: { inventTransfer: true };
-	}>;
-
 // TODO: refactor to repository pattern
-// TODO: improve logs
 // TODO: add startstop configuration
 @Injectable()
 export class InventJobService {
@@ -97,7 +90,6 @@ export class InventJobService {
 		}
 
 		for (const errRow of pendingErrors) {
-
 			const originalIdNum = Number(errRow.originalId);
 
 			try {
@@ -117,7 +109,7 @@ export class InventJobService {
 					});
 
 					this.logger.warn(
-						`⚠️ Error ${errRow.id}: original transfer line ${originalIdNum} not found`,
+						`❌️ Error ${errRow.id}: original transfer line ${originalIdNum} not found`,
 					);
 
 					errors++;
@@ -135,7 +127,8 @@ export class InventJobService {
 
 				processed++;
 			} catch (err) {
-				const message = err instanceof Error ? err.message : String(err) 
+				const message = err instanceof Error ? err.message : String(err);
+
 				await this.prisma.inventTransferErrors.update({
 					where: { id: errRow.id },
 					data: {
@@ -173,9 +166,15 @@ export class InventJobService {
 		return checkpoint;
 	}
 
-	private async handleLine(line: InventTransferLineWithTransfer): Promise<number> {
+	private async handleLine(
+		line: InventTransferLineWithTransfer,
+	): Promise<number> {
 		const transfer = line.inventTransfer;
-		if (!transfer) throw new Error('inventTransfer not loaded on line');
+
+		if (!transfer) {
+			this.logger.fatal(`❌ InventTransfer not loaded on line: ${line.id}`);
+			throw new Error('inventTransfer not loaded on line');
+		}
 
 		const qtyNum = line.transferQty.toNumber();
 		const delta =

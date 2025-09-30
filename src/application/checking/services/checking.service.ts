@@ -17,6 +17,75 @@ export class CheckingService {
 		private checkingRepository: ICheckingRepository,
 	) {}
 
+	async revertChecking(id: number): Promise<Result<CreateTransferResponseDto>> {
+		const checkingResult = await this.findById(id);
+
+		if (checkingResult.isFailure) {
+			return Result.Fail(checkingResult.getError());
+		}
+
+		const checking = checkingResult.getValue()!;
+
+		if (checking.status !== CheckingStatus.received) {
+			return Result.BadRequest(
+				`Não é possivel reverter o recebimento ${id} no status ${checking.status}`,
+			);
+		}
+
+		if (checking.lines.length === 0) {
+			return Result.BadRequest(
+				`Não é possivel reverter o recebimento ${id} com 0 linhas`,
+			);
+		}
+
+		const createTransferResult = await this.checkingRepository.createTransfer({
+			transferType: TransferType.outbound,
+		});
+
+		if (createTransferResult.isFailure) {
+			return Result.Fail(checkingResult.getError());
+		}
+
+		const transfer = createTransferResult.getValue()!;
+
+		const lines = checking.lines.map(CheckingMapper.toInventTransferLineModel);
+
+		const createLinesResult = await this.checkingRepository.createTransferLines(
+			transfer.id,
+			lines,
+		);
+
+		if (createTransferResult.isFailure) {
+			return Result.Fail(createLinesResult.getError());
+		}
+
+		const updateStatusResult =
+			await this.checkingRepository.updateCheckingStatus(
+				id,
+				CheckingStatus.cancelled,
+			);
+
+		if (updateStatusResult.isFailure) {
+			return Result.Fail(
+				`Falha ao atualizar o status do recebimento: ${createLinesResult.getError()}`,
+			);
+		}
+
+		const transferResult = await this.checkingRepository.findTransferById(
+			transfer.id,
+		);
+
+		if (transferResult.isFailure) {
+			return Result.Fail(
+				`Transferência criada, mas ocorreu um erro ao buscar os dados finais: ${transferResult.getError()}`,
+			);
+		}
+
+		const transferData = transferResult.getValue()!;
+
+		return Result.Ok(CheckingMapper.toCreateTransferResponseDto(transferData));
+	}
+
 	// TODO: create unit of work
 	async concludeChecking(
 		id: number,
@@ -99,6 +168,12 @@ export class CheckingService {
 		}
 
 		const checking = checkingResult.getValue()!;
+
+		if (checking.status != 'draft') {
+			return Result.Fail(
+				`Nao é possivel deletar uma conferência no status ${checking.status}`,
+			);
+		}
 
 		return this.checkingRepository.delete(checking.id);
 	}
