@@ -1,14 +1,20 @@
 import { Status } from "@prisma/client";
 
 export class InventoryResponseDto {
-    constructor(
-        public id: number,
-        public unitOfMeasure: string,
-        public updatedAt: Date,
-        public supplyItem: InventoryResponseSupplyItemDto
-    ) {
+	public formattedUpdatedAt: string;
 
-    }
+	constructor(
+		public id: number,
+		public unitOfMeasure: string,
+		public updatedAt: Date,
+		public quantity: number,
+		public supplyItem: InventoryResponseSupplyItemDto,
+	) {
+		this.formattedUpdatedAt = this.updatedAt.toLocaleString('pt-BR', {
+			dateStyle: 'short',
+			timeStyle: 'medium',
+		});
+	}
 }
 
 export class InventoryResponseSupplyItemDto {

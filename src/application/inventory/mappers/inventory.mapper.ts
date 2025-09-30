@@ -6,11 +6,12 @@ import { Supplier } from "@prisma/client";
 export class InventoryMapper {
     static fromEntity(model: InventSumWithSupplyItemAndSupplier): InventoryResponseDto {
         return new InventoryResponseDto(
-            model.id,
-            model.unitOfMeasure,
-            model.updatedAt,
-            InventoryMapper.fromEntitySupplyItem(model.supplyItem) 
-        )
+					model.id,
+					model.unitOfMeasure,
+					model.updatedAt,
+					model.quantity.toNumber(),
+					InventoryMapper.fromEntitySupplyItem(model.supplyItem),
+				);
     }
 
     static fromEntitySupplyItem(model: SupplyItemWithSupplier): InventoryResponseSupplyItemDto {

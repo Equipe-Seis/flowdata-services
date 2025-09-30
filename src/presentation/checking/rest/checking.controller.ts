@@ -43,6 +43,12 @@ export class CheckingController {
 		return result.mapToPresentationResult();
 	}
 
+	@Post(':id/revert')
+	async revert(@Param('id', ParseIntPipe) id: number) {
+		const result = await this.checkingService.concludeChecking(id);
+		return result.mapToPresentationResult();
+	}
+
 	@Delete(':id')
 	async delete(@Param('id', ParseIntPipe) id: number) {
 		const result = await this.checkingService.delete(id);
