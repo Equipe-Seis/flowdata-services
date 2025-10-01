@@ -1,8 +1,9 @@
 
 ### Variables
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MTEzNjU0LCJleHAiOjE3NTkxMTcyNTR9.wEqLouIg4qa3TpKQEmNabZZaaY55d9jRlH_4c943Gas
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MjgzODYzLCJleHAiOjE3NTkyODc0NjN9.YtKOrDdTq0uSNei4QNwfnab02vmE0OFRRKnDX3UwDY0
 
-@checkingId = 11
+@checkingId = 21 
+
 ###
 GET http://localhost:3333/checkings 
 Authorization: Bearer {{token}}
@@ -44,12 +45,15 @@ Content-Type: application/json
 ###
 DELETE http://localhost:3333/checkings/{{checkingId}}/lines/12
 Authorization: Bearer {{token}}
-Content-Type: application/json
 
 ###
 POST http://localhost:3333/checkings/{{checkingId}}/conclude 
 Authorization: Bearer {{token}}
-Content-Type: application/json
+
+###
+POST http://localhost:3333/checkings/{{checkingId}}/revert 
+Authorization: Bearer {{token}}
+
 
 ###
 DELETE http://localhost:3333/checkings/{{checkingId}} 
