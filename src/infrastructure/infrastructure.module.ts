@@ -27,6 +27,8 @@ import { ISearchCnpjRepository } from '@/application/shared/cnpj/persistence/ise
 import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/search-cnpj.repository';
 import { IInventoryRepository } from '@application/inventory/persistence/iinvent.repository';
 import { InventoryRepository } from '@infrastructure/persistence/inventory/inventory.repository';
+import { IConcludeCheckingUnitOfWork } from '@application/checking/persistence/iconclude-checking.uow';
+import { ConcludeCheckingUnitOfWork } from '@infrastructure/persistence/checking/conclude-checking.uow';
 
 @Module({
 	imports: [
@@ -91,6 +93,10 @@ import { InventoryRepository } from '@infrastructure/persistence/inventory/inven
 			provide: IInventoryRepository,
 			useClass: InventoryRepository,
 		},
+		{
+			provide: IConcludeCheckingUnitOfWork,
+			useClass: ConcludeCheckingUnitOfWork,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -105,6 +111,7 @@ import { InventoryRepository } from '@infrastructure/persistence/inventory/inven
 		ITransactionManager,
 		ISearchCnpjRepository,
 		IInventoryRepository,
+		IConcludeCheckingUnitOfWork,
 	],
 })
 export class InfrastructureModule {}

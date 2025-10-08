@@ -30,9 +30,10 @@ export class PrismaRepository {
 		cb: (tx: Prisma.TransactionClient) => Promise<T>,
 	): Promise<Result<T>> {
 		try {
-			const result = await this.prismaService.$transaction(async (tx) => {
-				return cb(tx);
-			});
+			const result = await this.prismaService.$transaction(
+				async (tx) => cb(tx),
+				{ isolationLevel: 'ReadUncommitted' },
+			);
 			return Result.Ok(result);
 		} catch (error) {
 			if (

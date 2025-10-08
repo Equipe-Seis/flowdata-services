@@ -5,6 +5,7 @@ import { CreateTransferResponseDto } from '@application/checking/dto/create-tran
 import { UpdateCheckingLineDto } from '@application/checking/dto/update-checking-line.dto';
 import { CheckingMapper } from '@application/checking/mappers/checking.mapper';
 import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
+import { IConcludeCheckingUnitOfWork } from '@application/checking/persistence/iconclude-checking.uow';
 import { CheckingWithLines } from '@domain/checking/types/checkingWithLines';
 import { Result } from '@domain/shared/result/result.pattern';
 import { Inject, Injectable } from '@nestjs/common';
@@ -15,7 +16,25 @@ export class CheckingService {
 	constructor(
 		@Inject(ICheckingRepository)
 		private checkingRepository: ICheckingRepository,
+		@Inject(IConcludeCheckingUnitOfWork)
+		private concludeCheckingUnitOfWork: IConcludeCheckingUnitOfWork,
 	) {}
+
+	async create(dto: CreateCheckingDto): Promise<Result<CheckingResponseDto>> {
+		const model = CheckingMapper.toModel(dto);
+
+		const result = await this.checkingRepository.create(model);
+
+		if (result.isFailure) {
+			return Result.Fail<CheckingResponseDto>(result.getError());
+		}
+
+		const response = CheckingMapper.fromEntity(
+			result.getValue() as CheckingWithLines,
+		);
+
+		return Result.Ok(response);
+	}
 
 	async revertChecking(id: number): Promise<Result<CreateTransferResponseDto>> {
 		const checkingResult = await this.findById(id);
@@ -86,7 +105,6 @@ export class CheckingService {
 		return Result.Ok(CheckingMapper.toCreateTransferResponseDto(transferData));
 	}
 
-	// TODO: create unit of work
 	async concludeChecking(
 		id: number,
 	): Promise<Result<CreateTransferResponseDto>> {
@@ -110,42 +128,11 @@ export class CheckingService {
 			);
 		}
 
-		const createTransferResult = await this.checkingRepository.createTransfer({
-			transferType: TransferType.inbound,
-		});
-
-		if (createTransferResult.isFailure) {
-			return Result.Fail(checkingResult.getError());
-		}
-
-		const transfer = createTransferResult.getValue()!;
-
 		const lines = checking.lines.map(CheckingMapper.toInventTransferLineModel);
 
-		const createLinesResult = await this.checkingRepository.createTransferLines(
-			transfer.id,
+		const transferResult = await this.concludeCheckingUnitOfWork.doWork(
+			checking.id,
 			lines,
-		);
-
-		if (createTransferResult.isFailure) {
-			return Result.Fail(createLinesResult.getError());
-		}
-
-		const updateStatusResult =
-			await this.checkingRepository.updateCheckingStatus(
-				id,
-				CheckingStatus.received,
-			);
-
-		if (updateStatusResult.isFailure) {
-			return Result.Fail(
-				'Falha ao atualizar o status do recebimento: ' +
-					createLinesResult.getError(),
-			);
-		}
-
-		const transferResult = await this.checkingRepository.findTransferById(
-			transfer.id,
 		);
 
 		if (transferResult.isFailure) {
@@ -155,9 +142,9 @@ export class CheckingService {
 			);
 		}
 
-		const transferData = transferResult.getValue()!;
-
-		return Result.Ok(CheckingMapper.toCreateTransferResponseDto(transferData));
+		return Result.Ok(
+			CheckingMapper.toCreateTransferResponseDto(transferResult.getValue()!),
+		);
 	}
 
 	async delete(id: number): Promise<Result<number>> {
@@ -176,22 +163,6 @@ export class CheckingService {
 		}
 
 		return this.checkingRepository.delete(checking.id);
-	}
-
-	async create(dto: CreateCheckingDto): Promise<Result<CheckingResponseDto>> {
-		const model = CheckingMapper.toModel(dto);
-
-		const result = await this.checkingRepository.create(model);
-
-		if (result.isFailure) {
-			return Result.Fail<CheckingResponseDto>(result.getError());
-		}
-
-		const response = CheckingMapper.fromEntity(
-			result.getValue() as CheckingWithLines,
-		);
-
-		return Result.Ok(response);
 	}
 
 	async addLine(
