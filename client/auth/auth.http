@@ -2,11 +2,11 @@ post http://localhost:3333/auth/signin
 Content-Type: application/json
 
 {
-    "email": "teste_da_silva@hmail.com",
-    "password": "123456"
+    "email": "admin@flowdata.com",
+    "password": "2025@flow"
 }
 
 ###
 
 get http://localhost:3333/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoiZW1haWxAZW1haWwuY29tIiwiaWF0IjoxNzU1OTk4ODUxLCJleHAiOjE3NTU5OTk3NTF9.aHkYzBCUWHf5RE1Cm-kInqiuSqTJ08o9kK2twrvqMjg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4MTYwMTcxLCJleHAiOjE3NTgxNjEwNzF9.nTEBvX_lr2Q2T6qZCTu9OwYqzepBZc7WrrpeVEqDbXY

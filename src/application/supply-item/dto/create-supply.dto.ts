@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsPositive, isString, IsString } from 'class-validator';
+import {
+	IsIn,
+	IsNotEmpty,
+	IsNumber,
+	IsPositive,
+	IsString,
+} from 'class-validator';
 
 export class CreateSupplyDto {
 	@IsString()
@@ -9,10 +15,18 @@ export class CreateSupplyDto {
 	@IsNotEmpty()
 	code: string;
 
-	@IsNumber()	
+	@IsNumber()
 	@IsPositive()
 	price: number;
 
+	@IsNumber()
+	@IsPositive()
+	supplierId: number;
+
 	@IsString()
-	description?: string; 
+	description?: string;
+
+	@IsString()
+	@IsIn(['KG', 'UN'])
+	unitOfMeasure?: string;
 }

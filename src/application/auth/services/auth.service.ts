@@ -21,7 +21,6 @@ export class AuthService {
 	async signin(dto: SignInDto): Promise<Result<{ access_token: string }>> {
 		const userResult = await this.userRepository.findByEmail(dto.email);
 
-
 		if (userResult.isFailure) {
 			return Result.Fail(userResult.getError());
 		}

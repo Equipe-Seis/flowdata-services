@@ -1,17 +1,30 @@
+### Variables 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MjgxMTczLCJleHAiOjE3NTkyODQ3NzN9.ye62_haEXBzGxR-x2qRVS4WleFvs9czYGs505aKxK9w
+
 post http://localhost:3333/supply
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "name": "Lima",
+    "name": "Laranja de DoisBigo",
     "code": "321",
-    "description": "Lima pra fazer suco",
-    "price": 0.89
+    "description": "Faz suco tbm",
+    "price": 0.50,
+    "supplierId": 1,
+    "unitOfMeasure": "KG" 
 }
 
 ###
 
-get http://localhost:3333/supply
+GET http://localhost:3333/supply
+Authorization: Bearer {{token}} 
 
 
 ###
-get http://localhost:3333/supply/90
+get http://localhost:3333/supply/2
+Authorization: Bearer {{token}} 
+
+###
+GET http://localhost:3333/supply/getByCode/123
+Authorization: Bearer {{token}} 
+

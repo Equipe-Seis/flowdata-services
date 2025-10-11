@@ -1,5 +1,8 @@
 ### User Routes - Hash Excluded
 
+### Variables
+@token = 
+
 ### 1. Get all users (paginated) - Hash will be excluded
 GET http://localhost:3000/users?page=1&limit=10
 Authorization: Bearer {{token}}
@@ -13,7 +16,7 @@ GET http://localhost:3000/users/1
 Authorization: Bearer {{token}}
 
 ### 4. Create new user
-POST http://localhost:3000/users
+POST http://localhost:3333/users
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

@@ -107,10 +107,10 @@ export class Result<T> {
 		const error = this.getError();
 
 		if (typeof error == 'string') {
-			return new InternalServerErrorException(error);
+			throw new InternalServerErrorException(error);
 		}
 
-		return this.mapErrorToException(error);
+		throw this.mapErrorToException(error);
 	}
 
 	private mapErrorToException(error: AppError): HttpException {

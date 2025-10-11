@@ -1,5 +1,5 @@
 
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaService } from '@infrastructure/persistence/prisma/prisma.service';
 
 import { PersonRepository } from '@infrastructure/persistence/person/person.repository';
@@ -19,8 +19,16 @@ import { SupplierRepository } from '@infrastructure/persistence/supplier/supplie
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { ICacheRepository } from '@application/user/cache/icache.repository';
+import { ICheckingRepository } from '@application/checking/persistence/ichecking.repository';
+import { CheckingRepository } from '@infrastructure/persistence/checking/checking.repository';
+import { ITransactionManager } from '@domain/shared/transaction/itrsanction.manager';
+import { PrismaTransactionManager } from '@infrastructure/persistence/transaction/transaction.manager';
 import { ISearchCnpjRepository } from '@/application/shared/cnpj/persistence/isearch-cnpj.repository';
 import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/search-cnpj.repository';
+import { IInventoryRepository } from '@application/inventory/persistence/iinvent.repository';
+import { InventoryRepository } from '@infrastructure/persistence/inventory/inventory.repository';
+import { IConcludeCheckingUnitOfWork } from '@application/checking/persistence/iconclude-checking.uow';
+import { ConcludeCheckingUnitOfWork } from '@infrastructure/persistence/checking/conclude-checking.uow';
 
 @Module({
 	imports: [
@@ -70,12 +78,25 @@ import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/s
 			useClass: RedisCacheRepository,
 		},
 		{
+			provide: ICheckingRepository,
+			useClass: CheckingRepository,
+		},
+		{
+			provide: ITransactionManager,
+			useClass: PrismaTransactionManager,
+		},
+		{
 			provide: ISearchCnpjRepository,
 			useClass: SearchCnpjRepository,
 		},
-
-
-
+		{
+			provide: IInventoryRepository,
+			useClass: InventoryRepository,
+		},
+		{
+			provide: IConcludeCheckingUnitOfWork,
+			useClass: ConcludeCheckingUnitOfWork,
+		},
 	],
 	exports: [
 		PrismaService,
@@ -86,7 +107,11 @@ import { SearchCnpjRepository } from '@/infrastructure/persistence/shared/cnpj/s
 		IProfileRepository,
 		ISupplierRepository,
 		ICacheRepository,
-		ISearchCnpjRepository
+		ICheckingRepository,
+		ITransactionManager,
+		ISearchCnpjRepository,
+		IInventoryRepository,
+		IConcludeCheckingUnitOfWork,
 	],
 })
-export class InfrastructureModule { }
+export class InfrastructureModule {}

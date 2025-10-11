@@ -9,10 +9,19 @@ import { UserAccessService } from '@application/user/services/user-access.servic
 import { ProfileService } from '@application/profile/services/profile.service';
 import { SupplierService } from '@application/supplier/services/supplier.service';
 import { AuthorizationService } from '@application/authorization/services/authorization.service';
+import { CheckingService } from '@application/checking/services/checking.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { InventJobService } from '@application/inventory/services/jobs/invent-job.service';
 import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnpj.service';
+import { InventoryService } from '@application/inventory/services/inventory.service';
 
 @Module({
-	imports: [InfrastructureModule, DomainModule, JwtModule.register({})],
+	imports: [
+		InfrastructureModule,
+		DomainModule,
+		JwtModule.register({}),
+		ScheduleModule.forRoot({}),
+	],
 	providers: [
 		AuthService,
 		SupplyItemService,
@@ -21,7 +30,10 @@ import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnp
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
-		SearchCnpjService
+		CheckingService,
+		InventJobService,
+		SearchCnpjService,
+		InventoryService,
 	],
 	exports: [
 		AuthService,
@@ -31,7 +43,9 @@ import { SearchCnpjService } from '@/application/shared/cnpj/services/search-cnp
 		ProfileService,
 		SupplierService,
 		AuthorizationService,
-		SearchCnpjService
+		CheckingService,
+		SearchCnpjService,
+		InventoryService,
 	],
 })
-export class ApplicationModule { }
+export class ApplicationModule {}

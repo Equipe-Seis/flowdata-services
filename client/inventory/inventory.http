@@ -1,0 +1,8 @@
+### Variables
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU5MjgzODYzLCJleHAiOjE3NTkyODc0NjN9.YtKOrDdTq0uSNei4QNwfnab02vmE0OFRRKnDX3UwDY0
+@checkingId = 1
+###
+
+GET http://localhost:3333/inventory 
+Authorization: Bearer {{token}}
+

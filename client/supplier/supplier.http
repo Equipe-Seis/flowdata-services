@@ -1,26 +1,30 @@
 ### Supplier CRUD Operations
 
+### Variables
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZmxvd2RhdGEuY29tIiwiaWF0IjoxNzU4NTk2NDcxLCJleHAiOjE3NTg2MDAwNzF9.nKOr8V3duwTYcJCIAnETOYLqfLl3EA-1ozv_avze0zw
+@port = 3333
+
 ### 1. Get all suppliers (paginated)
-GET http://localhost:3000/suppliers?page=1&limit=10
+GET http://localhost:{{port}}/suppliers?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ### 2. Get supplier by ID
-GET http://localhost:3000/suppliers/1
+GET http://localhost:{{port}}/suppliers/1
 Authorization: Bearer {{token}}
 
 ### 3. Create new supplier
-POST http://localhost:3000/suppliers
+POST http://localhost:{{port}}/suppliers
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "person": {
     "name": "Fornecedor Exemplo LTDA",
-    "personType": "JURIDICA",
+    "personType": "legalentity",
     "documentNumber": "12345678000195",
     "email": "contato@fornecedor.com",
     "birthDate": "2020-01-01",
-    "status": "ACTIVE"
+    "status": "active"
   },
   "tradeName": "Fornecedor Exemplo",
   "openingDate": "2020-01-01",
@@ -29,16 +33,16 @@ Content-Type: application/json
   "legalNature": "LTDA",
   "contacts": [
     {
-      "type": "PHONE",
+      "type": "phone",
       "value": "(11) 99999-9999",
-      "linkType": "WORK",
+      "linkType": "supplier",
       "primary": true,
       "note": "Telefone principal"
     },
     {
-      "type": "EMAIL",
+      "type": "email",
       "value": "contato@fornecedor.com",
-      "linkType": "WORK",
+      "linkType": "supplier",
       "primary": true,
       "note": "Email principal"
     }
@@ -50,13 +54,13 @@ Content-Type: application/json
       "city": "São Paulo",
       "state": "SP",
       "postalCode": "01234-567",
-      "linkType": "WORK"
+      "linkType": "supplier"
     }
   ]
 }
 
 ### 4. Update supplier
-PUT http://localhost:3000/suppliers/1
+PUT http://localhost:{{port}}/suppliers/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -96,7 +100,7 @@ Content-Type: application/json
 }
 
 ### 5. Delete supplier
-DELETE http://localhost:3000/suppliers/1
+DELETE http://localhost:{{port}}/suppliers/1
 Authorization: Bearer {{token}}
 
 ### 6. Get suppliers by email (using repository method)

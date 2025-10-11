@@ -2,6 +2,7 @@ import { FindAllSuppliesDto } from '@application/supply-item/dto/find-all-suppli
 import { ISupplyItemRepository } from '@application/supply-item/persistence/isupply-item.repository';
 import { Result } from '@domain/shared/result/result.pattern';
 import { SupplyItemModel } from '@domain/supply-item/models/supply-item.model';
+import { SupplyItemWithSupplier } from '@domain/supply-item/types/supplyItemSupplier';
 import { PrismaRepository } from '@infrastructure/persistence/repository/prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { Prisma, Status, SupplyItem } from '@prisma/client';
@@ -9,8 +10,24 @@ import { Prisma, Status, SupplyItem } from '@prisma/client';
 @Injectable({})
 export class SupplyItemRepository
 	extends PrismaRepository
-	implements ISupplyItemRepository {
-	getAll(filters: FindAllSuppliesDto): Promise<Result<Array<SupplyItem>>> {
+	implements ISupplyItemRepository
+{
+	getByCode(code: string): Promise<Result<SupplyItemWithSupplier | null>> {
+		return this.execute<SupplyItemWithSupplier | null>(() =>
+			this.prismaService.supplyItem.findFirst({
+				where: {
+					code,
+				},
+				include: {
+					supplier: true,
+				},
+			}),
+		);
+	}
+
+	getAll(
+		filters: FindAllSuppliesDto,
+	): Promise<Result<Array<SupplyItemWithSupplier>>> {
 		const { search, tipoInsumo, statusInsumo } = filters;
 
 		const where: Prisma.SupplyItemWhereInput = {};
@@ -44,18 +61,24 @@ export class SupplyItemRepository
 			};
 		}
 
-		return this.execute<Array<SupplyItem>>(() =>
+		return this.execute<Array<SupplyItemWithSupplier>>(() =>
 			this.prismaService.supplyItem.findMany({
 				where,
+				include: {
+					supplier: true,
+				},
 			}),
 		);
 	}
 
-	getById(id: number): Promise<Result<SupplyItem | null>> {
-		return this.execute<SupplyItem | null>(() =>
+	getById(id: number): Promise<Result<SupplyItemWithSupplier | null>> {
+		return this.execute<SupplyItemWithSupplier | null>(() =>
 			this.prismaService.supplyItem.findFirst({
 				where: {
 					id: id,
+				},
+				include: {
+					supplier: true,
 				},
 			}),
 		);
